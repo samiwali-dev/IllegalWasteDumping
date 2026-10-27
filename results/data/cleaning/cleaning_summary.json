@@ -1,0 +1,67 @@
+{
+  "created_at_utc": "2026-10-27T06:13:40.201264+00:00",
+  "originals_deleted_or_modified": false,
+  "models_retrained": false,
+  "datasets_run": [
+    "mivia",
+    "littering"
+  ],
+  "statuses": {
+    "mivia": "passed_with_timestamp_warnings",
+    "littering": "technical_cleaning_completed_manual_review_pending"
+  },
+  "summaries": {
+    "mivia": {
+      "original_videos": 500,
+      "original_train_videos": 400,
+      "original_test_videos": 100,
+      "model_split_source_video_counts": {
+        "train": 320,
+        "validation": 80,
+        "test": 100
+      },
+      "valid_records": 500,
+      "invalid_records": 0,
+      "cached_frames_decoded": 12000,
+      "cached_frame_failures": 0,
+      "exact_duplicate_groups": 0,
+      "duplicate_groups_across_official_splits": 0,
+      "duplicate_groups_across_model_splits": 0,
+      "timestamp_warning_videos": 2,
+      "hashes_reused": 500,
+      "source_videos_hashed": 500
+    },
+    "littering": {
+      "raw_images": 17397,
+      "raw_split_counts": {
+        "train": 14999,
+        "valid": 1168,
+        "test": 1230
+      },
+      "decoded_valid_images": 17397,
+      "corrupt_or_unreadable_images": 0,
+      "coco_image_records": 13050,
+      "included_clean_image_records": 13050,
+      "clean_split_counts": {
+        "train": 11882,
+        "valid": 1168
+      },
+      "source_annotation_boxes": 13051,
+      "clean_boxes": 13051,
+      "small_edge_boxes_repaired": 256,
+      "repeated_identical_boxes_removed": 0,
+      "images_quarantined_from_clean_export": 0,
+      "empty_annotated_images_retained_for_review": 3,
+      "unreferenced_training_images": 3117,
+      "unlabelled_test_images": 1230,
+      "exact_byte_duplicate_groups_raw": 1,
+      "exact_pixel_duplicate_groups_raw": 1,
+      "exact_byte_duplicate_groups_across_raw_splits": 0,
+      "exact_pixel_duplicate_groups_across_raw_splits": 0,
+      "perceptual_review_candidates_found_in_nearest3_search": 1103,
+      "perceptual_review_candidates_saved": 300,
+      "cached_image_checks_reused": 0
+    }
+  },
+  "review_warning": "Technical cleaning is automated. Similarity, ambiguous source provenance, and semantic labels still need review."
+}

@@ -1,0 +1,359 @@
+{
+  "model": "movinet_a0",
+  "protocol_version": "macro_f1_v2_exploratory",
+  "seed": 42,
+  "official_test_used_for_selection": false,
+  "split_counts": {
+    "train": 320,
+    "validation": 80,
+    "test": 100
+  },
+  "input": {
+    "frames": 24,
+    "height": 112,
+    "width": 112,
+    "channels": 3,
+    "color": "RGB",
+    "range": "0..1",
+    "pretrained": false
+  },
+  "architecture": {
+    "name": "MoViNet A0",
+    "implementation": "unofficial PyTorch MoViNet-pytorch",
+    "source": "https://github.com/Atze00/MoViNet-pytorch",
+    "source_commit": "c2d1edf48fc6c5259707f9d833f22171b4f63493",
+    "configuration": "MoViNetA0",
+    "causal": false,
+    "pretrained": false,
+    "num_classes": 1,
+    "conv_type": "3d",
+    "tf_like": false,
+    "initialization": "random"
+  },
+  "hyperparameters": {
+    "optimizer": "AdamW",
+    "loss": "BCEWithLogitsLoss",
+    "epochs_max": 20,
+    "batch_size": 4,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "early_stopping_patience": 5,
+    "selection": "highest validation macro F1, then dumping precision, dumping F1, fewer false positives, then lowest loss",
+    "threshold": 0.5
+  },
+  "device": "mps",
+  "torch_version": "2.14.0",
+  "parameters": 1884448,
+  "best_epoch": 8,
+  "validation_metrics": {
+    "loss": 1.7664178210310637,
+    "accuracy": 0.725,
+    "precision": 0.7045454545454546,
+    "recall": 0.775,
+    "f1": 0.7380952380952381,
+    "macro_f1": 0.7243107769423559,
+    "confusion_matrix": [
+      [
+        27,
+        13
+      ],
+      [
+        9,
+        31
+      ]
+    ]
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 16.16802559714374,
+      "validation_loss": 19.26294633373618,
+      "validation_metrics": {
+        "accuracy": 0.525,
+        "precision": 0.5131578947368421,
+        "recall": 0.975,
+        "f1": 0.6724137931034483,
+        "macro_f1": 0.4043887147335423,
+        "confusion_matrix": [
+          [
+            3,
+            37
+          ],
+          [
+            1,
+            39
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 2,
+      "train_loss": 10.113713252086418,
+      "validation_loss": 16.805927288532256,
+      "validation_metrics": {
+        "accuracy": 0.4875,
+        "precision": 0.4936708860759494,
+        "recall": 0.975,
+        "f1": 0.6554621848739496,
+        "macro_f1": 0.3277310924369748,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            1,
+            39
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 3,
+      "train_loss": 9.898019197701831,
+      "validation_loss": 10.998630082607269,
+      "validation_metrics": {
+        "accuracy": 0.5375,
+        "precision": 0.6666666666666666,
+        "recall": 0.15,
+        "f1": 0.24489795918367346,
+        "macro_f1": 0.45578231292517,
+        "confusion_matrix": [
+          [
+            37,
+            3
+          ],
+          [
+            34,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 4,
+      "train_loss": 11.56985357327488,
+      "validation_loss": 7.021513526001508,
+      "validation_metrics": {
+        "accuracy": 0.7125,
+        "precision": 0.717948717948718,
+        "recall": 0.7,
+        "f1": 0.708860759493671,
+        "macro_f1": 0.7124550711048602,
+        "confusion_matrix": [
+          [
+            29,
+            11
+          ],
+          [
+            12,
+            28
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 5,
+      "train_loss": 6.142316596707952,
+      "validation_loss": 6.995134357362986,
+      "validation_metrics": {
+        "accuracy": 0.4875,
+        "precision": 0.49206349206349204,
+        "recall": 0.775,
+        "f1": 0.6019417475728155,
+        "macro_f1": 0.4413217509793902,
+        "confusion_matrix": [
+          [
+            8,
+            32
+          ],
+          [
+            9,
+            31
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.5040511791725293,
+      "validation_loss": 4.772517191820215,
+      "validation_metrics": {
+        "accuracy": 0.6375,
+        "precision": 0.6774193548387096,
+        "recall": 0.525,
+        "f1": 0.5915492957746479,
+        "macro_f1": 0.6328532995727172,
+        "confusion_matrix": [
+          [
+            30,
+            10
+          ],
+          [
+            19,
+            21
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 7,
+      "train_loss": 4.388047298251517,
+      "validation_loss": 2.3619040207064246,
+      "validation_metrics": {
+        "accuracy": 0.625,
+        "precision": 0.6190476190476191,
+        "recall": 0.65,
+        "f1": 0.6341463414634146,
+        "macro_f1": 0.6247654784240151,
+        "confusion_matrix": [
+          [
+            24,
+            16
+          ],
+          [
+            14,
+            26
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 8,
+      "train_loss": 3.43753631719228,
+      "validation_loss": 1.7664178210310637,
+      "validation_metrics": {
+        "accuracy": 0.725,
+        "precision": 0.7045454545454546,
+        "recall": 0.775,
+        "f1": 0.7380952380952381,
+        "macro_f1": 0.7243107769423559,
+        "confusion_matrix": [
+          [
+            27,
+            13
+          ],
+          [
+            9,
+            31
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.7145759656976223,
+      "validation_loss": 2.4532043481711296,
+      "validation_metrics": {
+        "accuracy": 0.625,
+        "precision": 0.625,
+        "recall": 0.625,
+        "f1": 0.625,
+        "macro_f1": 0.625,
+        "confusion_matrix": [
+          [
+            25,
+            15
+          ],
+          [
+            15,
+            25
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 10,
+      "train_loss": 4.090330470560502,
+      "validation_loss": 4.278417605161667,
+      "validation_metrics": {
+        "accuracy": 0.575,
+        "precision": 0.6875,
+        "recall": 0.275,
+        "f1": 0.3928571428571429,
+        "macro_f1": 0.5329670329670331,
+        "confusion_matrix": [
+          [
+            35,
+            5
+          ],
+          [
+            29,
+            11
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 11,
+      "train_loss": 3.921468743904279,
+      "validation_loss": 2.2944136176200116,
+      "validation_metrics": {
+        "accuracy": 0.7,
+        "precision": 0.7352941176470589,
+        "recall": 0.625,
+        "f1": 0.6756756756756757,
+        "macro_f1": 0.6983029541169076,
+        "confusion_matrix": [
+          [
+            31,
+            9
+          ],
+          [
+            15,
+            25
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 12,
+      "train_loss": 3.868763322078121,
+      "validation_loss": 2.3321239445358515,
+      "validation_metrics": {
+        "accuracy": 0.5625,
+        "precision": 0.5396825396825397,
+        "recall": 0.85,
+        "f1": 0.6601941747572816,
+        "macro_f1": 0.5230795435189917,
+        "confusion_matrix": [
+          [
+            11,
+            29
+          ],
+          [
+            6,
+            34
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 13,
+      "train_loss": 3.0500743213074317,
+      "validation_loss": 3.0650687001645567,
+      "validation_metrics": {
+        "accuracy": 0.6375,
+        "precision": 0.8235294117647058,
+        "recall": 0.35,
+        "f1": 0.4912280701754386,
+        "macro_f1": 0.6048373360585931,
+        "confusion_matrix": [
+          [
+            37,
+            3
+          ],
+          [
+            26,
+            14
+          ]
+        ]
+      }
+    }
+  ],
+  "training_seconds": 1899.7842,
+  "inference_seconds": 33.721917,
+  "model_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/movinet/model.pt",
+  "model_size_bytes": 7742973,
+  "predictions_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/movinet/movinet_a0_test_predictions.csv"
+}

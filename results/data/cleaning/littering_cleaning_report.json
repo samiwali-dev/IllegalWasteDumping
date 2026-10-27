@@ -1,0 +1,73 @@
+{
+  "status": "technical_cleaning_completed_manual_review_pending",
+  "created_at_utc": "2026-10-27T06:20:08.679450+00:00",
+  "source_root": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco",
+  "raw_files_modified": false,
+  "existing_models_or_results_replaced": false,
+  "source_split_preserved": true,
+  "original_scene_count_verified": false,
+  "summary": {
+    "raw_images": 17397,
+    "raw_split_counts": {
+      "train": 14999,
+      "valid": 1168,
+      "test": 1230
+    },
+    "decoded_valid_images": 17397,
+    "corrupt_or_unreadable_images": 0,
+    "coco_image_records": 13050,
+    "included_clean_image_records": 13050,
+    "clean_split_counts": {
+      "train": 11882,
+      "valid": 1168
+    },
+    "source_annotation_boxes": 13051,
+    "clean_boxes": 13051,
+    "small_edge_boxes_repaired": 256,
+    "repeated_identical_boxes_removed": 0,
+    "images_quarantined_from_clean_export": 0,
+    "empty_annotated_images_retained_for_review": 3,
+    "unreferenced_training_images": 3117,
+    "unlabelled_test_images": 1230,
+    "exact_byte_duplicate_groups_raw": 1,
+    "exact_pixel_duplicate_groups_raw": 1,
+    "exact_byte_duplicate_groups_across_raw_splits": 0,
+    "exact_pixel_duplicate_groups_across_raw_splits": 0,
+    "perceptual_review_candidates_found_in_nearest3_search": 1103,
+    "perceptual_review_candidates_saved": 300,
+    "cached_image_checks_reused": 17397
+  },
+  "box_repair_policy": "Clip only boxes retaining at least 99% of their area; quarantine larger/invalid changes. Never infer a missing label.",
+  "filename_provenance_policy": "Do not deduplicate using video_X_Y_jpg prefixes: these names collide across visibly different scenes.",
+  "global_annotation_issues": [],
+  "confirmed_duplicate_cleaning_decisions": [],
+  "raw_duplicate_groups": [
+    [
+      {
+        "path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_6_16_jpg.rf.d4638f58c425a74532002095ee3025d4.jpg",
+        "split": "train",
+        "referenced_by_coco": true
+      },
+      {
+        "path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_6_1_jpg.rf.4e3d7f43caad6b43bf143a2f1f7c328c.jpg",
+        "split": "train",
+        "referenced_by_coco": false
+      }
+    ]
+  ],
+  "corrupt_images": [],
+  "export": {
+    "status": "reused_matching_export",
+    "path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering-YOLO-clean",
+    "images": 13050
+  },
+  "limitations": [
+    "Technical validity and exact duplication were checked. All action/box labels were not manually reviewed.",
+    "Nearest-three perceptual hashes yield candidates only, not verified duplicates or an exhaustive augmentation audit.",
+    "Related scenes can have similar static backgrounds; candidate images are never automatically removed.",
+    "The supplied export does not reliably map augmented variants to original sources. Source-level independence remains unverified.",
+    "The clean export preserves supplied train/validation membership and has no labelled test split.",
+    "Existing models and their metrics do not become results from a newly cleaned/repartitioned dataset automatically."
+  ],
+  "elapsed_seconds": 3.567
+}

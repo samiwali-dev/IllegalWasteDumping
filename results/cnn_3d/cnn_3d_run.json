@@ -1,0 +1,383 @@
+{
+  "model": "cnn_3d",
+  "protocol_version": "macro_f1_v2_exploratory",
+  "seed": 42,
+  "official_test_used_for_selection": false,
+  "split_counts": {
+    "train": 320,
+    "validation": 80,
+    "test": 100
+  },
+  "input": {
+    "frames": 24,
+    "height": 112,
+    "width": 112,
+    "channels": 3,
+    "color": "RGB",
+    "range": "0..1",
+    "pretrained": false
+  },
+  "architecture": {
+    "name": "3D-CNN",
+    "channels": [
+      12,
+      24,
+      48,
+      64
+    ],
+    "kernel": [
+      3,
+      3,
+      3
+    ],
+    "strides_time_height_width": [
+      [
+        1,
+        2,
+        2
+      ],
+      [
+        2,
+        2,
+        2
+      ],
+      [
+        2,
+        2,
+        2
+      ],
+      [
+        2,
+        2,
+        2
+      ]
+    ],
+    "dropout": 0.25
+  },
+  "hyperparameters": {
+    "optimizer": "AdamW",
+    "loss": "BCEWithLogitsLoss",
+    "epochs_max": 20,
+    "batch_size": 4,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "early_stopping_patience": 5,
+    "selection": "highest validation macro F1, then dumping precision, dumping F1, fewer false positives, then lowest loss",
+    "threshold": 0.5
+  },
+  "device": "mps",
+  "torch_version": "2.14.0",
+  "parameters": 123305,
+  "best_epoch": 8,
+  "validation_metrics": {
+    "loss": 0.6845034718513489,
+    "accuracy": 0.6,
+    "precision": 0.5714285714285714,
+    "recall": 0.8,
+    "f1": 0.6666666666666666,
+    "macro_f1": 0.5833333333333333,
+    "confusion_matrix": [
+      [
+        16,
+        24
+      ],
+      [
+        8,
+        32
+      ]
+    ]
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7135644145309925,
+      "validation_loss": 0.7032360970973969,
+      "validation_metrics": {
+        "accuracy": 0.5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "macro_f1": 0.3333333333333333,
+        "confusion_matrix": [
+          [
+            40,
+            0
+          ],
+          [
+            40,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.7029883414506912,
+      "validation_loss": 0.6938858777284622,
+      "validation_metrics": {
+        "accuracy": 0.5,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6666666666666666,
+        "macro_f1": 0.3333333333333333,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            40
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6998510450124741,
+      "validation_loss": 0.6943171739578247,
+      "validation_metrics": {
+        "accuracy": 0.5,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6666666666666666,
+        "macro_f1": 0.3333333333333333,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            40
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6834334157407284,
+      "validation_loss": 0.6994151622056961,
+      "validation_metrics": {
+        "accuracy": 0.5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "macro_f1": 0.3333333333333333,
+        "confusion_matrix": [
+          [
+            40,
+            0
+          ],
+          [
+            40,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6916965700685977,
+      "validation_loss": 0.6961279153823853,
+      "validation_metrics": {
+        "accuracy": 0.5,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6666666666666666,
+        "macro_f1": 0.3333333333333333,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            40
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6941355697810649,
+      "validation_loss": 0.6930250495672226,
+      "validation_metrics": {
+        "accuracy": 0.4375,
+        "precision": 0.45098039215686275,
+        "recall": 0.575,
+        "f1": 0.5054945054945055,
+        "macro_f1": 0.4266602962255136,
+        "confusion_matrix": [
+          [
+            12,
+            28
+          ],
+          [
+            17,
+            23
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.6852004796266555,
+      "validation_loss": 0.6966326713562012,
+      "validation_metrics": {
+        "accuracy": 0.5,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6666666666666666,
+        "macro_f1": 0.3333333333333333,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            40
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.6845346182584763,
+      "validation_loss": 0.6845034718513489,
+      "validation_metrics": {
+        "accuracy": 0.6,
+        "precision": 0.5714285714285714,
+        "recall": 0.8,
+        "f1": 0.6666666666666666,
+        "macro_f1": 0.5833333333333333,
+        "confusion_matrix": [
+          [
+            16,
+            24
+          ],
+          [
+            8,
+            32
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.6900533255189657,
+      "validation_loss": 0.6975702047348022,
+      "validation_metrics": {
+        "accuracy": 0.4875,
+        "precision": 0.4936708860759494,
+        "recall": 0.975,
+        "f1": 0.6554621848739496,
+        "macro_f1": 0.3277310924369748,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            1,
+            39
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.6894330300390721,
+      "validation_loss": 0.6886806845664978,
+      "validation_metrics": {
+        "accuracy": 0.5625,
+        "precision": 0.631578947368421,
+        "recall": 0.3,
+        "f1": 0.4067796610169491,
+        "macro_f1": 0.5301225037758013,
+        "confusion_matrix": [
+          [
+            33,
+            7
+          ],
+          [
+            28,
+            12
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.6760239735245704,
+      "validation_loss": 0.6851760804653168,
+      "validation_metrics": {
+        "accuracy": 0.525,
+        "precision": 0.5454545454545454,
+        "recall": 0.3,
+        "f1": 0.3870967741935483,
+        "macro_f1": 0.499670836076366,
+        "confusion_matrix": [
+          [
+            30,
+            10
+          ],
+          [
+            28,
+            12
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.6765524085611105,
+      "validation_loss": 0.6694284439086914,
+      "validation_metrics": {
+        "accuracy": 0.525,
+        "precision": 0.5135135135135135,
+        "recall": 0.95,
+        "f1": 0.6666666666666667,
+        "macro_f1": 0.4202898550724638,
+        "confusion_matrix": [
+          [
+            4,
+            36
+          ],
+          [
+            2,
+            38
+          ]
+        ]
+      }
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.701971622556448,
+      "validation_loss": 0.6909029006958007,
+      "validation_metrics": {
+        "accuracy": 0.4875,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "macro_f1": 0.3277310924369748,
+        "confusion_matrix": [
+          [
+            39,
+            1
+          ],
+          [
+            40,
+            0
+          ]
+        ]
+      }
+    }
+  ],
+  "training_seconds": 184.2916,
+  "inference_seconds": 25.634599,
+  "model_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/cnn_3d/model.pt",
+  "model_size_bytes": 499437,
+  "predictions_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/cnn_3d/cnn_3d_test_predictions.csv"
+}

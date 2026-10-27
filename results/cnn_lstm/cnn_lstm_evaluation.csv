@@ -1,0 +1,2 @@
+model,protocol_version,accuracy,precision,recall,f1,TN,FP,FN,TP,training_seconds,inference_mean_ms_per_video,model_size_mib
+cnn_lstm,macro_f1_v2_exploratory,0.61,0.7037037037037037,0.38,0.49350649350649356,42,8,31,19,240.636365,255.6054,0.41463756561279297

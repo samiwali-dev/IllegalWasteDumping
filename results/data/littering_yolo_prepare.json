@@ -1,0 +1,37 @@
+{
+  "status": "validated",
+  "source_root": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco",
+  "output_root": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering-YOLO",
+  "data_yaml": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering-YOLO/data.yaml",
+  "class_names": [
+    "littering"
+  ],
+  "splits": {
+    "train": {
+      "source_split": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train",
+      "annotation_file": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/_annotations.coco.json",
+      "class_name": "littering",
+      "images": 11882,
+      "boxes": 11884,
+      "images_without_target_boxes": 2,
+      "image_transfer": {
+        "hardlink": 11882
+      }
+    },
+    "val": {
+      "source_split": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/valid",
+      "annotation_file": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/valid/_annotations.coco.json",
+      "class_name": "littering",
+      "images": 1168,
+      "boxes": 1167,
+      "images_without_target_boxes": 1,
+      "image_transfer": {
+        "hardlink": 1168
+      }
+    }
+  },
+  "total_images": 13050,
+  "total_boxes": 13051,
+  "unlabeled_source_test_images": 1230,
+  "note": "The source export supplies COCO labels for train and valid only. Their membership is preserved. The source test images have no annotation JSON, so they are not used for detection metrics."
+}
