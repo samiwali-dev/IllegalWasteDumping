@@ -1,5 +1,3 @@
-model,protocol_version,accuracy,precision,recall,f1,TN,FP,FN,TP,training_seconds,inference_mean_ms_per_video,model_size_mib
-optical_flow_svm,macro_f1_v2_exploratory,0.64,0.6296296296296297,0.68,0.6538461538461539,30,20,16,34,119.169351,272.70517,0.38114261627197266
-cnn_lstm,macro_f1_v2_exploratory,0.61,0.7037037037037037,0.38,0.49350649350649356,42,8,31,19,240.636365,255.6054,0.41463756561279297
-cnn_3d,macro_f1_v2_exploratory,0.69,0.6338028169014085,0.9,0.7438016528925621,24,26,5,45,184.2916,256.34599000000003,0.4763002395629883
-movinet_a0,macro_f1_v2_exploratory,0.72,0.7115384615384616,0.74,0.7254901960784313,35,15,13,37,1899.7842,337.21917,7.384274482727051
+model,task,dataset,evaluation_split,protocol_version,accuracy,precision,recall,f1,map50,map50_95,TN,FP,FN,TP,training_seconds,inference_mean_ms_per_video,model_size_mib
+movinet_a0,video_classification,MIVIA-IWDD 500,official_test,macro_f1_v2_exploratory,0.72,0.7115384615384616,0.74,0.7254901960784313,,,35,15,13,37,1899.7842,337.21917,7.384274482727051
+yolov8n,object_detection,Roboflow Littering,Roboflow validation (the supplied test images have no COCO labels),,,0.5108254417440554,0.7223650385604113,,0.5428632534746103,0.24498013686129183,,,,,821.9389075419749,,5.929245948791504

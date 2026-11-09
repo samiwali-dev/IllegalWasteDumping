@@ -12,10 +12,12 @@ import contextlib
 import csv
 import io
 import json
+import queue
 import tempfile
 import unittest
 from collections import Counter
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 import cv2
@@ -24,8 +26,10 @@ import numpy as np
 from data import (
     IMAGE_SIZE, SEQUENCE_LENGTH, _frame_paths, load_clip, load_manifest, split_records,
 )
-from evaluate import _read_predictions, evaluate_predictions
-from src.optical_flow_svm.main import FEATURE_DIM, flow_features
+from evaluate import (
+    _read_detection_metadata, _read_predictions, evaluate_predictions,
+    evaluate_runs, write_comparison_csv,
+)
 from clean import (
     clean, decode_frame, duplicate_groups, exclude_confirmed_duplicates,
     export_yolo, hash_video, inspect_image, load_hash_cache, parse_label_data,
@@ -52,9 +56,6 @@ class ProjectLayoutTests(unittest.TestCase):
         from common import CHECKPOINT_PATHS, PROJECT_ROOT
 
         expected = {
-            "optical_flow_svm": PROJECT_ROOT / "src/optical_flow_svm/model.joblib",
-            "cnn_lstm": PROJECT_ROOT / "src/cnn_lstm/model.pt",
-            "cnn_3d": PROJECT_ROOT / "src/cnn_3d/model.pt",
             "movinet_a0": PROJECT_ROOT / "src/movinet/model.pt",
         }
         self.assertEqual(CHECKPOINT_PATHS, expected)
@@ -67,9 +68,6 @@ class ProjectLayoutTests(unittest.TestCase):
         from evaluate import _resolve_model_path
 
         names = {
-            "optical_flow_svm": "optical_flow_svm.joblib",
-            "cnn_lstm": "cnn_lstm_best.pt",
-            "cnn_3d": "cnn_3d_best.pt",
             "movinet_a0": "movinet_a0_best.pt",
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -92,6 +90,148 @@ class ProjectLayoutTests(unittest.TestCase):
         expected_data = PROJECT_ROOT / "datasets/Littering-YOLO-clean/data.yaml"
         self.assertEqual(DEFAULT_DATA, expected_data)
         self.assertEqual(make_train_parser().parse_args([]).data, expected_data)
+
+
+class TwoModelGuiTests(unittest.TestCase):
+    """Exercise GUI callbacks without creating a window or loading a model."""
+
+    def test_worker_requests_movinet_and_yolo_by_default(self):
+        import app as gui
+
+        view = SimpleNamespace(events=queue.Queue())
+        video = Path("sample.mp4")
+        rows = [
+            {"model": "movinet_a0", "prediction": 1, "score": 0.7,
+             "score_kind": "Uncalibrated sigmoid (threshold 0.5)"},
+        ]
+        detector = {"total_detections": 2, "frames_sampled": 12}
+
+        def analyze(selected_video, model_names, *, progress):
+            progress("Reading frames")
+            return rows
+
+        with (mock.patch.object(gui, "analyze_video", side_effect=analyze) as analysis,
+              mock.patch.object(gui, "run_yolo", return_value=detector) as detection):
+            gui.App.worker(view, video)
+
+        analysis.assert_called_once()
+        self.assertEqual(analysis.call_args.args, (video, ["movinet_a0"]))
+        detection.assert_called_once_with(video)
+        self.assertEqual(view.events.get_nowait(), ("status", "Reading frames"))
+        self.assertEqual(view.events.get_nowait(),
+                         ("status", "YOLOv8n: analyzing 12 sampled video frames..."))
+        self.assertEqual(view.events.get_nowait(),
+                         ("complete", {"actions": rows, "yolo": detector, "errors": []}))
+        self.assertTrue(view.events.empty())
+
+    def test_worker_queues_errors_for_failed_or_unexpected_model_results(self):
+        import app as gui
+
+        cases = (
+            {"side_effect": RuntimeError("Cannot read video")},
+            {"return_value": [{"model": "unsupported_model"}]},
+            {"return_value": [{"model": "movinet_a0"}, {"model": "unsupported_model"}]},
+        )
+        for behavior in cases:
+            with self.subTest(behavior=behavior):
+                view = SimpleNamespace(events=queue.Queue())
+                with mock.patch.object(gui, "analyze_video", **behavior):
+                    gui.App.worker(view, Path("sample.mp4"), ["movinet_a0"])
+                kind, message = view.events.get_nowait()
+                self.assertEqual(kind, "error")
+                self.assertTrue(message)
+                self.assertTrue(view.events.empty())
+
+    def test_evaluation_shows_only_movinet_and_yolo_in_separate_tables(self):
+        import app as gui
+
+        selected = {
+            "metrics": {"accuracy": 0.72, "precision": 37 / 52, "recall": 0.74,
+                        "f1": 74 / 102, "confusion_matrix": [[35, 15], [13, 37]]},
+        }
+        detector = {
+            "task": "object_detection", "metrics": {
+                "precision": 0.51, "recall": 0.72, "map50": 0.54, "map50_95": 0.24,
+            }, "evaluation_split": "Roboflow validation",
+        }
+        report = {"models": {"movinet_a0": selected, "yolov8n": detector,
+                             "unsupported_model": {**selected}}}
+        view = SimpleNamespace(
+            eval_table=mock.Mock(), matrix_title=mock.Mock(),
+            matrix_cells=[mock.Mock() for _ in range(4)], eval_status=mock.Mock(),
+            yolo_eval_table=mock.Mock(), yolo_eval_status=mock.Mock(),
+        )
+        view.eval_table.get_children.return_value = ("old_result",)
+        view.yolo_eval_table.get_children.return_value = ()
+        view.eval_table.selection.return_value = ("movinet_a0",)
+        view.show_confusion = lambda: gui.App.show_confusion(view)
+        view.load_yolo_evaluation = lambda: gui.App.load_yolo_evaluation(view)
+        with mock.patch.object(gui, "EVALUATION_PATH") as path:
+            path.read_text.return_value = json.dumps(report)
+            gui.App.load_evaluation(view)
+
+        self.assertEqual(view.evaluations, {"movinet_a0": selected})
+        view.eval_table.delete.assert_called_once_with("old_result")
+        view.eval_table.insert.assert_called_once()
+        self.assertEqual(view.eval_table.insert.call_args.kwargs["iid"], "movinet_a0")
+        view.yolo_eval_table.insert.assert_called_once()
+        self.assertEqual(view.yolo_eval_table.insert.call_args.kwargs["iid"], "yolov8n")
+        self.assertEqual(view.yolo_eval_table.insert.call_args.kwargs["values"][:5],
+                         ["YOLOv8n", "51.00%", "72.00%", "54.00%", "24.00%"])
+        view.eval_table.selection_set.assert_called_once_with("movinet_a0")
+        view.matrix_title.set.assert_called_with("MoViNet A0")
+        for cell, number in zip(view.matrix_cells, (35, 15, 13, 37)):
+            self.assertTrue(cell.set.call_args.args[0].startswith(f"{number} — "))
+        self.assertIn("Saved results", view.eval_status.set.call_args.args[0])
+        self.assertIn("Included in evaluation", view.yolo_eval_status.set.call_args.args[0])
+
+    def test_each_model_can_be_selected_individually(self):
+        import app as gui
+
+        video = Path("sample.mp4")
+        for slug in ("movinet_a0", "yolov8n"):
+            with self.subTest(model=slug):
+                view = SimpleNamespace(events=queue.Queue())
+                rows = [{"model": slug}]
+                with (mock.patch.object(gui, "analyze_video", return_value=rows) as action,
+                      mock.patch.object(gui, "run_yolo", return_value={"total_detections": 0}) as detector):
+                    gui.App.worker(view, video, [slug])
+                events = []
+                while not view.events.empty():
+                    events.append(view.events.get_nowait())
+                self.assertEqual(events[-1][0], "complete")
+                if slug == "yolov8n":
+                    action.assert_not_called()
+                    detector.assert_called_once_with(video)
+                    self.assertEqual(events[-1][1]["actions"], [])
+                else:
+                    action.assert_called_once()
+                    self.assertEqual(action.call_args.args, (video, [slug]))
+                    detector.assert_not_called()
+                    self.assertIsNone(events[-1][1]["yolo"])
+
+    def test_detector_failure_keeps_successful_classifier_results(self):
+        import app as gui
+
+        view = SimpleNamespace(events=queue.Queue())
+        rows = [{"model": "movinet_a0"}]
+        with (mock.patch.object(gui, "analyze_video", return_value=rows),
+              mock.patch.object(gui, "run_yolo", side_effect=RuntimeError("Decode failed"))):
+            gui.App.worker(view, Path("sample.mp4"))
+        self.assertEqual(view.events.get_nowait()[0], "status")
+        kind, result = view.events.get_nowait()
+        self.assertEqual(kind, "complete")
+        self.assertEqual(result["actions"], rows)
+        self.assertIsNone(result["yolo"])
+        self.assertEqual(result["errors"], ["YOLOv8n: Decode failed"])
+
+    def test_yolo_video_wrapper_uses_saved_weights_and_twelve_frames(self):
+        import app as gui
+
+        video = Path("sample.mp4")
+        with mock.patch("src.yolo.main.detect_video", return_value={"total_detections": 0}) as detect:
+            gui.run_yolo(video)
+        detect.assert_called_once_with(video, model_path=gui.YOLO_MODEL, frames=12)
 
 
 class MiviaProtocolTests(unittest.TestCase):
@@ -131,7 +271,7 @@ class MiviaProtocolTests(unittest.TestCase):
                 self.assertTrue(all(left < right for left, right in zip(indices, indices[1:])))
                 self.assertEqual([path.name for path in _frame_paths(record)], expected_names)
 
-    def test_clip_is_ordered_uint8_rgb_and_flow_is_finite(self) -> None:
+    def test_clip_is_ordered_uint8_rgb(self) -> None:
         record = self.fit[0]
         clip = load_clip(record)
         self.assertEqual(clip.shape, (24, IMAGE_SIZE, IMAGE_SIZE, 3))
@@ -153,11 +293,6 @@ class MiviaProtocolTests(unittest.TestCase):
                 clip[index, top:top + target_height, left:left + target_width],
                 resized[:, :, ::-1],
             )
-
-        features = flow_features(clip)
-        self.assertEqual(FEATURE_DIM, 320)
-        self.assertEqual(features.shape, (320,))
-        self.assertTrue(np.isfinite(features).all())
 
     def test_known_confusion_metrics(self) -> None:
         scores = evaluate_predictions([0, 0, 0, 1, 1], [0, 1, 0, 0, 1])
@@ -227,6 +362,82 @@ class MiviaProtocolTests(unittest.TestCase):
         self.assertEqual(constructor.call_args.kwargs["num_classes"], 1)
         self.assertEqual(ARCHITECTURE["pretrained"], False)
         download.assert_not_called()
+
+
+class OverallEvaluationTests(unittest.TestCase):
+    def test_saved_models_are_included_without_mixing_metric_types(self):
+        from common import PROJECT_ROOT
+
+        predictions = {
+            "movinet_a0": PROJECT_ROOT / "results/movinet/movinet_a0_test_predictions.csv",
+        }
+        metadata = {
+            name: path.with_name(path.name.replace("_test_predictions.csv", "_run.json"))
+            for name, path in predictions.items()
+        }
+        yolo_path = PROJECT_ROOT / "results/yolo/yolov8n_run.json"
+        saved_yolo = json.loads(yolo_path.read_text(encoding="utf-8"))
+        summary = evaluate_runs(predictions, metadata, yolo_report_path=yolo_path)
+        self.assertEqual(set(summary["models"]), {"movinet_a0", "yolov8n"})
+        self.assertEqual(set(summary["included_algorithms"]), set(summary["models"]))
+        self.assertEqual(summary["models"]["movinet_a0"]["metrics"]["confusion_matrix"],
+                         [[35, 15], [13, 37]])
+        detector = summary["models"]["yolov8n"]
+        self.assertEqual(detector["task"], "object_detection")
+        self.assertEqual(detector["metrics"], saved_yolo["metrics"])
+        self.assertEqual(detector["evaluation_split"], saved_yolo["evaluation_split"])
+        self.assertEqual(detector["source_data_yaml"], saved_yolo["data_yaml"])
+        self.assertNotIn("accuracy", detector["metrics"])
+        self.assertNotIn("f1", detector["metrics"])
+        self.assertNotIn("confusion_matrix", detector["metrics"])
+        self.assertNotIn("inference_mean_ms_per_video", detector)
+        self.assertIn("exploratory", summary["comparison_note"])
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "comparison.csv"
+            write_comparison_csv(summary, output)
+            with output.open(encoding="utf-8", newline="") as handle:
+                rows = {row["model"]: row for row in csv.DictReader(handle)}
+        self.assertEqual(set(rows), set(summary["models"]))
+        self.assertEqual(rows["yolov8n"]["task"], "object_detection")
+        self.assertAlmostEqual(float(rows["yolov8n"]["map50"]), saved_yolo["metrics"]["map50"])
+        for key in ("accuracy", "f1", "TN", "FP", "FN", "TP", "inference_mean_ms_per_video"):
+            self.assertEqual(rows["yolov8n"][key], "")
+        for name in predictions:
+            self.assertEqual(rows[name]["task"], "video_classification")
+            self.assertEqual(rows[name]["map50"], "")
+            self.assertEqual(rows[name]["evaluation_split"], "official_test")
+
+    def test_detection_report_rejects_wrong_task_missing_split_and_invalid_metrics(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            model = root / "model.pt"
+            model.write_bytes(b"fixture weights")
+            path = root / "detector.json"
+            source = {
+                "model": "YOLOv8n", "task": "object_detection", "dataset": "fixture",
+                "evaluation_split": "validation", "model_path": str(model),
+                "metrics": {"precision": 0.5, "recall": 0.7, "map50": 0.6, "map50_95": 0.3},
+            }
+            path.write_text(json.dumps(source), encoding="utf-8")
+            self.assertEqual(_read_detection_metadata(path)["metrics"], source["metrics"])
+            invalid = [
+                {**source, "task": "video_classification"},
+                {**source, "evaluation_split": None},
+                {**source, "metrics": {**source["metrics"], "precision": 1.1}},
+                {**source, "metrics": {**source["metrics"], "recall": float("nan")}},
+                {**source, "metrics": {"precision": 0.5}},
+            ]
+            for payload in invalid:
+                with self.subTest(payload=payload), self.assertRaises(ValueError):
+                    path.write_text(json.dumps(payload), encoding="utf-8")
+                    _read_detection_metadata(path)
+
+    def test_unsupported_video_algorithms_fail_before_loading_the_dataset(self):
+        with mock.patch("evaluate.load_manifest") as manifest:
+            with self.assertRaisesRegex(ValueError, "Unsupported active video models"):
+                evaluate_runs({"unsupported_model": Path("unused.csv")})
+        manifest.assert_not_called()
 
 
 class LabelTests(unittest.TestCase):

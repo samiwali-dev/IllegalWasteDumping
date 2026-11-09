@@ -353,7 +353,7 @@
   ],
   "training_seconds": 1899.7842,
   "inference_seconds": 33.721917,
-  "model_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/movinet/model.pt",
+  "model_path": "src/movinet/model.pt",
   "model_size_bytes": 7742973,
-  "predictions_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/movinet/movinet_a0_test_predictions.csv"
+  "predictions_path": "results/movinet/movinet_a0_test_predictions.csv"
 }

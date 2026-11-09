@@ -1,8 +1,7 @@
-"""Shared, reproducible training protocol for the three MIVIA PyTorch models.
+"""Reproducible MoViNet training and shared MIVIA video inference helpers.
 
-All neural models use the same video split, clips, loss, optimizer, training
-budget, validation selection rule, and test output format. PyTorch is imported
-only when an experiment starts so ``--help`` works before installation.
+YOLO's object-detection workflow is implemented in ``src/yolo/main.py``.
+PyTorch is imported only when needed so ``--help`` works before installation.
 """
 
 from __future__ import annotations
@@ -26,9 +25,6 @@ SEED = 42
 CLIP_LENGTH = 24
 IMAGE_SIZE = 112
 CHECKPOINT_PATHS = {
-    "optical_flow_svm": PROJECT_ROOT / "src/optical_flow_svm/model.joblib",
-    "cnn_lstm": PROJECT_ROOT / "src/cnn_lstm/model.pt",
-    "cnn_3d": PROJECT_ROOT / "src/cnn_3d/model.pt",
     "movinet_a0": PROJECT_ROOT / "src/movinet/model.pt",
 }
 LABEL_NAMES = {0: "no_dumping", 1: "dumping"}
@@ -174,6 +170,8 @@ def run_experiment(
     architecture: dict,
 ) -> dict:
     """Fit on 320, select on 80, then infer exactly once on official test 100."""
+    if slug != "movinet_a0":
+        raise ValueError(f"Unsupported neural video model: {slug}")
     _validate_args(args)
     try:
         import torch
@@ -230,9 +228,8 @@ def run_experiment(
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
     )
-    result_folder = "movinet" if slug == "movinet_a0" else slug
     args.results_dir = (
-        args.results_dir or PROJECT_ROOT / "results" / result_folder
+        args.results_dir or PROJECT_ROOT / "results" / "movinet"
     ).expanduser().resolve()
     args.models_dir = (args.models_dir or CHECKPOINT_PATHS[slug].parent).expanduser().resolve()
     checkpoint = (args.checkpoint or args.models_dir / "model.pt").expanduser().resolve()
@@ -366,7 +363,7 @@ def run_experiment(
 
 
 def analyze_video(video, model_names, *, device="auto", progress=None):
-    """Extract one shared clip and classify it with the selected saved models."""
+    """Extract an ordered clip and classify it with the saved video model."""
     import time
     import cv2
     from data import IMAGE_SIZE, SEQUENCE_LENGTH, load_clip, extract_video
@@ -375,7 +372,8 @@ def analyze_video(video, model_names, *, device="auto", progress=None):
     if not video.is_file() or video.suffix.lower() != ".mp4":
         raise ValueError("Select an existing MP4 video.")
     model_names = list(model_names)
-    if not model_names or any(name not in CHECKPOINT_PATHS for name in model_names):
+    if (not model_names or len(set(model_names)) != len(model_names)
+            or any(name not in CHECKPOINT_PATHS for name in model_names)):
         raise ValueError("Select a supported model.")
     for name in model_names:
         if not CHECKPOINT_PATHS[name].is_file():
@@ -393,34 +391,18 @@ def analyze_video(video, model_names, *, device="auto", progress=None):
             progress(f"Analyzing with {name}...")
         started = time.perf_counter()
         checkpoint = CHECKPOINT_PATHS[name]
-        if name == "optical_flow_svm":
-            label, score = predict_svm(clip, checkpoint)
-            kind = "SVM decision score (threshold 0)"
-        else:
-            label, score, _ = predict_torch(clip, checkpoint, name, device)
-            kind = "Uncalibrated sigmoid (threshold 0.5)"
+        label, score, _ = predict_torch(clip, checkpoint, name, device)
         rows.append({"model": name, "prediction": label, "score": score,
-                     "score_kind": kind, "seconds": time.perf_counter() - started})
+                     "score_kind": "Uncalibrated sigmoid (threshold 0.5)",
+                     "seconds": time.perf_counter() - started})
     return rows
 
 
-def predict_svm(clip, checkpoint: Path) -> tuple[int, float]:
-    from src.optical_flow_svm.main import predict_clip
-
-    return predict_clip(clip, checkpoint)
-
-
 def predict_torch(clip, checkpoint: Path, model_name: str, requested_device: str) -> tuple[int, float, str]:
-    import torch
-
-    if model_name == "cnn_lstm":
-        from src.cnn_lstm.main import build_model
-    elif model_name == "cnn_3d":
-        from src.cnn_3d.main import build_model
-    elif model_name == "movinet_a0":
-        from src.movinet.main import build_model
-    else:
+    if model_name != "movinet_a0":
         raise ValueError(f"Unknown PyTorch model: {model_name}")
+    import torch
+    from src.movinet.main import build_model
 
     if requested_device == "mps" and not torch.backends.mps.is_available():
         raise RuntimeError("MPS is unavailable; use --device cpu")

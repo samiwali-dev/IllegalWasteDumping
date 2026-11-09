@@ -1,7 +1,10 @@
-"""Desktop interface for MIVIA action recognition plus optional YOLO evidence.
+"""Desktop interface for the project's two saved models.
 
 Run with:
     .venv/bin/python app.py
+
+MoViNet A0 classifies videos. YOLOv8n detects labeled
+littering regions in sampled frames. Opening the app never starts training.
 """
 from __future__ import annotations
 
@@ -9,43 +12,50 @@ import json
 import queue
 import threading
 import tkinter as tk
-import webbrowser
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
-from common import PROJECT_ROOT, analyze_video
+from common import CHECKPOINT_PATHS, PROJECT_ROOT, analyze_video
 
 
-MODELS = {
-    "Compare all four models": None,
-    "Optical Flow + SVM": "optical_flow_svm",
-    "CNN + LSTM": "cnn_lstm",
-    "3D CNN": "cnn_3d",
-    "MoViNet A0": "movinet_a0",
+CLASSIFIERS = {
+    "movinet_a0": "MoViNet A0",
 }
-NAMES = {value: key for key, value in MODELS.items() if value}
+YOLO_SLUG = "yolov8n"
 YOLO_MODEL = PROJECT_ROOT / "src" / "yolo" / "model.pt"
+BOTH_MODELS = "Both models"
+MODEL_CHOICES = {
+    BOTH_MODELS: (*CLASSIFIERS, YOLO_SLUG),
+    **{label: (slug,) for slug, label in CLASSIFIERS.items()},
+    "YOLOv8n": (YOLO_SLUG,),
+}
+EVALUATION_PATH = PROJECT_ROOT / "results" / "comparison" / "model_comparison.json"
+YOLO_EVALUATION_PATH = PROJECT_ROOT / "results" / "yolo" / "yolov8n_run.json"
+
+
+def run_yolo(video: Path) -> dict:
+    """Load trained YOLO only on request; never download weights or train."""
+    from src.yolo.main import detect_video
+
+    return detect_video(video, model_path=YOLO_MODEL, frames=12)
 
 
 class App(tk.Tk):
-    """Keep MIVIA video classification and YOLO image-region evidence distinct."""
+    """Analyse videos and show each model's task-specific results."""
 
     def __init__(self):
         super().__init__()
         self.title("Illegal Waste Dumping Detection")
-        self.geometry("1100x890")
-        self.minsize(970, 750)
+        self.geometry("1100x730")
+        self.minsize(970, 620)
 
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.video: Path | None = None
-        self.yolo_output: Path | None = None
         self.busy = False
-        self.model = tk.StringVar(value="Compare all four models")
-        self.use_yolo = tk.BooleanVar(value=True)
         self.status = tk.StringVar(value="Select an MP4 video to begin.")
         self.filename = tk.StringVar(value="No video selected")
-        self.yolo_status = tk.StringVar(value="YOLO scan will use 12 evenly spaced video frames.")
-        self.yolo_summary = tk.StringVar(value="No YOLO scan has been run.")
+        self.model_choice = tk.StringVar(value=BOTH_MODELS)
+        self.yolo_details = tk.StringVar(value="YOLOv8n is ready. Select a video to analyze sampled frames.")
 
         self.tabs = ttk.Notebook(self)
         self.tabs.pack(fill="both", expand=True)
@@ -56,13 +66,12 @@ class App(tk.Tk):
     def build_video_tab(self):
         panel = ttk.Frame(self.tabs, padding=24)
         self.tabs.add(panel, text="Video Analysis")
-
         ttk.Label(panel, text="Video Analysis", font=("Helvetica", 25, "bold")).pack(anchor="w")
         ttk.Label(
             panel,
             text=(
-                "One selected video is analysed by the MIVIA action models and, if enabled, "
-                "by YOLOv8n on 12 sampled frames."
+                "Analyze a surveillance video with MoViNet A0 and YOLOv8n. "
+                "Choose both models or run one individually."
             ),
             wraplength=1000,
         ).pack(anchor="w", pady=(6, 16))
@@ -71,41 +80,23 @@ class App(tk.Tk):
         controls.pack(fill="x")
         self.select = ttk.Button(controls, text="Select Video", command=self.choose_video)
         self.select.pack(side="left")
-        self.selector = ttk.Combobox(
-            controls,
-            textvariable=self.model,
-            values=list(MODELS),
-            state="readonly",
-            width=29,
+        self.model_select = ttk.Combobox(
+            controls, textvariable=self.model_choice, values=tuple(MODEL_CHOICES),
+            state="readonly", width=25,
         )
-        self.selector.pack(side="left", padx=(14, 10))
-        self.yolo_check = ttk.Checkbutton(
-            controls,
-            text="Run YOLO scan (12 frames)",
-            variable=self.use_yolo,
-            command=self.refresh_yolo_option_text,
-        )
-        self.yolo_check.pack(side="left", padx=(0, 12))
+        self.model_select.pack(side="left", padx=(14, 18))
         self.run_button = ttk.Button(controls, text="Analyze Video", command=self.start, state="disabled")
         self.run_button.pack(side="left")
-        self.open_yolo_button = ttk.Button(
-            controls,
-            text="Open YOLO Frames",
-            command=self.open_yolo_output,
-            state="disabled",
-        )
-        self.open_yolo_button.pack(side="left", padx=(12, 0))
 
         ttk.Label(panel, textvariable=self.filename, wraplength=1000).pack(anchor="w", pady=(14, 6))
         self.progress = ttk.Progressbar(panel, mode="indeterminate")
         self.progress.pack(fill="x")
-        ttk.Label(panel, textvariable=self.status, wraplength=1000).pack(anchor="w", pady=(8, 3))
-        ttk.Label(panel, textvariable=self.yolo_status, wraplength=1000).pack(anchor="w", pady=(0, 12))
+        ttk.Label(panel, textvariable=self.status, wraplength=1000).pack(anchor="w", pady=(8, 12))
 
-        action_box = ttk.LabelFrame(panel, text="Action Analysis — MIVIA video classifiers", padding=10)
+        action_box = ttk.LabelFrame(panel, text="MoViNet A0 — Video Classification", padding=10)
         action_box.pack(fill="both", expand=True)
         columns = ("model", "result", "score", "meaning")
-        self.table = ttk.Treeview(action_box, columns=columns, show="headings", height=5)
+        self.table = ttk.Treeview(action_box, columns=columns, show="headings", height=1)
         for name, title, width in zip(
             columns,
             ("Model", "Prediction", "Score", "Score meaning"),
@@ -116,54 +107,53 @@ class App(tk.Tk):
         self.table.pack(fill="both", expand=True)
         ttk.Label(
             action_box,
-            text=(
-                "Each row is a separate model prediction. The models' scores use different scales, "
-                "so they are not directly comparable confidence percentages."
-            ),
+            text="MoViNet uses an uncalibrated sigmoid score. Scores of 0.5 or higher predict Dumping.",
             wraplength=980,
         ).pack(anchor="w", pady=(8, 0))
 
-        yolo_box = ttk.LabelFrame(panel, text="Littering Evidence — YOLOv8n (separate supporting detector)", padding=10)
-        yolo_box.pack(fill="both", expand=True, pady=(14, 0))
-        ttk.Label(yolo_box, textvariable=self.yolo_summary, wraplength=980).pack(anchor="w", pady=(0, 7))
-        yolo_columns = ("frame", "time", "class", "confidence", "bbox")
-        self.yolo_table = ttk.Treeview(yolo_box, columns=yolo_columns, show="headings", height=4)
+        detection_box = ttk.LabelFrame(panel, text="YOLOv8n — Littering Region Detection", padding=10)
+        detection_box.pack(fill="x", pady=(12, 0))
+        detection_columns = ("model", "result", "confidence", "regions", "frames")
+        self.yolo_table = ttk.Treeview(detection_box, columns=detection_columns, show="headings", height=1)
         for name, title, width in zip(
-            yolo_columns,
-            ("Frame", "Time (s)", "Class", "Confidence", "Bounding box (x1, y1, x2, y2)"),
-            (70, 95, 160, 120, 410),
+            detection_columns,
+            ("Model", "Detection result", "Strongest box score", "Regions", "Sampled frames"),
+            (145, 300, 190, 100, 140),
         ):
             self.yolo_table.heading(name, text=title)
-            self.yolo_table.column(name, width=width, minwidth=75)
-        self.yolo_table.pack(fill="both", expand=True)
-        ttk.Label(
-            yolo_box,
-            text=(
-                "YOLO identifies labelled littering regions in individual frames. It is supporting visual evidence only; "
-                "it does not decide whether the person performed a dumping action."
-            ),
-            wraplength=980,
-        ).pack(anchor="w", pady=(8, 0))
+            self.yolo_table.column(name, width=width, minwidth=70)
+        self.yolo_table.pack(fill="x")
+        ttk.Label(detection_box, textvariable=self.yolo_details, wraplength=980).pack(anchor="w", pady=(8, 0))
         ttk.Label(
             panel,
             text=(
-                "This demo classifies the action in the whole video; it does not identify the exact dumped object "
-                "or the exact event time. AI predictions should be reviewed by an authorized human."
+                "YOLO detects the labeled 'littering' region, not a specific trash type or a proven dumping event. "
+                "Region counts across frames are not unique objects. "
+                "AI predictions should be reviewed by an authorized human."
             ),
             wraplength=1000,
         ).pack(anchor="w", pady=(14, 0))
 
     def build_evaluation_tab(self):
-        panel = ttk.Frame(self.tabs, padding=22)
-        self.tabs.add(panel, text="Evaluation Results")
+        outer = ttk.Frame(self.tabs)
+        self.tabs.add(outer, text="Evaluation Results")
+        canvas = tk.Canvas(outer, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(outer, orient="vertical", command=canvas.yview)
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        panel = ttk.Frame(canvas, padding=22)
+        content = canvas.create_window((0, 0), window=panel, anchor="nw")
+        panel.bind("<Configure>", lambda event: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.bind("<Configure>", lambda event: canvas.itemconfigure(content, width=event.width))
         ttk.Label(panel, text="Evaluation Results", font=("Helvetica", 24, "bold")).pack(anchor="w")
 
-        mivia_box = ttk.LabelFrame(panel, text="MIVIA action-classification evaluation", padding=10)
+        mivia_box = ttk.LabelFrame(panel, text="MoViNet A0 — MIVIA video classification", padding=10)
         mivia_box.pack(fill="x", pady=(12, 10))
         ttk.Label(
             mivia_box,
             text=(
-                "Same 100 official MIVIA test videos: 50 dumping / 50 no dumping. "
+                "100 official MIVIA test videos: 50 dumping / 50 no dumping. "
                 "Training: 320 videos • Validation: 80 videos • 24 frames per video."
             ),
             wraplength=980,
@@ -171,7 +161,7 @@ class App(tk.Tk):
         self.eval_status = tk.StringVar()
         ttk.Label(mivia_box, textvariable=self.eval_status, wraplength=980).pack(anchor="w", pady=(5, 8))
         columns = ("model", "accuracy", "precision", "recall", "f1", "train", "infer", "size")
-        self.eval_table = ttk.Treeview(mivia_box, columns=columns, show="headings", height=4, selectmode="browse")
+        self.eval_table = ttk.Treeview(mivia_box, columns=columns, show="headings", height=1, selectmode="browse")
         for col, title, width in zip(
             columns,
             ("Model", "Accuracy", "Precision", "Recall", "F1", "Train (s)", "Infer (ms)", "Size (MiB)"),
@@ -181,7 +171,21 @@ class App(tk.Tk):
             self.eval_table.column(col, width=width, minwidth=width, anchor="w" if col == "model" else "center")
         self.eval_table.pack(fill="x")
         self.eval_table.bind("<<TreeviewSelect>>", self.show_confusion)
-        ttk.Label(mivia_box, text="Select a model above to view its confusion matrix.").pack(anchor="w", pady=(7, 0))
+
+        yolo_box = ttk.LabelFrame(panel, text="YOLOv8n — Roboflow Littering bounding-box evaluation", padding=10)
+        yolo_box.pack(fill="x", pady=(0, 10))
+        self.yolo_eval_status = tk.StringVar()
+        ttk.Label(yolo_box, textvariable=self.yolo_eval_status, wraplength=980).pack(anchor="w", pady=(0, 6))
+        detection_columns = ("model", "precision", "recall", "map50", "map50_95", "train", "validation", "size")
+        self.yolo_eval_table = ttk.Treeview(yolo_box, columns=detection_columns, show="headings", height=1)
+        for col, title, width in zip(
+            detection_columns,
+            ("Model", "Precision", "Recall", "mAP@50", "mAP@50:95", "Train (s)", "Val. (s)", "Size (MiB)"),
+            (175, 90, 90, 90, 100, 95, 95, 95),
+        ):
+            self.yolo_eval_table.heading(col, text=title)
+            self.yolo_eval_table.column(col, width=width, minwidth=width, anchor="w" if col == "model" else "center")
+        self.yolo_eval_table.pack(fill="x")
 
         self.matrix_title = tk.StringVar(value="Confusion matrix")
         matrix = ttk.LabelFrame(panel, text="Confusion matrix — MIVIA video counts", padding=10)
@@ -197,42 +201,20 @@ class App(tk.Tk):
                 self.matrix_cells.append(variable)
                 ttk.Label(matrix, textvariable=variable).grid(row=row, column=col, padx=12)
 
-        yolo_box = ttk.LabelFrame(panel, text="YOLOv8n object-detection evaluation — separate task", padding=10)
-        yolo_box.pack(fill="x", pady=(0, 10))
-        ttk.Label(
-            yolo_box,
-            text=(
-                "These are bounding-box detection metrics, not a fifth result in the MIVIA video-classification comparison."
-            ),
-            wraplength=980,
-        ).pack(anchor="w")
-        self.yolo_eval_status = tk.StringVar()
-        ttk.Label(yolo_box, textvariable=self.yolo_eval_status, wraplength=980).pack(anchor="w", pady=(5, 8))
-        yolo_columns = ("dataset", "precision", "recall", "map50", "map50_95", "train", "size")
-        self.yolo_eval_table = ttk.Treeview(yolo_box, columns=yolo_columns, show="headings", height=1)
-        for col, title, width in zip(
-            yolo_columns,
-            ("Evaluation split", "Precision", "Recall", "mAP@50", "mAP@50:95", "Train (s)", "Size (MiB)"),
-            (350, 100, 100, 100, 110, 110, 110),
-        ):
-            self.yolo_eval_table.heading(col, text=title)
-            self.yolo_eval_table.column(col, width=width, minwidth=80, anchor="w" if col == "dataset" else "center")
-        self.yolo_eval_table.pack(fill="x")
-
         ttk.Label(
             panel,
             text=(
-                "Accuracy: all correct predictions. Precision: correctness of dumping alerts. Recall: proportion of actual "
-                "dumping detected. F1: balance of precision and recall. Inference time includes saved-frame loading and prediction; "
-                "it excludes video extraction and model loading."
+                "Video accuracy/F1 and box mAP measure different tasks on different datasets. "
+                "MIVIA inference includes saved-frame "
+                "loading and prediction, excluding video extraction/model loading; YOLO Val. is full validation time."
             ),
             wraplength=980,
         ).pack(anchor="w")
         ttk.Label(
             panel,
             text=(
-                "MIVIA results are exploratory because the official test set was reused after changing the selection criterion. "
-                "These saved evaluation numbers are not confidence scores for the selected video."
+                "The MoViNet results are exploratory because the official test set was reused after changing the selection criterion. "
+                "Saved evaluation numbers are not confidence scores for the selected video."
             ),
             wraplength=980,
         ).pack(anchor="w", pady=(8, 10))
@@ -240,71 +222,79 @@ class App(tk.Tk):
         self.load_evaluation()
 
     def load_evaluation(self):
-        """Refresh the saved MIVIA and YOLO metrics without retraining either model."""
-        self.load_mivia_evaluation()
-        self.load_yolo_evaluation()
-
-    def load_mivia_evaluation(self):
+        """Load saved results for MoViNet and YOLO."""
         self.eval_table.delete(*self.eval_table.get_children())
         self.evaluations: dict[str, dict] = {}
         self.matrix_title.set("Confusion matrix")
         for cell in self.matrix_cells:
             cell.set("—")
         try:
-            path = PROJECT_ROOT / "results" / "comparison" / "model_comparison.json"
-            models = json.loads(path.read_text(encoding="utf-8"))["models"]
-            rows = []
-            for name, data in models.items():
-                metrics = data["metrics"]
-                matrix = metrics["confusion_matrix"]
-                if len(matrix) != 2 or any(len(row) != 2 for row in matrix):
-                    raise ValueError("Expected a 2×2 MIVIA confusion matrix")
-                values = [NAMES.get(name, name)] + [
-                    f"{float(metrics[key]):.2%}" for key in ("accuracy", "precision", "recall", "f1")
-                ]
-                for key in ("training_seconds", "inference_mean_ms_per_video", "model_size_mib"):
-                    values.append("—" if data.get(key) is None else f"{float(data[key]):.2f}")
-                rows.append((name, values))
-            self.evaluations = models
-            for name, values in rows:
-                self.eval_table.insert("", "end", iid=name, values=values)
-            self.eval_status.set("Source: results/comparison/model_comparison.json • Saved evaluation; no retraining required.")
-            if rows:
-                self.eval_table.selection_set(rows[0][0])
+            models = json.loads(EVALUATION_PATH.read_text(encoding="utf-8"))["models"]
+            unavailable = []
+            for slug, name in CLASSIFIERS.items():
+                try:
+                    data = models[slug]
+                    metrics = data["metrics"]
+                    matrix = metrics["confusion_matrix"]
+                    if len(matrix) != 2 or any(len(row) != 2 for row in matrix):
+                        raise ValueError("Expected a 2×2 confusion matrix")
+                    values = [name] + [
+                        f"{float(metrics[key]):.2%}" for key in ("accuracy", "precision", "recall", "f1")
+                    ]
+                    for key in ("training_seconds", "inference_mean_ms_per_video", "model_size_mib"):
+                        values.append("—" if data.get(key) is None else f"{float(data[key]):.2f}")
+                    self.evaluations[slug] = data
+                    self.eval_table.insert("", "end", iid=slug, values=values)
+                except (KeyError, TypeError, ValueError) as exc:
+                    unavailable.append(f"{name}: {exc}")
+            if self.evaluations:
+                self.eval_table.selection_set(next(iter(self.evaluations)))
                 self.show_confusion()
-        except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
-            self.eval_status.set(f"MIVIA evaluation results unavailable: {exc}")
+            self.eval_status.set(
+                "Source: results/comparison/model_comparison.json • Saved results; no retraining."
+                + (" Missing/invalid: " + "; ".join(unavailable) if unavailable else "")
+            )
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            self.eval_status.set(f"Video classification results unavailable: {exc}")
+        self.load_yolo_evaluation()
 
     def load_yolo_evaluation(self):
+        """Display actual box metrics; never fabricate video classification metrics."""
         self.yolo_eval_table.delete(*self.yolo_eval_table.get_children())
         try:
-            path = PROJECT_ROOT / "results" / "yolo" / "yolov8n_run.json"
-            report = json.loads(path.read_text(encoding="utf-8"))
+            try:
+                report = json.loads(EVALUATION_PATH.read_text(encoding="utf-8"))["models"].get(YOLO_SLUG)
+            except (OSError, ValueError, KeyError, TypeError):
+                report = None
+            if report is None:
+                report = json.loads(YOLO_EVALUATION_PATH.read_text(encoding="utf-8"))
             metrics = report["metrics"]
-            size_mib = float(report["model_size_bytes"]) / (1024 * 1024)
-            values = (
-                report["evaluation_split"],
-                f"{float(metrics['precision']):.2%}",
-                f"{float(metrics['recall']):.2%}",
-                f"{float(metrics['map50']):.2%}",
-                f"{float(metrics['map50_95']):.2%}",
-                f"{float(report['training_seconds']):.2f}",
-                f"{size_mib:.2f}",
+            values = ["YOLOv8n"] + [
+                "—" if metrics.get(key) is None else f"{float(metrics[key]):.2%}"
+                for key in ("precision", "recall", "map50", "map50_95")
+            ]
+            values.extend(
+                "—" if report.get(key) is None else f"{float(report[key]):.2f}"
+                for key in ("training_seconds", "validation_seconds")
             )
-            self.yolo_eval_table.insert("", "end", values=values)
+            size = report.get("model_size_bytes")
+            values.append("—" if size is None else f"{float(size) / 1024 ** 2:.2f}")
+            self.yolo_eval_table.insert("", "end", iid=YOLO_SLUG, values=values)
             self.yolo_eval_status.set(
-                "Source: results/yolo/yolov8n_run.json • YOLOv8n trained from scratch; supplied test images have no labels."
+                "Included in evaluation • " + str(report["evaluation_split"])
+                + ". Test labels are unavailable, so this is validation performance, not an unseen labeled test."
             )
-        except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        except (OSError, ValueError, KeyError, TypeError) as exc:
             self.yolo_eval_status.set(f"YOLO evaluation results unavailable: {exc}")
 
     def show_confusion(self, event=None):
-        selection = self.eval_table.selection()
-        if not selection:
+        if not self.eval_table.selection():
             return
-        name = selection[0]
-        self.matrix_title.set(NAMES.get(name, name))
-        matrix = self.evaluations[name]["metrics"]["confusion_matrix"]
+        slug = self.eval_table.selection()[0]
+        if slug not in self.evaluations:
+            return
+        self.matrix_title.set(CLASSIFIERS[slug])
+        matrix = self.evaluations[slug]["metrics"]["confusion_matrix"]
         descriptions = ("Correct rejection (TN)", "False alarm (FP)", "Missed dumping (FN)", "Detected dumping (TP)")
         for cell, value, description in zip(
             self.matrix_cells,
@@ -321,117 +311,70 @@ class App(tk.Tk):
         if not selected:
             return
         self.video = Path(selected)
-        self.yolo_output = None
         self.filename.set(str(self.video))
         self.table.delete(*self.table.get_children())
         self.yolo_table.delete(*self.yolo_table.get_children())
+        self.yolo_details.set("YOLOv8n is ready when selected. No results for this video yet.")
         self.status.set("Ready to analyze the selected video.")
-        self.yolo_summary.set("No YOLO scan has been run for this video.")
-        self.open_yolo_button.configure(state="disabled")
-        self.refresh_yolo_option_text()
         self.run_button.configure(state="normal")
-
-    def refresh_yolo_option_text(self):
-        if self.use_yolo.get():
-            self.yolo_status.set("YOLO scan enabled: the same video will be checked at 12 evenly spaced frames.")
-        else:
-            self.yolo_status.set("YOLO scan disabled: only the MIVIA action classifier will run.")
 
     def start(self):
         if self.busy or self.video is None:
             return
-        selected = MODELS[self.model.get()]
-        names = [selected] if selected else list(NAMES)
-        run_yolo = self.use_yolo.get()
-        if run_yolo and not YOLO_MODEL.is_file():
-            messagebox.showerror(
-                "YOLO model missing",
-                f"The trained YOLO model was not found:\n{YOLO_MODEL}\n\nRun src/yolo/main.py train first or disable the YOLO scan.",
-            )
-            return
-
+        model_names = MODEL_CHOICES[self.model_choice.get()]
         self.busy = True
-        self.yolo_output = None
         self.table.delete(*self.table.get_children())
         self.yolo_table.delete(*self.yolo_table.get_children())
-        self.yolo_summary.set("Waiting for the YOLO scan." if run_yolo else "YOLO scan was disabled for this analysis.")
+        self.yolo_details.set("YOLOv8n analysis pending." if YOLO_SLUG in model_names else "YOLOv8n was not selected for this run.")
         self.select.configure(state="disabled")
-        self.selector.configure(state="disabled")
-        self.yolo_check.configure(state="disabled")
+        self.model_select.configure(state="disabled")
         self.run_button.configure(state="disabled")
-        self.open_yolo_button.configure(state="disabled")
         self.progress.start(12)
-        self.status.set("Action analysis is starting...")
-        self.yolo_status.set("YOLO scan is waiting for action analysis." if run_yolo else "YOLO scan disabled.")
-        threading.Thread(target=self.worker, args=(self.video, names, run_yolo), daemon=True).start()
+        self.status.set("Selected algorithms are starting...")
+        threading.Thread(target=self.worker, args=(self.video, model_names), daemon=True).start()
 
-    def worker(self, video: Path, names: list[str], run_yolo: bool):
+    def worker(self, video: Path, model_names=None):
+        """Run selected modules off the GUI thread; retain partial successes."""
+        model_names = tuple(MODEL_CHOICES[BOTH_MODELS] if model_names is None else model_names)
+        actions, yolo, errors = [], None, []
         try:
-            action_rows = analyze_video(
-                video,
-                names,
-                progress=lambda text: self.events.put(("status", f"Action: {text}")),
-            )
-            yolo_result = None
-            if run_yolo:
-                self.events.put(("yolo_status", "YOLO: scanning 12 evenly spaced frames..."))
-                from src.yolo.main import detect_video
-
-                yolo_result = detect_video(video, frames=12)
-            self.events.put(("complete", {"action_rows": action_rows, "yolo_result": yolo_result}))
-        except Exception as exc:  # User-facing UI should show a readable error dialog.
+            if not model_names or any(name not in (*CLASSIFIERS, YOLO_SLUG) for name in model_names):
+                raise ValueError("Select a supported algorithm.")
+            available = []
+            for name in model_names:
+                path = YOLO_MODEL if name == YOLO_SLUG else CHECKPOINT_PATHS[name]
+                if not path.is_file():
+                    errors.append(f"{CLASSIFIERS.get(name, 'YOLOv8n')}: trained model missing at {path}")
+                elif name != YOLO_SLUG:
+                    available.append(name)
+            if available:
+                try:
+                    actions = analyze_video(
+                        video, available, progress=lambda text: self.events.put(("status", str(text)))
+                    )
+                    if len(actions) != len(available) or {row["model"] for row in actions} != set(available):
+                        actions = []
+                        raise ValueError("Unexpected or missing video-classifier predictions.")
+                except Exception as exc:
+                    actions = []
+                    errors.append(f"Video classification: {exc}")
+            if YOLO_SLUG in model_names and YOLO_MODEL.is_file():
+                try:
+                    self.events.put(("status", "YOLOv8n: analyzing 12 sampled video frames..."))
+                    yolo = run_yolo(video)
+                except Exception as exc:
+                    errors.append(f"YOLOv8n: {exc}")
+            if not actions and yolo is None:
+                raise RuntimeError("\n".join(errors) or "No algorithm produced results.")
+            self.events.put(("complete", {"actions": actions, "yolo": yolo, "errors": errors}))
+        except Exception as exc:
             self.events.put(("error", str(exc)))
-
-    def populate_yolo_evidence(self, result: dict | None):
-        self.yolo_table.delete(*self.yolo_table.get_children())
-        self.yolo_output = None
-        if result is None:
-            self.yolo_summary.set("YOLO scan was disabled for this analysis.")
-            self.yolo_status.set("YOLO scan disabled.")
-            return
-
-        for frame in result["frame_results"]:
-            for detection in frame["detections"]:
-                self.yolo_table.insert(
-                    "",
-                    "end",
-                    values=(
-                        frame["frame_number"],
-                        f"{frame['timestamp_seconds']:.2f}",
-                        detection["class_name"],
-                        f"{detection['confidence']:.2%}",
-                        ", ".join(str(value) for value in detection["bbox_xyxy"]),
-                    ),
-                )
-        if not result["total_detections"]:
-            self.yolo_table.insert("", "end", values=("—", "—", "No regions at selected threshold", "—", "—"))
-
-        strongest = result.get("strongest_detection")
-        if strongest is None:
-            strongest_text = "No region reached the 0.25 detection threshold."
-        else:
-            strongest_text = (
-                f"Strongest: {strongest['class_name']} at {strongest['confidence']:.2%} "
-                f"(frame {strongest['frame_number']}, {strongest['timestamp_seconds']:.2f}s)."
-            )
-        self.yolo_output = Path(result["output_dir"])
-        self.yolo_summary.set(
-            f"YOLO scanned {result['frames_sampled']} frames and found {result['total_detections']} region(s) "
-            f"in {result['frames_with_detections']} frame(s). {strongest_text}"
-        )
-        self.yolo_status.set(f"YOLO scan complete. Annotated frames saved in: {self.yolo_output}")
-        self.open_yolo_button.configure(state="normal")
-
-    def open_yolo_output(self):
-        if self.yolo_output and self.yolo_output.exists():
-            webbrowser.open(self.yolo_output.as_uri())
 
     def finish_analysis(self):
         self.busy = False
         self.progress.stop()
         self.select.configure(state="normal")
-        self.selector.configure(state="readonly")
-        self.yolo_check.configure(state="normal")
+        self.model_select.configure(state="readonly")
         self.run_button.configure(state="normal" if self.video else "disabled")
 
     def poll(self):
@@ -440,33 +383,45 @@ class App(tk.Tk):
                 kind, value = self.events.get_nowait()
                 if kind == "status":
                     self.status.set(str(value))
-                    continue
-                if kind == "yolo_status":
-                    self.yolo_status.set(str(value))
-                    continue
-                if kind == "error":
+                elif kind == "error":
                     self.finish_analysis()
                     self.status.set("Analysis failed. Select a valid video and try again.")
-                    self.yolo_status.set("YOLO scan did not complete.")
                     messagebox.showerror("Analysis failed", str(value))
-                    continue
-                if kind == "complete":
-                    result = value
-                    for row in result["action_rows"]:
+                elif kind == "complete":
+                    self.table.delete(*self.table.get_children())
+                    for row in value["actions"]:
                         self.table.insert(
                             "",
                             "end",
                             values=(
-                                NAMES[row["model"]],
+                                CLASSIFIERS[row["model"]],
                                 "DUMPING" if row["prediction"] else "NO DUMPING",
                                 f"{row['score']:.4f}",
                                 row["score_kind"],
                             ),
                         )
-                    self.status.set(
-                        f"Action analysis complete — {len(result['action_rows'])} model(s), 24 shared frames."
-                    )
-                    self.populate_yolo_evidence(result["yolo_result"])
+                    report = value["yolo"]
+                    if report is not None:
+                        detected = int(report["total_detections"])
+                        strongest = report.get("strongest_detection")
+                        self.yolo_table.insert(
+                            "", "end", values=(
+                                "YOLOv8n", "LITTERING REGIONS DETECTED" if detected else "NO REGIONS DETECTED",
+                                "—" if strongest is None else f"{float(strongest['confidence']):.2%}",
+                                detected, report["frames_sampled"],
+                            ),
+                        )
+                        self.yolo_details.set(
+                            f"Detection threshold: {report['confidence_threshold']:.2f}. "
+                            f"Annotated frames: {report['output_dir']}"
+                        )
+                    if value["errors"]:
+                        self.status.set("Analysis completed with module errors. Available results are shown.")
+                        if report is None and any(error.startswith("YOLOv8n:") for error in value["errors"]):
+                            self.yolo_details.set("YOLOv8n failed on this run. See the error message; no detection result is claimed.")
+                        messagebox.showwarning("Some algorithms could not complete", "\n".join(value["errors"]))
+                    else:
+                        self.status.set("Analysis complete. Results are shown below.")
                     self.finish_analysis()
         except queue.Empty:
             pass

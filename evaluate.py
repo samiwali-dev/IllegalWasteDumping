@@ -1,4 +1,4 @@
-"""Evaluate saved MIVIA predictions on the same official 100-video test split.
+"""Report all active algorithms without mixing different evaluation tasks.
 
 Each prediction CSV needs ``video_id,label,prediction`` and may include
 ``inference_seconds``, ``decision_score``/``score``, or ``probability``.
@@ -6,14 +6,16 @@ Each prediction CSV needs ``video_id,label,prediction`` and may include
 interpreted as probabilities. Each model can also supply a metadata JSON with
 ``training_seconds``, ``model_path`` or ``model_size_bytes``, ``split_counts``,
 ``hyperparameters``, and ``protocol_version``. The CLI saves a concise CSV
-comparison beside its detailed JSON report.
+comparison beside its detailed JSON report. Saved YOLO detection metrics are
+included in the same report with their actual dataset and evaluation split.
+Detection mAP is not video-classification accuracy and is not ranked against it.
+This command does not train models or run inference again.
 
 Example:
     python evaluate.py \
-        --prediction svm=results/optical_flow_svm/optical_flow_svm_test_predictions.csv \
-        --metadata svm=results/optical_flow_svm/optical_flow_svm_run.json \
-        --prediction cnn=results/cnn_lstm/cnn_lstm_test_predictions.csv \
-        --metadata cnn=results/cnn_lstm/cnn_lstm_run.json \
+        --prediction movinet_a0=results/movinet/movinet_a0_test_predictions.csv \
+        --metadata movinet_a0=results/movinet/movinet_a0_run.json \
+        --yolo-report results/yolo/yolov8n_run.json \
         --output results/comparison/model_comparison.json
 """
 
@@ -30,17 +32,16 @@ from data import PROJECT_ROOT, SEED, load_manifest, split_records
 
 
 DEFAULT_OUTPUT = PROJECT_ROOT / "results" / "comparison" / "model_comparison.json"
+DEFAULT_YOLO_REPORT = PROJECT_ROOT / "results" / "yolo" / "yolov8n_run.json"
+ACTIVE_VIDEO_MODELS = {"movinet_a0"}
 
-# Resolve only the old primary checkpoints. Experimental model directories
-# intentionally remain distinct from the current primary models.
+# Resolve the historical location of the saved MoViNet checkpoint.
 LEGACY_MODEL_ALIASES = {
-    "optical_flow_svm.joblib": PROJECT_ROOT / "src" / "optical_flow_svm" / "model.joblib",
-    "cnn_lstm_best.pt": PROJECT_ROOT / "src" / "cnn_lstm" / "model.pt",
-    "cnn_3d_best.pt": PROJECT_ROOT / "src" / "cnn_3d" / "model.pt",
     "movinet_a0_best.pt": PROJECT_ROOT / "src" / "movinet" / "model.pt",
 }
 COMPARISON_COLUMNS = [
-    "model", "protocol_version", "accuracy", "precision", "recall", "f1",
+    "model", "task", "dataset", "evaluation_split", "protocol_version",
+    "accuracy", "precision", "recall", "f1", "map50", "map50_95",
     "TN", "FP", "FN", "TP", "training_seconds",
     "inference_mean_ms_per_video", "model_size_mib",
 ]
@@ -179,8 +180,7 @@ def _resolve_model_path(raw_path: str, metadata_path: Path) -> Path:
             return possibility
 
     # Match exactly models/<primary filename>, not any file with that basename.
-    # For example models/protocol_v1_positive_f1/cnn_lstm_best.pt must never
-    # silently resolve to src/cnn_lstm/model.pt.
+    # An archived experiment must never silently resolve to a current model.
     if candidate.parent.name == "models":
         relocated = LEGACY_MODEL_ALIASES.get(candidate.name)
         if relocated is not None and relocated.is_file():
@@ -246,14 +246,72 @@ def _read_metadata(path: Path) -> dict[str, Any]:
     }
 
 
+def _read_detection_metadata(path: Path) -> dict[str, Any]:
+    """Include saved detector scores, retaining their actual dataset and split."""
+    with path.open("r", encoding="utf-8") as handle:
+        source = json.load(handle)
+    if not isinstance(source, dict) or source.get("task") != "object_detection":
+        raise ValueError(f"Expected object_detection metadata: {path}")
+    if source.get("model") not in {"YOLOv8n", "yolov8n"}:
+        raise ValueError(f"Expected the active YOLOv8n detector: {path}")
+    if not source.get("dataset") or not source.get("evaluation_split"):
+        raise ValueError(f"Detection metadata needs its dataset and evaluation_split: {path}")
+    saved_metrics = source.get("metrics")
+    if not isinstance(saved_metrics, dict):
+        raise ValueError(f"Detection metrics must be a JSON object: {path}")
+    metrics = {}
+    for name in ("precision", "recall", "map50", "map50_95"):
+        value = _nonnegative_float(saved_metrics.get(name), f"detection {name}")
+        if value > 1:
+            raise ValueError(f"Detection {name} must be in [0,1]: {path}")
+        metrics[name] = value
+    raw_model_path = source.get("model_path")
+    if not isinstance(raw_model_path, str):
+        raise ValueError(f"Detection metadata needs model_path: {path}")
+    model_path = _resolve_model_path(raw_model_path, path)
+    size = _file_size(model_path)
+    training_seconds = source.get("training_seconds")
+    if training_seconds is not None:
+        training_seconds = _nonnegative_float(training_seconds, "detection training_seconds")
+    validation_seconds = source.get("validation_seconds")
+    if validation_seconds is not None:
+        validation_seconds = _nonnegative_float(validation_seconds, "detection validation_seconds")
+    return {
+        "task": "object_detection",
+        "dataset": source["dataset"],
+        "evaluation_split": source["evaluation_split"],
+        "metrics": metrics,
+        "metadata_json": str(path.resolve()),
+        "source_data_yaml": source.get("data_yaml"),
+        "training_seconds": training_seconds,
+        "validation_seconds": validation_seconds,
+        "model_paths": [str(model_path.resolve())],
+        "model_size_bytes": size,
+        "model_size_mib": size / (1024 * 1024),
+        "hyperparameters": source.get("hyperparameters"),
+        "pretrained": source.get("pretrained"),
+        "note": (
+            "Included in the overall project evaluation. These are the saved "
+            "Roboflow region-detection scores on the stated split, not MIVIA "
+            "Dumping/No Dumping video scores or evidence that tracking/event "
+            "detection was evaluated. No accuracy, video F1, confusion matrix, "
+            "or per-video latency is invented for this detector."
+        ),
+    }
+
+
 def evaluate_runs(
     prediction_paths: dict[str, Path],
     metadata_paths: dict[str, Path] | None = None,
     report_path: str | Path | None = None,
+    yolo_report_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Compare complete prediction files against the unchanged MIVIA test set."""
+    """Evaluate saved MIVIA labels and optionally include saved YOLO scores."""
     if not prediction_paths:
         raise ValueError("Provide at least one model prediction CSV")
+    unsupported = set(prediction_paths) - ACTIVE_VIDEO_MODELS
+    if unsupported:
+        raise ValueError(f"Unsupported active video models: {sorted(unsupported)}")
     metadata_paths = metadata_paths or {}
     unknown_metadata = set(metadata_paths) - set(prediction_paths)
     if unknown_metadata:
@@ -267,16 +325,31 @@ def evaluate_runs(
         "seed": SEED,
         "split_counts": {"fit": len(train), "validation": len(validation), "test": len(test)},
         "models": {},
+        "comparison_note": (
+            "MoViNet uses the MIVIA video-classification test set. YOLO is "
+            "reported with its saved Roboflow detection metrics and actual "
+            "evaluation split. MIVIA "
+            "results remain exploratory because the official test set had "
+            "already been examined before the selection protocol was revised."
+        ),
     }
     for name, prediction_path in prediction_paths.items():
         metrics, details = _read_predictions(Path(prediction_path), test_by_id)
         metadata = _read_metadata(Path(metadata_paths[name])) if name in metadata_paths else {}
-        summary["models"][name] = {"metrics": metrics, **details, **metadata}
+        summary["models"][name] = {
+            "task": "video_classification",
+            "dataset": summary["dataset"],
+            "evaluation_split": summary["evaluation_split"],
+            "metrics": metrics, **details, **metadata,
+        }
+    if yolo_report_path is not None:
+        summary["models"]["yolov8n"] = _read_detection_metadata(Path(yolo_report_path))
+    summary["included_algorithms"] = list(summary["models"])
     return summary
 
 
 def write_comparison_csv(summary: dict[str, Any], path: str | Path) -> None:
-    """Save one compact, consistently ordered comparison row per model."""
+    """Save every included algorithm; task-inapplicable cells stay empty."""
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8", newline="") as handle:
@@ -286,15 +359,20 @@ def write_comparison_csv(summary: dict[str, Any], path: str | Path) -> None:
             metrics = result["metrics"]
             writer.writerow({
                 "model": name,
+                "task": result.get("task", "video_classification"),
+                "dataset": result.get("dataset", summary.get("dataset")),
+                "evaluation_split": result.get("evaluation_split", summary.get("evaluation_split")),
                 "protocol_version": result.get("protocol_version"),
-                "accuracy": metrics["accuracy"],
+                "accuracy": metrics.get("accuracy"),
                 "precision": metrics["precision"],
                 "recall": metrics["recall"],
-                "f1": metrics["f1"],
-                "TN": metrics["true_negative"],
-                "FP": metrics["false_positive"],
-                "FN": metrics["false_negative"],
-                "TP": metrics["true_positive"],
+                "f1": metrics.get("f1"),
+                "map50": metrics.get("map50"),
+                "map50_95": metrics.get("map50_95"),
+                "TN": metrics.get("true_negative"),
+                "FP": metrics.get("false_positive"),
+                "FN": metrics.get("false_negative"),
+                "TP": metrics.get("true_positive"),
                 "training_seconds": result.get("training_seconds"),
                 "inference_mean_ms_per_video": result.get("inference_mean_ms_per_video"),
                 "model_size_mib": result.get("model_size_mib"),
@@ -305,13 +383,25 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prediction", action="append", required=True, metavar="NAME=CSV")
     parser.add_argument("--metadata", action="append", metavar="NAME=JSON")
+    parser.add_argument(
+        "--yolo-report", "--detection-metadata", type=Path, default=None,
+        help="Saved YOLOv8n report to include; defaults to results/yolo/yolov8n_run.json if present",
+    )
     parser.add_argument("--report", type=Path, default=None)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args(argv)
     try:
         predictions = _named_paths(args.prediction, "--prediction")
         metadata = _named_paths(args.metadata, "--metadata")
-        summary = evaluate_runs(predictions, metadata, args.report)
+        yolo_report = args.yolo_report
+        if yolo_report is None and DEFAULT_YOLO_REPORT.is_file():
+            yolo_report = DEFAULT_YOLO_REPORT
+        summary = evaluate_runs(predictions, metadata, args.report, yolo_report)
+        if yolo_report is None:
+            summary["warnings"] = [
+                f"YOLOv8n saved evaluation is unavailable at {DEFAULT_YOLO_REPORT}; "
+                "its scores were not fabricated or added to this report."
+            ]
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
     args.output.parent.mkdir(parents=True, exist_ok=True)

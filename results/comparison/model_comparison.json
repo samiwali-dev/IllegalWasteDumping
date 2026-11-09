@@ -9,157 +9,10 @@
     "test": 100
   },
   "models": {
-    "optical_flow_svm": {
-      "metrics": {
-        "accuracy": 0.64,
-        "precision": 0.6296296296296297,
-        "recall": 0.68,
-        "f1": 0.6538461538461539,
-        "confusion_matrix": [
-          [
-            30,
-            20
-          ],
-          [
-            16,
-            34
-          ]
-        ],
-        "true_negative": 30,
-        "false_positive": 20,
-        "false_negative": 16,
-        "true_positive": 34
-      },
-      "inference_total_seconds": 27.270517,
-      "inference_mean_ms_per_video": 272.70517,
-      "prediction_csv": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/optical_flow_svm/optical_flow_svm_test_predictions.csv",
-      "test_videos": 100,
-      "raw_score_column": "decision_score",
-      "probability_column": null,
-      "metadata_json": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/optical_flow_svm/optical_flow_svm_run.json",
-      "protocol_version": "macro_f1_v2_exploratory",
-      "training_seconds": 119.169351,
-      "model_size_bytes": 399657,
-      "model_size_mib": 0.38114261627197266,
-      "model_paths": [
-        "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/optical_flow_svm/model.joblib"
-      ],
-      "split_counts": {
-        "fit": 320,
-        "validation": 80,
-        "test": 100
-      },
-      "hyperparameters": {
-        "kernel": "rbf",
-        "C": 10.0,
-        "gamma": "scale"
-      }
-    },
-    "cnn_lstm": {
-      "metrics": {
-        "accuracy": 0.61,
-        "precision": 0.7037037037037037,
-        "recall": 0.38,
-        "f1": 0.49350649350649356,
-        "confusion_matrix": [
-          [
-            42,
-            8
-          ],
-          [
-            31,
-            19
-          ]
-        ],
-        "true_negative": 42,
-        "false_positive": 8,
-        "false_negative": 31,
-        "true_positive": 19
-      },
-      "inference_total_seconds": 25.56054,
-      "inference_mean_ms_per_video": 255.6054,
-      "prediction_csv": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/cnn_lstm/cnn_lstm_test_predictions.csv",
-      "test_videos": 100,
-      "raw_score_column": null,
-      "probability_column": "probability",
-      "metadata_json": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/cnn_lstm/cnn_lstm_run.json",
-      "protocol_version": "macro_f1_v2_exploratory",
-      "training_seconds": 240.636365,
-      "model_size_bytes": 434779,
-      "model_size_mib": 0.41463756561279297,
-      "model_paths": [
-        "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/cnn_lstm/model.pt"
-      ],
-      "split_counts": {
-        "train": 320,
-        "validation": 80,
-        "test": 100
-      },
-      "hyperparameters": {
-        "optimizer": "AdamW",
-        "loss": "BCEWithLogitsLoss",
-        "epochs_max": 20,
-        "batch_size": 4,
-        "learning_rate": 0.001,
-        "weight_decay": 0.0001,
-        "early_stopping_patience": 5,
-        "selection": "highest validation macro F1, then dumping precision, dumping F1, fewer false positives, then lowest loss",
-        "threshold": 0.5
-      }
-    },
-    "cnn_3d": {
-      "metrics": {
-        "accuracy": 0.69,
-        "precision": 0.6338028169014085,
-        "recall": 0.9,
-        "f1": 0.7438016528925621,
-        "confusion_matrix": [
-          [
-            24,
-            26
-          ],
-          [
-            5,
-            45
-          ]
-        ],
-        "true_negative": 24,
-        "false_positive": 26,
-        "false_negative": 5,
-        "true_positive": 45
-      },
-      "inference_total_seconds": 25.634599,
-      "inference_mean_ms_per_video": 256.34599000000003,
-      "prediction_csv": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/cnn_3d/cnn_3d_test_predictions.csv",
-      "test_videos": 100,
-      "raw_score_column": null,
-      "probability_column": "probability",
-      "metadata_json": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/cnn_3d/cnn_3d_run.json",
-      "protocol_version": "macro_f1_v2_exploratory",
-      "training_seconds": 184.2916,
-      "model_size_bytes": 499437,
-      "model_size_mib": 0.4763002395629883,
-      "model_paths": [
-        "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/cnn_3d/model.pt"
-      ],
-      "split_counts": {
-        "train": 320,
-        "validation": 80,
-        "test": 100
-      },
-      "hyperparameters": {
-        "optimizer": "AdamW",
-        "loss": "BCEWithLogitsLoss",
-        "epochs_max": 20,
-        "batch_size": 4,
-        "learning_rate": 0.001,
-        "weight_decay": 0.0001,
-        "early_stopping_patience": 5,
-        "selection": "highest validation macro F1, then dumping precision, dumping F1, fewer false positives, then lowest loss",
-        "threshold": 0.5
-      }
-    },
     "movinet_a0": {
+      "task": "video_classification",
+      "dataset": "MIVIA-IWDD 500",
+      "evaluation_split": "official_test",
       "metrics": {
         "accuracy": 0.72,
         "precision": 0.7115384615384616,
@@ -182,17 +35,17 @@
       },
       "inference_total_seconds": 33.721917,
       "inference_mean_ms_per_video": 337.21917,
-      "prediction_csv": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/movinet/movinet_a0_test_predictions.csv",
+      "prediction_csv": "results/movinet/movinet_a0_test_predictions.csv",
       "test_videos": 100,
       "raw_score_column": null,
       "probability_column": "probability",
-      "metadata_json": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/movinet/movinet_a0_run.json",
+      "metadata_json": "results/movinet/movinet_a0_run.json",
       "protocol_version": "macro_f1_v2_exploratory",
       "training_seconds": 1899.7842,
       "model_size_bytes": 7742973,
       "model_size_mib": 7.384274482727051,
       "model_paths": [
-        "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/movinet/model.pt"
+        "src/movinet/model.pt"
       ],
       "split_counts": {
         "train": 320,
@@ -210,6 +63,40 @@
         "selection": "highest validation macro F1, then dumping precision, dumping F1, fewer false positives, then lowest loss",
         "threshold": 0.5
       }
+    },
+    "yolov8n": {
+      "task": "object_detection",
+      "dataset": "Roboflow Littering",
+      "evaluation_split": "Roboflow validation (the supplied test images have no COCO labels)",
+      "metrics": {
+        "precision": 0.5108254417440554,
+        "recall": 0.7223650385604113,
+        "map50": 0.5428632534746103,
+        "map50_95": 0.24498013686129183
+      },
+      "metadata_json": "results/yolo/yolov8n_run.json",
+      "source_data_yaml": "datasets/Littering-YOLO/data.yaml",
+      "training_seconds": 821.9389075419749,
+      "validation_seconds": 13.534214833984151,
+      "model_paths": [
+        "src/yolo/model.pt"
+      ],
+      "model_size_bytes": 6217265,
+      "model_size_mib": 5.929245948791504,
+      "hyperparameters": {
+        "epochs": 5,
+        "imgsz": 320,
+        "batch": 32,
+        "patience": 5,
+        "workers": 0
+      },
+      "pretrained": false,
+      "note": "Included in the overall project evaluation. These are the saved Roboflow region-detection scores on the stated split, not MIVIA Dumping/No Dumping video scores or evidence that tracking/event detection was evaluated. No accuracy, video F1, confusion matrix, or per-video latency is invented for this detector."
     }
-  }
+  },
+  "comparison_note": "MoViNet uses the MIVIA video-classification test set. YOLO is reported with its saved Roboflow detection metrics and actual evaluation split. MIVIA results remain exploratory because the official test set had already been examined before the selection protocol was revised.",
+  "included_algorithms": [
+    "movinet_a0",
+    "yolov8n"
+  ]
 }

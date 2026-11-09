@@ -1,14 +1,3 @@
-"""Train or test the existing MoViNet A0 video classifier.
-
-Examples:
-    .venv/bin/python src/movinet/main.py train --help
-    .venv/bin/python src/movinet/main.py predict path/to/video.mp4
-
-This uses the unofficial MoViNet-pytorch implementation at commit
-c2d1edf48fc6c5259707f9d833f22171b4f63493. Its A0 configuration and existing
-checkpoint remain unchanged. New training uses random initialization.
-"""
-
 from __future__ import annotations
 
 import argparse

@@ -2,7 +2,7 @@
   "model": "YOLOv8n",
   "task": "object_detection",
   "dataset": "Roboflow Littering",
-  "data_yaml": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering-YOLO/data.yaml",
+  "data_yaml": "datasets/Littering-YOLO/data.yaml",
   "pretrained": false,
   "initialization": "random",
   "architecture_source": "yolov8n.yaml",
@@ -24,9 +24,9 @@
     "map50": 0.5428632534746103,
     "map50_95": 0.24498013686129183
   },
-  "model_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/yolo/model.pt",
+  "model_path": "src/yolo/model.pt",
   "model_size_bytes": 6217265,
-  "training_run_dir": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/yolo/training/yolov8n_littering",
-  "validation_run_dir": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/yolo/validation/yolov8n_littering_val",
-  "note": "YOLOv8n metrics are object-detection metrics and are intentionally not added to the four-model MIVIA video-classification comparison."
+  "training_run_dir": "results/yolo/training/yolov8n_littering",
+  "validation_run_dir": "results/yolo/validation/yolov8n_littering_val",
+  "note": "YOLOv8n participates in the overall project evaluation. Its object-detection metrics use the labelled Littering validation images and are not equivalent to MIVIA video-classification metrics."
 }

@@ -3,6 +3,13 @@
 *.zip
 *.tar.gz
 
+# Local documents and generated predictions
+/output/
+/models/
+/runs/
+/results/yolo/image_predictions/
+/results/yolo/video_predictions/
+
 # Cache files
 *.jsonl
 

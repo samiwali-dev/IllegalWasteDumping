@@ -3,8 +3,6 @@
 # it contains no pretrained model weights.
 numpy==2.5.3
 opencv-python==5.0.0.93
-scikit-learn==1.9.1
-joblib==1.6.0
 torch==2.14.0
 ultralytics==8.4.174
 ./third_party/movinet_pytorch-0.2.2-py3-none-any.whl
