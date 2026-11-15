@@ -14,7 +14,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { analyzeLiveFramesOnEdge, grabWebVideoFrameBase64, grabWebVideoFrameFast } from './liveEdgeAi';
+import { analyzeLiveFramesOnEdge, grabWebVideoFrameFast } from './liveEdgeAi';
 
 const FALLBACK_EVALUATION = {
   dataset: 'MIVIA-IWDD 500',
@@ -165,7 +165,6 @@ export default function App() {
   const [liveFps, setLiveFps] = useState(0);
 
   const cameraRef = useRef(null);
-  const baselineFrameRef = useRef(null);
   const frameBufferRef = useRef([]);
   const liveTimerRef = useRef(null);
   const busyLockRef = useRef(false);
@@ -232,10 +231,10 @@ export default function App() {
       });
       if (!photo) return null;
       if (photo.base64) {
-        return `data:image/jpeg;base64,${photo.base64}`;
+        return { uri: `data:image/jpeg;base64,${photo.base64}`, ts: Date.now() };
       }
       if (photo.uri && photo.uri.startsWith('data:')) {
-        return photo.uri;
+        return { uri: photo.uri, ts: Date.now() };
       }
       return null;
     } catch (_e) {
@@ -245,12 +244,10 @@ export default function App() {
 
   const runFramesAnalysis = async (framesToAnalyze) => {
     const modelsParam = getSelectedModelsList();
-    // Only pass explicitBaseline if the user manually clicked "تثبيت خلفية المشهد"
-    const explicitBaseline = baselineFrameRef.current || null;
 
-    // On Web/Vercel or when fast decoded frames are buffered, run high-FPS Edge AI directly (<15ms latency)
+    // The browser fallback reports possible motion events, not Python model predictions.
     if (Platform.OS === 'web' || !apiConnected) {
-      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
+      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam);
     }
 
     try {
@@ -279,19 +276,15 @@ export default function App() {
     } catch (_err) {
       setApiConnected(false);
     }
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam);
   };
 
-  const handleResetBaseline = async () => {
-    if (!cameraReady) return;
-    const base = await captureSingleFastFrame(true);
-    if (base) {
-      baselineFrameRef.current = base;
-      frameBufferRef.current = [base];
-      setBufferedCount(1);
-      setLiveResult(null);
-      setLiveStatus('✅ تم قفل الخلفية المرجعية! أي غرض يرمى أو يُترك في المشهد الآن سيُكشف ويُحاط بمربع أحمر.');
-    }
+  const handleResetLiveWindow = () => {
+    frameBufferRef.current = [];
+    detectionHoldUntilRef.current = 0;
+    setBufferedCount(0);
+    setLiveResult(null);
+    setLiveStatus('تم مسح سجل الحركة. ظهور غرض ثابت وحده لا يُعد حادثة رمي.');
   };
 
   const handleCaptureBurstAndAnalyze = async () => {
@@ -305,7 +298,7 @@ export default function App() {
       for (let i = 1; i <= totalSteps; i++) {
         if (i % 4 === 1 || i === totalSteps) {
           setLiveStatus(
-            `📸 جاري التقاط 24 إطاراً بسرعة عالية (${i}/${totalSteps})... ارمِ الغرض من يدك الآن!`
+            `📸 جاري التقاط إطارات الحركة (${i}/${totalSteps})...`
           );
         }
         const frame = await captureSingleFastFrame(true);
@@ -321,15 +314,15 @@ export default function App() {
       }
       frameBufferRef.current = burst;
       setBufferedCount(burst.length);
-      setLiveStatus('🧠 جاري تتبع مسار سقوط الغرض ورسم مربعات الكشف (Littering Boxes)...');
+      setLiveStatus('جاري فحص تسلسل الحركة...');
       const res = await runFramesAnalysis(burst);
       setLiveResult(res);
-      const anyDumping = res.actions && res.actions.some((a) => a.prediction === 1);
+      const anyDumping = res.event_detected ?? res.actions?.some((a) => a.prediction === 1);
       const boxCount = res.yolo_live?.total_detections || 0;
       setLiveStatus(
         anyDumping
-          ? `⚠️ تم رصد سقوط/رمي الغرض (DUMPING DETECTED) ورسم ${boxCount} مربع littering مع مسار السقوط!`
-          : '✅ المشهد سليم (NO DUMPING) — حركتك الشخصية مستبعدة تلقائياً؛ ارمِ غرضاً من يدك للأسفل لرصد السقوط.'
+          ? (res.mode === 'edge_browser' ? '⚠️ اشتباه سقوط غرض — راجع اللقطة. الحركة وحدها لا تثبت رمي نفايات.' : `⚠️ رصد النموذج احتمال رمي. مناطق الكشف: ${boxCount}. راجع النتيجة.`)
+          : 'لم يرصد التحليل دليلًا كافيًا على الرمي في الإطارات الحالية.'
       );
     } catch (err) {
       setLiveStatus(`خطأ أثناء تحليل الكاميرا: ${err.message}`);
@@ -348,7 +341,7 @@ export default function App() {
     detectionHoldUntilRef.current = 0;
     setLiveMonitoring(true);
     setLiveStatus(
-      '🔴 المراقبة السريعة نشطة (17 FPS • 24 إطاراً): ارمِ أي غرض من يدك وسيتم اصطياد سقوطه فوراً مع تجاهل حركة جسمك!'
+      '🔴 المراقبة نشطة. يجري فحص مسار الحركة؛ ظهور غرض أو تحريكه وحده لا يكفي لإعلان الرمي.'
     );
 
     const intervalMs = Platform.OS === 'web' ? 58 : 180; // ~17 FPS on Web/Vercel
@@ -374,23 +367,23 @@ export default function App() {
             fpsCounterRef.current = { count: 0, lastTs: now };
           }
 
-          // Run neural network + drop trajectory check every 4 frames (~4.2 times/sec)
+          // Check the latest motion window every four captured frames.
           if (tick % 4 === 0 && frameBufferRef.current.length >= 6) {
             const recentWindow = frameBufferRef.current.slice(-16);
             const res = await runFramesAnalysis(recentWindow);
-            const isDump = res.actions && res.actions.some((a) => a.prediction === 1);
+            const isDump = res.event_detected ?? res.actions?.some((a) => a.prediction === 1);
 
             if (isDump) {
               // Hold the detected drop on screen for 3.5 seconds so the user clearly sees the box & snapshot!
               detectionHoldUntilRef.current = Date.now() + 3500;
               setLiveResult(res);
               setLiveStatus(
-                '⚠️ تم اصطياد غرض يسقط من اليد (DUMPING DETECTED)! المربع الأحمر ومسار السقوط معروضان الآن.'
+                res.mode === 'edge_browser' ? '⚠️ اشتباه سقوط غرض — راجع اللقطة ومسار الحركة قبل الحكم.' : '⚠️ رصد النموذج احتمال رمي. راجع النتيجة.'
               );
             } else if (Date.now() > detectionHoldUntilRef.current) {
               setLiveResult(res);
               setLiveStatus(
-                '🟢 المراقبة السريعة نشطة (حركة جسمك/وجهك مستبعدة) — ارمِ غرضاً من يدك لرصد السقوط.'
+                '🟢 المراقبة نشطة. لم يرصد التحليل دليلًا كافيًا على الرمي في الإطارات الحالية.'
               );
             }
           }
@@ -591,6 +584,8 @@ export default function App() {
           )}
         </View>
 
+        {resultObj.mode_note && <Text style={styles.helperText}>{resultObj.mode_note}</Text>}
+
         {resultObj.actions && resultObj.actions.length > 0 ? (
           resultObj.actions.map((row) => {
             const isDumping = row.prediction === 1;
@@ -619,11 +614,13 @@ export default function App() {
                         { color: isDumping ? '#FCA5A5' : '#6EE7B7' },
                       ]}
                     >
-                      {isDumping ? '⚠️ DUMPING (رمي نفايات)' : '✅ NO DUMPING (سليم)'}
+                      {row.model === 'edge_motion'
+                        ? (isDumping ? '⚠️ اشتباه سقوط — يحتاج مراجعة' : 'لا يوجد مسار سقوط كافٍ')
+                        : (isDumping ? '⚠️ DUMPING (رمي نفايات)' : '✅ NO DUMPING (سليم)')}
                     </Text>
                   </View>
                   <Text style={styles.scoreText}>
-                    Score: {Number(row.score).toFixed(4)} • {(Number(row.seconds) * 1000).toFixed(0)} ms
+                    {row.score == null ? 'لا توجد درجة' : `Score: ${Number(row.score).toFixed(4)}`} • {(Number(row.seconds) * 1000).toFixed(0)} ms
                   </Text>
                 </View>
               </View>
@@ -666,7 +663,7 @@ export default function App() {
             <View>
               <Text style={styles.cardTitle}>📷 البث المباشر للكاميرا (Live Camera Stream)</Text>
               <Text style={styles.helperText}>
-                يعمل مباشرة على الويب (Vercel) والجوال! يلتقط إطارات متتابعة ويصنف الحركة وتغير المشهد بالشبكة العصبية.
+                على المتصفح يُفحص مسار الحركة محليًا لرصد اشتباه سقوط. في تطبيق الجوال المتصل بالخادم تُشغّل النماذج المختارة. النتائج تحتاج مراجعة.
               </Text>
             </View>
             <View style={styles.gtBadge}>
@@ -717,7 +714,7 @@ export default function App() {
                         }}
                       >
                         <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '800' }}>
-                          littering {(Number(det.confidence || 0.85) * 100).toFixed(0)}%
+                          {liveResult.mode === 'edge_browser' ? 'اشتباه سقوط' : `littering ${(Number(det.confidence) * 100).toFixed(0)}%`}
                         </Text>
                       </View>
                     </View>
@@ -738,14 +735,14 @@ export default function App() {
                 <View style={{ flexDirection: 'row', gap: 8 }}>
                   <Pressable
                     style={styles.flipCameraBtn}
-                    onPress={handleResetBaseline}
+                    onPress={handleResetLiveWindow}
                   >
-                    <Text style={styles.flipCameraText}>🎯 تثبيت خلفية المشهد</Text>
+                    <Text style={styles.flipCameraText}>🔄 إعادة تهيئة المراقبة</Text>
                   </Pressable>
                   <Pressable
                     style={styles.flipCameraBtn}
                     onPress={() => {
-                      baselineFrameRef.current = null;
+                      handleResetLiveWindow();
                       setCameraFacing((prev) => (prev === 'back' ? 'front' : 'back'));
                     }}
                   >
@@ -772,8 +769,16 @@ export default function App() {
             )}
           </View>
 
-          <Text style={[styles.subHeaderTitle, { marginTop: 14 }]}>اختر الخوارزميات للبث المباشر:</Text>
-          {renderAlgorithmChips()}
+          {Platform.OS !== 'web' && apiConnected ? (
+            <>
+              <Text style={[styles.subHeaderTitle, { marginTop: 14 }]}>اختر الخوارزميات للبث المباشر:</Text>
+              {renderAlgorithmChips()}
+            </>
+          ) : (
+            <Text style={styles.helperText}>
+              اللايف المحلي يفحص مسار الحركة. لتشغيل النماذج الأربعة على فيديو استخدم تبويب تحليل MP4 مع خادم Python.
+            </Text>
+          )}
 
           <View style={styles.statusBanner}>
             {(liveAnalyzing || liveMonitoring) && (

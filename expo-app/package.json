@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "test": "node --test liveMotion.test.js",
     "start": "expo start",
     "web": "expo start --web",
     "ios": "expo start --ios",
