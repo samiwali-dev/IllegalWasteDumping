@@ -13,6 +13,8 @@ This command does not train models or run inference again.
 
 Example:
     python evaluate.py \
+        --prediction optical_flow_svm=results/optical_flow_svm/optical_flow_svm_test_predictions.csv \
+        --metadata optical_flow_svm=results/optical_flow_svm/optical_flow_svm_run.json \
         --prediction movinet_a0=results/movinet/movinet_a0_test_predictions.csv \
         --metadata movinet_a0=results/movinet/movinet_a0_run.json \
         --yolo-report results/yolo/yolov8n_run.json \
@@ -33,10 +35,12 @@ from data import PROJECT_ROOT, SEED, load_manifest, split_records
 
 DEFAULT_OUTPUT = PROJECT_ROOT / "results" / "comparison" / "model_comparison.json"
 DEFAULT_YOLO_REPORT = PROJECT_ROOT / "results" / "yolo" / "yolov8n_run.json"
-ACTIVE_VIDEO_MODELS = {"movinet_a0"}
+ACTIVE_VIDEO_MODELS = {"optical_flow_svm", "neural_network", "movinet_a0"}
 
-# Resolve the historical location of the saved MoViNet checkpoint.
+# Resolve only the old primary checkpoints. Experimental model directories
+# intentionally remain distinct from the current primary models.
 LEGACY_MODEL_ALIASES = {
+    "optical_flow_svm.joblib": PROJECT_ROOT / "src" / "optical_flow_svm" / "model.joblib",
     "movinet_a0_best.pt": PROJECT_ROOT / "src" / "movinet" / "model.pt",
 }
 COMPARISON_COLUMNS = [
@@ -326,9 +330,10 @@ def evaluate_runs(
         "split_counts": {"fit": len(train), "validation": len(validation), "test": len(test)},
         "models": {},
         "comparison_note": (
-            "MoViNet uses the MIVIA video-classification test set. YOLO is "
-            "reported with its saved Roboflow detection metrics and actual "
-            "evaluation split. MIVIA "
+            "All included algorithms belong to the project evaluation. Only "
+            "MIVIA video classifiers share a directly comparable task and test "
+            "set. YOLO is reported with its saved Roboflow detection metrics "
+            "and actual evaluation split, not ranked by video accuracy. MIVIA "
             "results remain exploratory because the official test set had "
             "already been examined before the selection protocol was revised."
         ),

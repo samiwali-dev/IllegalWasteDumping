@@ -1,0 +1,23 @@
+{
+  "name": "illegal-waste-dumping-expo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "ios": "expo start --ios",
+    "android": "expo start --android"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~5.0.4",
+    "expo": "~53.0.0",
+    "expo-camera": "~16.1.0",
+    "expo-document-picker": "~13.1.5",
+    "expo-status-bar": "~2.2.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.2",
+    "react-native-web": "~0.20.0"
+  },
+  "private": true
+}

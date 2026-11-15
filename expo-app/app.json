@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Illegal Waste Dumping AI",
+    "slug": "illegal-waste-dumping-ai",
+    "version": "1.0.0",
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Requires camera access for live illegal waste dumping detection."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A"
+      },
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Illegal Waste Dumping AI to access your camera for live monitoring."
+        }
+      ]
+    ],
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}

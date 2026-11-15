@@ -1,0 +1,30 @@
+{
+  "classes": [
+    "no_dumping",
+    "dumping"
+  ],
+  "train_counts": [
+    200,
+    200
+  ],
+  "test_counts": [
+    50,
+    50
+  ],
+  "skipped_single_frame": {},
+  "accuracy": 0.64,
+  "majority_baseline": 0.5,
+  "balanced_accuracy": 0.64,
+  "dumping_recall": 0.68,
+  "dumping_f1": 0.6538461538461539,
+  "confusion_matrix": [
+    [
+      30,
+      20
+    ],
+    [
+      16,
+      34
+    ]
+  ]
+}

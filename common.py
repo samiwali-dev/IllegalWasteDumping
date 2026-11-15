@@ -1,5 +1,6 @@
 """Reproducible MoViNet training and shared MIVIA video inference helpers.
 
+MoViNet and Optical Flow + SVM use the same source-video split and clip order.
 YOLO's object-detection workflow is implemented in ``src/yolo/main.py``.
 PyTorch is imported only when needed so ``--help`` works before installation.
 """
@@ -25,6 +26,8 @@ SEED = 42
 CLIP_LENGTH = 24
 IMAGE_SIZE = 112
 CHECKPOINT_PATHS = {
+    "optical_flow_svm": PROJECT_ROOT / "src/optical_flow_svm/model.joblib",
+    "neural_network": PROJECT_ROOT / "src/neural_network/model.pt",
     "movinet_a0": PROJECT_ROOT / "src/movinet/model.pt",
 }
 LABEL_NAMES = {0: "no_dumping", 1: "dumping"}
@@ -228,8 +231,9 @@ def run_experiment(
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
     )
+    result_folder = "movinet" if slug == "movinet_a0" else slug
     args.results_dir = (
-        args.results_dir or PROJECT_ROOT / "results" / "movinet"
+        args.results_dir or PROJECT_ROOT / "results" / result_folder
     ).expanduser().resolve()
     args.models_dir = (args.models_dir or CHECKPOINT_PATHS[slug].parent).expanduser().resolve()
     checkpoint = (args.checkpoint or args.models_dir / "model.pt").expanduser().resolve()
@@ -363,7 +367,7 @@ def run_experiment(
 
 
 def analyze_video(video, model_names, *, device="auto", progress=None):
-    """Extract an ordered clip and classify it with the saved video model."""
+    """Extract one shared clip and classify it with the selected saved models."""
     import time
     import cv2
     from data import IMAGE_SIZE, SEQUENCE_LENGTH, load_clip, extract_video
@@ -391,11 +395,30 @@ def analyze_video(video, model_names, *, device="auto", progress=None):
             progress(f"Analyzing with {name}...")
         started = time.perf_counter()
         checkpoint = CHECKPOINT_PATHS[name]
-        label, score, _ = predict_torch(clip, checkpoint, name, device)
+        if name == "optical_flow_svm":
+            label, score = predict_svm(clip, checkpoint)
+            kind = "SVM decision score (threshold 0)"
+        elif name == "neural_network":
+            label, score = predict_neural_network(clip, checkpoint)
+            kind = "Uncalibrated sigmoid (threshold 0.5)"
+        else:
+            label, score, _ = predict_torch(clip, checkpoint, name, device)
+            kind = "Uncalibrated sigmoid (threshold 0.5)"
         rows.append({"model": name, "prediction": label, "score": score,
-                     "score_kind": "Uncalibrated sigmoid (threshold 0.5)",
-                     "seconds": time.perf_counter() - started})
+                     "score_kind": kind, "seconds": time.perf_counter() - started})
     return rows
+
+
+def predict_svm(clip, checkpoint: Path) -> tuple[int, float]:
+    from src.optical_flow_svm.main import predict_clip
+
+    return predict_clip(clip, checkpoint)
+
+
+def predict_neural_network(clip, checkpoint: Path) -> tuple[int, float]:
+    from src.neural_network.main import predict_clip
+
+    return predict_clip(clip, checkpoint)
 
 
 def predict_torch(clip, checkpoint: Path, model_name: str, requested_device: str) -> tuple[int, float, str]:

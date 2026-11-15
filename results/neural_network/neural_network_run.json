@@ -1,0 +1,191 @@
+{
+  "model": "neural_network",
+  "method": "spatiotemporal_mlp_neural_network",
+  "protocol_version": "macro_f1_v2_exploratory",
+  "dataset": "MIVIA-IWDD 500",
+  "seed": 42,
+  "official_test_used_for_selection": false,
+  "split_counts": {
+    "fit": 320,
+    "validation": 80,
+    "test": 100
+  },
+  "frame_count": 24,
+  "image_size": 112,
+  "feature_dimension": 528,
+  "architecture": {
+    "name": "Spatiotemporal MLP Neural Network",
+    "input_dimension": 528,
+    "hidden_layers": [
+      64,
+      32
+    ],
+    "activation": "GELU",
+    "normalization": "BatchNorm1d",
+    "dropout": 0.55,
+    "output_dimension": 1
+  },
+  "hyperparameters": {
+    "hidden_layers": [
+      64,
+      32
+    ],
+    "dropout": 0.55,
+    "lr": 0.0008,
+    "weight_decay": 0.05,
+    "batch_size": 20,
+    "epochs_max": 40,
+    "patience": 10,
+    "optimizer": "AdamW",
+    "loss": "BCEWithLogitsLoss",
+    "best_epoch": 21,
+    "selection": "highest validation macro F1, then dumping precision, dumping F1, fewer false positives, then lowest loss",
+    "threshold": 0.5
+  },
+  "validation_metrics": {
+    "accuracy": 0.7625,
+    "balanced_accuracy": 0.7625,
+    "macro_f1": 0.7606676113997796,
+    "positive_f1": 0.7816091954022989,
+    "positive_precision": 0.723404255319149,
+    "positive_recall": 0.85,
+    "false_positives": 13,
+    "confusion_matrix_labels_0_1": [
+      [
+        27,
+        13
+      ],
+      [
+        6,
+        34
+      ]
+    ]
+  },
+  "test_metrics": {
+    "accuracy": 0.74,
+    "balanced_accuracy": 0.74,
+    "macro_f1": 0.74,
+    "positive_f1": 0.74,
+    "positive_precision": 0.74,
+    "positive_recall": 0.74,
+    "false_positives": 13,
+    "confusion_matrix_labels_0_1": [
+      [
+        37,
+        13
+      ],
+      [
+        13,
+        37
+      ]
+    ]
+  },
+  "candidate_results": [
+    {
+      "hyperparameters": {
+        "hidden_layers": [
+          64,
+          32
+        ],
+        "dropout": 0.55,
+        "lr": 0.0008,
+        "weight_decay": 0.05,
+        "batch_size": 20,
+        "epochs_max": 40,
+        "patience": 10
+      },
+      "accuracy": 0.7625,
+      "balanced_accuracy": 0.7625,
+      "macro_f1": 0.7606676113997796,
+      "positive_f1": 0.7816091954022989,
+      "positive_precision": 0.723404255319149,
+      "positive_recall": 0.85,
+      "false_positives": 13,
+      "confusion_matrix_labels_0_1": [
+        [
+          27,
+          13
+        ],
+        [
+          6,
+          34
+        ]
+      ],
+      "validation_loss": 0.6313258409500122,
+      "best_epoch": 21
+    },
+    {
+      "hyperparameters": {
+        "hidden_layers": [
+          128,
+          64,
+          32
+        ],
+        "dropout": 0.5,
+        "lr": 0.0005,
+        "weight_decay": 0.01,
+        "batch_size": 16,
+        "epochs_max": 40,
+        "patience": 10
+      },
+      "accuracy": 0.75,
+      "balanced_accuracy": 0.75,
+      "macro_f1": 0.7474747474747474,
+      "positive_f1": 0.7727272727272727,
+      "positive_precision": 0.7083333333333334,
+      "positive_recall": 0.85,
+      "false_positives": 14,
+      "confusion_matrix_labels_0_1": [
+        [
+          26,
+          14
+        ],
+        [
+          6,
+          34
+        ]
+      ],
+      "validation_loss": 0.6114999651908875,
+      "best_epoch": 20
+    },
+    {
+      "hyperparameters": {
+        "hidden_layers": [
+          80,
+          40
+        ],
+        "dropout": 0.55,
+        "lr": 0.0005,
+        "weight_decay": 0.05,
+        "batch_size": 16,
+        "epochs_max": 40,
+        "patience": 10
+      },
+      "accuracy": 0.75,
+      "balanced_accuracy": 0.75,
+      "macro_f1": 0.7474747474747474,
+      "positive_f1": 0.7727272727272727,
+      "positive_precision": 0.7083333333333334,
+      "positive_recall": 0.85,
+      "false_positives": 14,
+      "confusion_matrix_labels_0_1": [
+        [
+          26,
+          14
+        ],
+        [
+          6,
+          34
+        ]
+      ],
+      "validation_loss": 0.6399158239364624,
+      "best_epoch": 23
+    }
+  ],
+  "training_seconds": 21.526028,
+  "test_inference_seconds": 27.988263,
+  "model_path": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/src/neural_network/model.pt",
+  "model_size_bytes": 156723,
+  "validation_predictions_path": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/neural_network/neural_network_validation_predictions.csv",
+  "test_predictions_path": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/neural_network/neural_network_test_predictions.csv"
+}

@@ -1,0 +1,2 @@
+model,protocol_version,accuracy,precision,recall,f1,TN,FP,FN,TP,training_seconds,inference_mean_ms_per_video,model_size_mib
+optical_flow_svm,macro_f1_v2_exploratory,0.64,0.6296296296296297,0.68,0.6538461538461539,30,20,16,34,119.169351,272.70517,0.38114261627197266

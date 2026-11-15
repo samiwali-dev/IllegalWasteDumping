@@ -30,6 +30,7 @@ from evaluate import (
     _read_detection_metadata, _read_predictions, evaluate_predictions,
     evaluate_runs, write_comparison_csv,
 )
+from src.optical_flow_svm.main import FEATURE_DIM, flow_features
 from clean import (
     clean, decode_frame, duplicate_groups, exclude_confirmed_duplicates,
     export_yolo, hash_video, inspect_image, load_hash_cache, parse_label_data,
@@ -56,6 +57,8 @@ class ProjectLayoutTests(unittest.TestCase):
         from common import CHECKPOINT_PATHS, PROJECT_ROOT
 
         expected = {
+            "optical_flow_svm": PROJECT_ROOT / "src/optical_flow_svm/model.joblib",
+            "neural_network": PROJECT_ROOT / "src/neural_network/model.pt",
             "movinet_a0": PROJECT_ROOT / "src/movinet/model.pt",
         }
         self.assertEqual(CHECKPOINT_PATHS, expected)
@@ -68,6 +71,7 @@ class ProjectLayoutTests(unittest.TestCase):
         from evaluate import _resolve_model_path
 
         names = {
+            "optical_flow_svm": "optical_flow_svm.joblib",
             "movinet_a0": "movinet_a0_best.pt",
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -130,7 +134,7 @@ class TwoModelGuiTests(unittest.TestCase):
         cases = (
             {"side_effect": RuntimeError("Cannot read video")},
             {"return_value": [{"model": "unsupported_model"}]},
-            {"return_value": [{"model": "movinet_a0"}, {"model": "unsupported_model"}]},
+            {"return_value": [{"model": "movinet_a0"}, {"model": "optical_flow_svm"}]},
         )
         for behavior in cases:
             with self.subTest(behavior=behavior):
@@ -149,13 +153,15 @@ class TwoModelGuiTests(unittest.TestCase):
             "metrics": {"accuracy": 0.72, "precision": 37 / 52, "recall": 0.74,
                         "f1": 74 / 102, "confusion_matrix": [[35, 15], [13, 37]]},
         }
+        svm = {"metrics": {"accuracy": 0.64, "precision": 34 / 54, "recall": 0.68,
+                           "f1": 68 / 104, "confusion_matrix": [[30, 20], [16, 34]]}}
         detector = {
             "task": "object_detection", "metrics": {
                 "precision": 0.51, "recall": 0.72, "map50": 0.54, "map50_95": 0.24,
             }, "evaluation_split": "Roboflow validation",
         }
-        report = {"models": {"movinet_a0": selected, "yolov8n": detector,
-                             "unsupported_model": {**selected}}}
+        report = {"models": {"movinet_a0": selected, "optical_flow_svm": svm,
+                             "yolov8n": detector, "unsupported_model": {}}}
         view = SimpleNamespace(
             eval_table=mock.Mock(), matrix_title=mock.Mock(),
             matrix_cells=[mock.Mock() for _ in range(4)], eval_status=mock.Mock(),
@@ -271,7 +277,7 @@ class MiviaProtocolTests(unittest.TestCase):
                 self.assertTrue(all(left < right for left, right in zip(indices, indices[1:])))
                 self.assertEqual([path.name for path in _frame_paths(record)], expected_names)
 
-    def test_clip_is_ordered_uint8_rgb(self) -> None:
+    def test_clip_is_ordered_uint8_rgb_and_flow_is_finite(self) -> None:
         record = self.fit[0]
         clip = load_clip(record)
         self.assertEqual(clip.shape, (24, IMAGE_SIZE, IMAGE_SIZE, 3))
@@ -293,6 +299,11 @@ class MiviaProtocolTests(unittest.TestCase):
                 clip[index, top:top + target_height, left:left + target_width],
                 resized[:, :, ::-1],
             )
+
+        features = flow_features(clip)
+        self.assertEqual(FEATURE_DIM, 320)
+        self.assertEqual(features.shape, (320,))
+        self.assertTrue(np.isfinite(features).all())
 
     def test_known_confusion_metrics(self) -> None:
         scores = evaluate_predictions([0, 0, 0, 1, 1], [0, 1, 0, 0, 1])
@@ -365,11 +376,13 @@ class MiviaProtocolTests(unittest.TestCase):
 
 
 class OverallEvaluationTests(unittest.TestCase):
-    def test_saved_models_are_included_without_mixing_metric_types(self):
+    def test_three_saved_algorithms_are_included_without_mixing_metric_types(self):
         from common import PROJECT_ROOT
 
         predictions = {
             "movinet_a0": PROJECT_ROOT / "results/movinet/movinet_a0_test_predictions.csv",
+            "neural_network": PROJECT_ROOT / "results/neural_network/neural_network_test_predictions.csv",
+            "optical_flow_svm": PROJECT_ROOT / "results/optical_flow_svm/optical_flow_svm_test_predictions.csv",
         }
         metadata = {
             name: path.with_name(path.name.replace("_test_predictions.csv", "_run.json"))
@@ -378,10 +391,14 @@ class OverallEvaluationTests(unittest.TestCase):
         yolo_path = PROJECT_ROOT / "results/yolo/yolov8n_run.json"
         saved_yolo = json.loads(yolo_path.read_text(encoding="utf-8"))
         summary = evaluate_runs(predictions, metadata, yolo_report_path=yolo_path)
-        self.assertEqual(set(summary["models"]), {"movinet_a0", "yolov8n"})
+        self.assertEqual(set(summary["models"]), {"movinet_a0", "neural_network", "optical_flow_svm", "yolov8n"})
         self.assertEqual(set(summary["included_algorithms"]), set(summary["models"]))
         self.assertEqual(summary["models"]["movinet_a0"]["metrics"]["confusion_matrix"],
                          [[35, 15], [13, 37]])
+        self.assertEqual(summary["models"]["neural_network"]["metrics"]["confusion_matrix"],
+                         [[37, 13], [13, 37]])
+        self.assertEqual(summary["models"]["optical_flow_svm"]["metrics"]["confusion_matrix"],
+                         [[30, 20], [16, 34]])
         detector = summary["models"]["yolov8n"]
         self.assertEqual(detector["task"], "object_detection")
         self.assertEqual(detector["metrics"], saved_yolo["metrics"])
