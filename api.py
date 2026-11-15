@@ -44,6 +44,9 @@ EVALUATION_PATH = PROJECT_ROOT / "results" / "comparison" / "model_comparison.js
 YOLO_EVALUATION_PATH = PROJECT_ROOT / "results" / "yolo" / "yolov8n_run.json"
 YOLO_MODEL = PROJECT_ROOT / "src" / "yolo" / "model.pt"
 YOLO_VIDEO_OUTPUT = PROJECT_ROOT / "results" / "yolo" / "video_predictions"
+YOLO_CONFIDENCE = float(json.loads(YOLO_EVALUATION_PATH.read_text()).get("confidence_threshold", 0.25))
+if not 0 < YOLO_CONFIDENCE < 1:
+    raise ValueError("YOLO confidence_threshold must be between 0 and 1")
 
 CLASSIFIER_LABELS = {
     "neural_network": "Neural Network (MLP)",
@@ -114,7 +117,7 @@ def run_analysis(video_path: Path, selected_models: list[str], host_url: str) ->
             try:
                 from src.yolo.main import detect_video
 
-                report = detect_video(video_path, model_path=YOLO_MODEL, frames=12)
+                report = detect_video(video_path, model_path=YOLO_MODEL, frames=12, conf=YOLO_CONFIDENCE)
                 stem = Path(report["output_dir"]).name
                 frames_with_urls = []
                 for f in report.get("frame_results", []):
@@ -216,7 +219,7 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str]) 
             latest_bgr = decoded_bgr[-1]
             ih, iw = latest_bgr.shape[:2]
             res = YOLO(str(YOLO_MODEL)).predict(
-                source=latest_bgr, conf=0.25, device=dev, verbose=False, save=False
+                source=latest_bgr, imgsz=640, rect=False, conf=YOLO_CONFIDENCE, device=dev, verbose=False, save=False
             )[0]
             detections = [
                 {
@@ -234,7 +237,8 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str]) 
             color = (250, 165, 96)  # Same blue used by the live YOLO overlay (BGR).
             for detection in detections:
                 x1, y1, x2, y2 = [int(v) for v in detection["bbox_xyxy"]]
-                text = f"YOLO {detection['class_name']} {detection['confidence']:.0%}"
+                label = "item" if detection["class_name"] == "litter_object" else detection["class_name"]
+                text = f"YOLO {label} {detection['confidence']:.0%}"
                 scale = max(0.45, iw / 1200)
                 (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, scale, 1)
                 label_x = max(0, min(x1, iw - tw - 8))
@@ -255,6 +259,8 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str]) 
                 "strongest_detection": strongest,
                 "annotated_data_uri": annotated_b64,
                 "frames_buffered": len(decoded_bgr),
+                "confidence_threshold": YOLO_CONFIDENCE,
+                "task": "object_detection",
             }
         except Exception as exc:
             errors.append(f"YOLOv8n Live: {exc}")

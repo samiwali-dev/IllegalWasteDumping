@@ -294,9 +294,11 @@ def _read_detection_metadata(path: Path) -> dict[str, Any]:
         "model_size_mib": size / (1024 * 1024),
         "hyperparameters": source.get("hyperparameters"),
         "pretrained": source.get("pretrained"),
+        "confidence_threshold": source.get("confidence_threshold"),
+        "operating_point": source.get("operating_point"),
         "note": (
             "Included in the overall project evaluation. These are the saved "
-            "Roboflow region-detection scores on the stated split, not MIVIA "
+            "object-detection scores on the stated split, not MIVIA "
             "Dumping/No Dumping video scores or evidence that tracking/event "
             "detection was evaluated. No accuracy, video F1, confusion matrix, "
             "or per-video latency is invented for this detector."
@@ -332,7 +334,7 @@ def evaluate_runs(
         "comparison_note": (
             "All included algorithms belong to the project evaluation. Only "
             "MIVIA video classifiers share a directly comparable task and test "
-            "set. YOLO is reported with its saved Roboflow detection metrics "
+            "set. YOLO is reported with its saved object-detection metrics "
             "and actual evaluation split, not ranked by video accuracy. MIVIA "
             "results remain exploratory because the official test set had "
             "already been examined before the selection protocol was revised."

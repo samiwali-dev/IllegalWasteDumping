@@ -1,4 +1,7 @@
-"""Train YOLOv8n from scratch on the prepared Roboflow Littering dataset."""
+"""YOLO inference and the historical actor-region training recipe.
+
+For the active litter-object experiment use train_objects.py instead of `train`.
+"""
 from __future__ import annotations
 
 import argparse
@@ -244,7 +247,8 @@ def detect_video(
     output_dir.mkdir(parents=True, exist_ok=True)
     dev = resolve_device(device)
     results = YOLO(str(model_path)).predict(
-        source=[frame for _, _, frame in samples], conf=conf, device=dev, verbose=False, save=False,
+        source=[frame for _, _, frame in samples], imgsz=640, rect=False,
+        conf=conf, device=dev, verbose=False, save=False,
     )
 
     frame_reports, strongest = [], None

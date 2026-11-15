@@ -1,0 +1,20 @@
+{
+  "train": {
+    "exposures": 1310,
+    "unique_images": 1055,
+    "file_list_sha256": "51aa72cb7272898335b620d00a95b76ec93bb13ba8b9d348bc73b5e0c827fbf9",
+    "labels_sha256": "8a58c7dba8e734eb50306eade727db5aa3dcf4f7650139e8157fd8f92d3d65c2"
+  },
+  "val": {
+    "exposures": 229,
+    "unique_images": 229,
+    "file_list_sha256": "cc4cc1f7da5687e157a0c117bc470d929c6b9b7ca55a7b049490894580aec50d",
+    "labels_sha256": "c6c2d82f99ac365eed90d559da4c77e3642ba49e0de771c10d74844dc190f2ee"
+  },
+  "test": {
+    "exposures": 306,
+    "unique_images": 306,
+    "file_list_sha256": "6d5bfa329154cc797dbb2c9bb668a56dd35a553f685de83f85227674977a3976",
+    "labels_sha256": "766d67192b2c71575797a5a00cd4612e40f364ab3cce9d582cd4fcc112f82338"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "scope": "Qualitative review only. Video action labels are not object-box ground truth; detection counts are not event accuracy. Twelve existing test clips, 12 uniformly sampled frames per clip.",
+  "frame_count": 144,
+  "summaries": {
+    "historical": {
+      "vid0005.mp4": 11,
+      "vid0012.mp4": 0,
+      "vid0018.mp4": 7,
+      "vid0021.mp4": 0,
+      "vid0023.mp4": 0,
+      "vid0038.mp4": 0,
+      "vid0040.mp4": 0,
+      "vid0043.mp4": 0,
+      "vid0044.mp4": 0,
+      "vid0069.mp4": 0,
+      "vid0075.mp4": 0,
+      "vid0084.mp4": 0
+    },
+    "candidate": {
+      "vid0005.mp4": 15,
+      "vid0012.mp4": 28,
+      "vid0018.mp4": 16,
+      "vid0021.mp4": 15,
+      "vid0023.mp4": 204,
+      "vid0038.mp4": 33,
+      "vid0040.mp4": 58,
+      "vid0043.mp4": 4,
+      "vid0044.mp4": 31,
+      "vid0069.mp4": 200,
+      "vid0075.mp4": 44,
+      "vid0084.mp4": 10
+    }
+  }
+}

@@ -176,35 +176,55 @@
     },
     "yolov8n": {
       "task": "object_detection",
-      "dataset": "Roboflow Littering",
-      "evaluation_split": "Roboflow validation (the supplied test images have no COCO labels)",
+      "dataset": "TACO + reviewed backgrounds",
+      "evaluation_split": "Development test · 306 images (reused)",
       "metrics": {
-        "precision": 0.5108254417440554,
-        "recall": 0.7223650385604113,
-        "map50": 0.5428632534746103,
-        "map50_95": 0.24498013686129183
+        "precision": 0.8129175946547884,
+        "recall": 0.32272325375773653,
+        "map50": 0.449951605526817,
+        "map50_95": 0.30708257984756343
       },
       "metadata_json": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/yolo/yolov8n_run.json",
-      "source_data_yaml": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering-YOLO/data.yaml",
-      "training_seconds": 821.9389075419749,
-      "validation_seconds": 13.534214833984151,
+      "source_data_yaml": "datasets/litter_objects_v1/data_v2.yaml",
+      "training_seconds": 2255.8083562490065,
+      "validation_seconds": null,
       "model_paths": [
         "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/yolo/model.pt"
       ],
-      "model_size_bytes": 6217265,
-      "model_size_mib": 5.929245948791504,
+      "model_size_bytes": 6241905,
+      "model_size_mib": 5.952744483947754,
       "hyperparameters": {
-        "epochs": 5,
-        "imgsz": 320,
-        "batch": 32,
-        "patience": 5,
-        "workers": 0
+        "initial_epochs": 40,
+        "followup_epochs": 15,
+        "imgsz": 640,
+        "batch": 8,
+        "optimizer": "AdamW",
+        "initial_lr": 0.001,
+        "followup_lr": 0.0003,
+        "weighted_train_exposures": 1310,
+        "unique_train_images": 1055
       },
-      "pretrained": false,
-      "note": "Included in the overall project evaluation. These are the saved Roboflow region-detection scores on the stated split, not MIVIA Dumping/No Dumping video scores or evidence that tracking/event detection was evaluated. No accuracy, video F1, confusion matrix, or per-video latency is invented for this detector."
+      "pretrained": true,
+      "confidence_threshold": 0.65,
+      "operating_point": {
+        "threshold": 0.65,
+        "tp": 365,
+        "fp": 84,
+        "fn": 766,
+        "precision": 0.8129175946547884,
+        "recall": 0.32272325375773653,
+        "negative_images": 20,
+        "negative_images_with_detection": 2,
+        "f05": 0.6235052955244277,
+        "background_rejection": 0.9,
+        "selection_score": 0.5611547659719849,
+        "match_iou": 0.5,
+        "images": 306
+      },
+      "note": "Included in the overall project evaluation. These are the saved object-detection scores on the stated split, not MIVIA Dumping/No Dumping video scores or evidence that tracking/event detection was evaluated. No accuracy, video F1, confusion matrix, or per-video latency is invented for this detector."
     }
   },
-  "comparison_note": "All included algorithms belong to the project evaluation. Only MIVIA video classifiers share a directly comparable task and test set. YOLO is reported with its saved Roboflow detection metrics and actual evaluation split, not ranked by video accuracy. MIVIA results remain exploratory because the official test set had already been examined before the selection protocol was revised.",
+  "comparison_note": "All included algorithms belong to the project evaluation. Only MIVIA video classifiers share a directly comparable task and test set. YOLO is reported with its saved object-detection metrics and actual evaluation split, not ranked by video accuracy. MIVIA results remain exploratory because the official test set had already been examined before the selection protocol was revised.",
   "included_algorithms": [
     "optical_flow_svm",
     "neural_network",

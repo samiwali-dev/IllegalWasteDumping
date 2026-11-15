@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import nnWeights from './nnWeights.json';
-import { motionTrailGeometry } from './motionGeometry';
+import { motionTrailGeometry, yoloDetectionLabel } from './motionGeometry';
 
 const IMAGE_SIZE = 112;
 const GRID_SIZE = 4;
@@ -294,18 +294,20 @@ export async function drawDetectionsOnFrame(dataUri, detections) {
         const bw = (nx2 - nx1) * w;
         const bh = (ny2 - ny1) * h;
 
-        ctx.strokeStyle = '#D79533';
+        const modelDetection = det.source === 'yolov8n';
+        const boxColor = modelDetection ? '#60A5FA' : '#D79533';
+        ctx.strokeStyle = boxColor;
         ctx.lineWidth = Math.max(3, Math.round(w / 100));
         ctx.strokeRect(x1, y1, bw, bh);
 
-        ctx.fillStyle = 'rgba(215, 149, 51, 0.12)';
+        ctx.fillStyle = modelDetection ? 'rgba(96, 165, 250, 0.12)' : 'rgba(215, 149, 51, 0.12)';
         ctx.fillRect(x1, y1, bw, bh);
 
-        const label = 'Motion candidate';
+        const label = modelDetection ? yoloDetectionLabel(det) : 'Motion candidate';
         ctx.font = `bold ${Math.max(12, Math.round(w / 25))}px sans-serif`;
         const textWidth = ctx.measureText(label).width + 12;
         const textHeight = Math.max(20, Math.round(w / 18));
-        ctx.fillStyle = '#D79533';
+        ctx.fillStyle = boxColor;
         ctx.fillRect(x1, Math.max(0, y1 - textHeight), textWidth, textHeight);
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(label, x1 + 6, Math.max(14, y1 - 5));

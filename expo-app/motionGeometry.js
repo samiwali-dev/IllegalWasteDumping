@@ -19,7 +19,8 @@ function motionTrailGeometry(trail, width, height, mirrored = false) {
 
 function yoloDetectionLabel(detection) {
   const score = detection?.confidence;
-  return `YOLO · ${detection?.class_name || 'Object'}${Number.isFinite(score) ? ` ${Math.round(score * 100)}%` : ''}`;
+  const name = detection?.class_name === 'litter_object' ? 'item' : detection?.class_name || 'Object';
+  return `YOLO · ${name}${Number.isFinite(score) ? ` ${Math.round(score * 100)}%` : ''}`;
 }
 
 module.exports = { motionTrailGeometry, yoloDetectionLabel };

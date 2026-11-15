@@ -1,0 +1,469 @@
+{
+  "counts": {
+    "test": 8,
+    "train": 16,
+    "val": 3
+  },
+  "records": [
+    {
+      "id": "N01",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N01.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_9_10_jpg.rf.d938eb467b3c82eeff421d8551fbb3b4.jpg",
+      "crop_xyxy": [
+        715,
+        424,
+        768,
+        531
+      ],
+      "source_annotation_id": 7390,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N01.jpg"
+    },
+    {
+      "id": "N02",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N02.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_5_20_jpg.rf.a7b2621a76c07bb550503149d8dbfc05.jpg",
+      "crop_xyxy": [
+        912,
+        482,
+        1002,
+        618
+      ],
+      "source_annotation_id": 4518,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N02.jpg"
+    },
+    {
+      "id": "N05",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N05.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_2_26_jpg.rf.f3a6abeecc0e14080e4d3a2cca2ca05c.jpg",
+      "crop_xyxy": [
+        1231,
+        593,
+        1317,
+        737
+      ],
+      "source_annotation_id": 11140,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N05.jpg"
+    },
+    {
+      "id": "N06",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N06.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_4_26_jpg.rf.81ceb056e5e7b49281e51c881a44156a.jpg",
+      "crop_xyxy": [
+        1109,
+        550,
+        1292,
+        719
+      ],
+      "source_annotation_id": 8918,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N06.jpg"
+    },
+    {
+      "id": "N08",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N08.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_9_6_jpg.rf.cbf22d11bb357663a32ad0155185b001.jpg",
+      "crop_xyxy": [
+        1020,
+        437,
+        1101,
+        552
+      ],
+      "source_annotation_id": 6624,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N08.jpg"
+    },
+    {
+      "id": "N10",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N10.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_3_18_jpg.rf.df3ce0a616e21bfbcc7fdd5c31ded8ee.jpg",
+      "crop_xyxy": [
+        1029,
+        505,
+        1165,
+        614
+      ],
+      "source_annotation_id": 7722,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N10.jpg"
+    },
+    {
+      "id": "N11",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N11.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_10_1_jpg.rf.e9dffc67c7b029ba47800c6b43262811.jpg",
+      "crop_xyxy": [
+        1181,
+        472,
+        1238,
+        593
+      ],
+      "source_annotation_id": 8377,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "val",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/val/negative_N11.jpg"
+    },
+    {
+      "id": "N12",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N12.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_5_26_jpg.rf.d541811a9ab7b065b0ac2364551b785a.jpg",
+      "crop_xyxy": [
+        532,
+        548,
+        654,
+        650
+      ],
+      "source_annotation_id": 7148,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N12.jpg"
+    },
+    {
+      "id": "N14",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N14.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_5_5_jpg.rf.fdccfc680a2695be5da180e3e01e3ec5.jpg",
+      "crop_xyxy": [
+        1263,
+        175,
+        1390,
+        368
+      ],
+      "source_annotation_id": 11739,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N14.jpg"
+    },
+    {
+      "id": "N15",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N15.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_6_16_jpg.rf.c469f5c42cdefe7e01047d9fddad92b6.jpg",
+      "crop_xyxy": [
+        1106,
+        403,
+        1223,
+        584
+      ],
+      "source_annotation_id": 6182,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N15.jpg"
+    },
+    {
+      "id": "N17",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N17.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_9_24_jpg.rf.fb5e8f249b2f8e4f7048b0e0d37c339a.jpg",
+      "crop_xyxy": [
+        867,
+        369,
+        1012,
+        693
+      ],
+      "source_annotation_id": 11585,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N17.jpg"
+    },
+    {
+      "id": "N18",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N18.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_11_9_jpg.rf.d8ac4c4431f142b16a3fa4b0a7eb32a1.jpg",
+      "crop_xyxy": [
+        1141,
+        434,
+        1287,
+        636
+      ],
+      "source_annotation_id": 7347,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N18.jpg"
+    },
+    {
+      "id": "N19",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N19.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_12_2_jpg.rf.64e9ad221c7e88e7e209ff493610d639.jpg",
+      "crop_xyxy": [
+        1255,
+        369,
+        1470,
+        690
+      ],
+      "source_annotation_id": 2813,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N19.jpg"
+    },
+    {
+      "id": "N21",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N21.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_5_19_jpg.rf.84a90c5b2547d7435bf500ef59652e31.jpg",
+      "crop_xyxy": [
+        1165,
+        98,
+        1494,
+        328
+      ],
+      "source_annotation_id": 9085,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N21.jpg"
+    },
+    {
+      "id": "N23",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N23.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_12_1_jpg.rf.9f7342fcfb9032b9649938ea334ec7dd.jpg",
+      "crop_xyxy": [
+        448,
+        384,
+        532,
+        510
+      ],
+      "source_annotation_id": 10557,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N23.jpg"
+    },
+    {
+      "id": "N25",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N25.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_1_12_jpg.rf.d5f94d92d3bb04ec661535d9310a8b8e.jpg",
+      "crop_xyxy": [
+        986,
+        443,
+        1109,
+        653
+      ],
+      "source_annotation_id": 7191,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "val",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/val/negative_N25.jpg"
+    },
+    {
+      "id": "N26",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N26.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_2_11_jpg.rf.ce0de4418aa2190df287a4b9086fd6c6.jpg",
+      "crop_xyxy": [
+        671,
+        304,
+        799,
+        539
+      ],
+      "source_annotation_id": 6742,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "val",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/val/negative_N26.jpg"
+    },
+    {
+      "id": "N27",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N27.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_2_4_jpg.rf.9e8d04546d666d8fa36b652b6cbef87e.jpg",
+      "crop_xyxy": [
+        659,
+        361,
+        797,
+        628
+      ],
+      "source_annotation_id": 10515,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N27.jpg"
+    },
+    {
+      "id": "N33",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N33.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_5_12_jpg.rf.db9323a1327f282fe403b14df64ab32a.jpg",
+      "crop_xyxy": [
+        556,
+        501,
+        669,
+        621
+      ],
+      "source_annotation_id": 7509,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N33.jpg"
+    },
+    {
+      "id": "N35",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N35.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_2_22_jpg.rf.be35bbb1836e3f1bdf8ff81a138ac00f.jpg",
+      "crop_xyxy": [
+        1131,
+        336,
+        1270,
+        562
+      ],
+      "source_annotation_id": 5829,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N35.jpg"
+    },
+    {
+      "id": "N36",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N36.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_9_14_jpg.rf.a294951f9f3cdee942bb32c8aa85c18c.jpg",
+      "crop_xyxy": [
+        666,
+        460,
+        850,
+        757
+      ],
+      "source_annotation_id": 10745,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N36.jpg"
+    },
+    {
+      "id": "N37",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N37.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_1_16_jpg.rf.ccae1503d1a6025aefa86989141d275b.jpg",
+      "crop_xyxy": [
+        205,
+        445,
+        351,
+        611
+      ],
+      "source_annotation_id": 6661,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N37.jpg"
+    },
+    {
+      "id": "N38",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N38.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_4_11_jpg.rf.7f43bbf0fbfbaaaeb9f4e6a50e66d327.jpg",
+      "crop_xyxy": [
+        503,
+        376,
+        624,
+        608
+      ],
+      "source_annotation_id": 8760,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N38.jpg"
+    },
+    {
+      "id": "N40",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N40.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_4_20_jpg.rf.a94b3983c4d4be76bb5a6174a3587ec3.jpg",
+      "crop_xyxy": [
+        848,
+        357,
+        1076,
+        562
+      ],
+      "source_annotation_id": 4596,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N40.jpg"
+    },
+    {
+      "id": "N41",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N41.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_9_9_jpg.rf.af7230d1da583fee0578d4700d3910e0.jpg",
+      "crop_xyxy": [
+        1168,
+        570,
+        1250,
+        691
+      ],
+      "source_annotation_id": 4930,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N41.jpg"
+    },
+    {
+      "id": "N42",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N42.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_9_10_jpg.rf.fe1308ffa07dab9d12dd142610ec91e6.jpg",
+      "crop_xyxy": [
+        346,
+        322,
+        501,
+        627
+      ],
+      "source_annotation_id": 11756,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "train",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/train/negative_N42.jpg"
+    },
+    {
+      "id": "N44",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/negative_review/N44.jpg",
+      "source_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/Littering.v8-yolotiny.coco/train/video_4_28_jpg.rf.6f8949a773e34466ebd58c82f26bb75f.jpg",
+      "crop_xyxy": [
+        1320,
+        362,
+        1562,
+        604
+      ],
+      "source_annotation_id": 3483,
+      "decision": "accept_background",
+      "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+      "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+      "split": "test",
+      "prepared_file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/images/test/negative_N44.jpg"
+    }
+  ],
+  "scope": "Reviewed clothing/person crops. Related source environments; this is not an independent indoor deployment benchmark."
+}

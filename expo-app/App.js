@@ -15,11 +15,12 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { frameUri, captureFromResult, retainCaptures, shouldCaptureModelResult } from './captureStore';
+import { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall } from './captureStore';
 import MotionTrail from './MotionTrail';
 import { yoloDetectionLabel } from './motionGeometry';
 import {
   analyzeLiveFramesOnEdge,
+  drawDetectionsOnFrame,
   grabWebVideoFrameFast,
   getWebCameraAspectRatio,
   isWebCameraMirrored,
@@ -98,16 +99,16 @@ const FALLBACK_EVALUATION = {
     },
     yolov8n: {
       task: 'object_detection',
-      dataset: 'Roboflow Littering',
-      evaluation_split: 'Roboflow validation (1,168 images)',
+      dataset: 'TACO + reviewed backgrounds',
+      evaluation_split: 'Development test · 306 images (reused)',
       metrics: {
-        precision: 0.510825,
-        recall: 0.722365,
-        map50: 0.542863,
-        map50_95: 0.24498,
+        precision: 0.8129175947,
+        recall: 0.3227232538,
+        map50: 0.4499516055,
+        map50_95: 0.3070825798,
       },
-      training_seconds: 821.94,
-      validation_seconds: 21.85,
+      confidence_threshold: 0.65,
+      training_seconds: 2255.81,
       model_size_mib: 5.93,
     },
   },
@@ -205,6 +206,7 @@ export default function App() {
   const [frameTotal, setFrameTotal] = useState(0);
   const lastAutoCaptureRef = useRef(0);
   const lastModelCaptureRef = useRef(0);
+  const lastTrackedFallRef = useRef(null);
 
   const [apiBase, setApiBase] = useState('http://localhost:8000');
   const [selectedChoice, setSelectedChoice] = useState('all');
@@ -356,6 +358,8 @@ export default function App() {
       pending = true;
       setApiLiveBusy(true);
       const frames = frameBufferRef.current.slice(-24).map(frameUri).filter(Boolean);
+      const motionAtCapture = lastTrackedFallRef.current;
+      const capturedAt = Date.now();
       try {
         const response = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -368,9 +372,13 @@ export default function App() {
         setApiLiveResult({ ...result, mode: 'python_api', receivedAt: Date.now() });
         setApiLiveError(result.errors?.join(' · ') || '');
         const now = Date.now();
-        if (shouldCaptureModelResult(result, lastAutoCaptureRef.current, now) && now - lastModelCaptureRef.current > 3000) {
+        const associated = captureDetectionsForFall(result, motionAtCapture, capturedAt);
+        if (associated.length && now - lastModelCaptureRef.current > 3000) {
+          const annotated = await drawDetectionsOnFrame(frames[frames.length - 1], associated);
+          if (!active) return;
           lastModelCaptureRef.current = now;
-          addCapture(captureFromResult({ ...result, mode: 'python_api' }, frames, now));
+          const capture = captureFromResult({ ...result, mode: 'python_api', yolo_live: { ...result.yolo_live, detections: associated, total_detections: associated.length, annotated_data_uri: annotated } }, frames, capturedAt);
+          if (capture) addCapture({ ...capture, kind: 'Fall candidate' });
         }
       } catch (error) {
         if (active) setApiLiveError(`Live models: ${error.message}`);
@@ -385,6 +393,9 @@ export default function App() {
 
   const acceptLiveResult = (result, frames) => {
     setLiveResult(result);
+    if (result?.yolo_live?.total_detections > 0) {
+      lastTrackedFallRef.current = { at: Date.now(), detections: result.yolo_live.detections };
+    }
     const capture = captureFromResult(result, frames);
     if (capture && Date.now() - lastAutoCaptureRef.current > 3000) {
       lastAutoCaptureRef.current = Date.now();
@@ -464,6 +475,7 @@ export default function App() {
     }
     if (liveTimerRef.current) clearInterval(liveTimerRef.current);
     frameBufferRef.current = [];
+    lastTrackedFallRef.current = null;
     setApiLiveResult(null);
     setApiLiveError('');
     setFrameTotal(0);
@@ -527,6 +539,7 @@ export default function App() {
     setLiveMonitoring(false);
     setLiveFps(0);
     setLiveResult(null);
+    lastTrackedFallRef.current = null;
     setLiveStatus('Live monitoring paused.');
   };
 
@@ -665,8 +678,8 @@ export default function App() {
             const action = apiAction || localAction;
             const yolo = id === 'yolov8n' ? apiLiveResult?.yolo_live : null;
             const hasResult = Boolean(action || yolo);
-            const positive = action?.prediction === 1 || (yolo?.total_detections || 0) > 0;
-            const status = hasResult ? positive ? 'ALERT' : 'NO ALERT' : apiConnected || id === 'neural_network' ? liveMonitoring ? 'WAITING' : 'IDLE' : 'API REQUIRED';
+            const positive = action?.prediction === 1;
+            const status = yolo ? `${yolo.total_detections} ITEMS` : hasResult ? positive ? 'ALERT' : 'NO ALERT' : apiConnected || id === 'neural_network' ? liveMonitoring ? 'WAITING' : 'IDLE' : 'API REQUIRED';
             return <View key={id} style={styles.liveModelCard}>
               <Text style={[styles.liveModelBadge, positive && styles.liveModelAlert]}>{status}</Text>
               <Text style={styles.liveModelTitle}>{id === 'neural_network' ? 'Neural Network (MLP)' : model.title}</Text>
@@ -881,7 +894,7 @@ export default function App() {
       </View>
       <View style={[styles.mainColumns, !isDesktop && styles.stacked, { marginTop: 24 }]}>
         <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>Confusion matrix</Text><Text style={styles.mutedSmall}>{MODEL_META[selectedEvalModel].title} · select a model above</Text></View></View><View style={styles.matrixGrid}>{[{ label: 'True negative', value: matrix[0][0], tone: '#0B8163' }, { label: 'False positive', value: matrix[0][1], tone: '#B46D21' }, { label: 'False negative', value: matrix[1][0], tone: '#BF4D4D' }, { label: 'True positive', value: matrix[1][1], tone: '#367AA9' }].map(item => <View style={styles.matrixCell} key={item.label}><Text style={[styles.matrixNumber, { color: item.tone }]}>{item.value}</Text><Text style={styles.mutedSmall}>{item.label}</Text></View>)}</View></View>
-        <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>YOLOv8n detection</Text><Text style={styles.mutedSmall}>Littering validation set · 1,168 images</Text></View></View><View style={styles.detectionMetrics}>{[['Precision', 'precision'], ['Recall', 'recall'], ['mAP@50', 'map50'], ['mAP@50:95', 'map50_95']].map(([label, key]) => <View style={styles.detectionMetric} key={key}><Text style={styles.statValue}>{percent((modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).metrics[key])}</Text><Text style={styles.statLabel}>{label}</Text></View>)}</View><Text style={[styles.footnote, { padding: 20 }]}>Box-detection metrics and video-classification metrics measure different tasks.</Text></View>
+        <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>YOLOv8n detection</Text><Text style={styles.mutedSmall}>{(modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).dataset} · {(modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).evaluation_split}</Text></View></View><View style={styles.detectionMetrics}>{[['Precision', 'precision'], ['Recall', 'recall'], ['mAP@50', 'map50'], ['mAP@50:95', 'map50_95']].map(([label, key]) => <View style={styles.detectionMetric} key={key}><Text style={styles.statValue}>{percent((modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).metrics[key])}</Text><Text style={styles.statLabel}>{label}</Text></View>)}</View><Text style={[styles.footnote, { padding: 20 }]}>Object detection is not proof of throwing. Precision and recall use the selected score threshold; mAP summarizes all score thresholds. This development benchmark has been reused.</Text></View>
       </View>
       <Text style={styles.footnote}>MIVIA results are exploratory because the official test set was reused during protocol development. These benchmarks are not live confidence scores.</Text>
     </>;

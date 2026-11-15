@@ -1,0 +1,19 @@
+{
+  "scope": "Qualitative only. Twelve existing MIVIA clips, 12 frames each; object counts are not throwing accuracy.",
+  "confidence_threshold": 0.65,
+  "frame_count": 144,
+  "detections_per_video": {
+    "vid0012.mp4": 13,
+    "vid0023.mp4": 16,
+    "vid0044.mp4": 20,
+    "vid0069.mp4": 23,
+    "vid0075.mp4": 2,
+    "vid0084.mp4": 1,
+    "vid0005.mp4": 0,
+    "vid0018.mp4": 6,
+    "vid0021.mp4": 1,
+    "vid0038.mp4": 0,
+    "vid0040.mp4": 0,
+    "vid0043.mp4": 0
+  }
+}

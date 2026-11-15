@@ -1,0 +1,42 @@
+{
+  "train": [
+    "vid0230.mp4",
+    "vid0235.mp4",
+    "vid0445.mp4",
+    "vid0089.mp4",
+    "vid0407.mp4",
+    "vid0059.mp4",
+    "vid0162.mp4",
+    "vid0384.mp4",
+    "vid0408.mp4",
+    "vid0379.mp4",
+    "vid0289.mp4",
+    "vid0391.mp4",
+    "vid0448.mp4",
+    "vid0389.mp4",
+    "vid0497.mp4",
+    "vid0060.mp4",
+    "vid0194.mp4",
+    "vid0335.mp4",
+    "vid0474.mp4",
+    "vid0423.mp4"
+  ],
+  "val": [
+    "vid0172.mp4",
+    "vid0099.mp4",
+    "vid0467.mp4",
+    "vid0041.mp4",
+    "vid0339.mp4",
+    "vid0036.mp4"
+  ],
+  "test": [
+    "vid0270.mp4",
+    "vid0121.mp4",
+    "vid0479.mp4",
+    "vid0154.mp4",
+    "vid0308.mp4",
+    "vid0067.mp4",
+    "vid0341.mp4",
+    "vid0134.mp4"
+  ]
+}

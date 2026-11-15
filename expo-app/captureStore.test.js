@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const { frameUri, captureFromResult, retainCaptures, shouldCaptureModelResult } = require('./captureStore');
+const { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall } = require('./captureStore');
 
 const alert = {
   mode: 'edge_browser', actions: [{ prediction: 1 }],
@@ -43,9 +43,22 @@ test('history keeps the latest six unique captures', () => {
   assert.equal(captures.length, 6);
 });
 
-test('classification alone cannot replace a fall photo with an unmarked frame', () => {
+test('classification or a static YOLO object cannot create a fall capture', () => {
   const classification = { actions: [{ prediction: 1 }], yolo_live: { total_detections: 0 } };
-  assert.equal(shouldCaptureModelResult(classification, 0, 10000), false);
-  assert.equal(shouldCaptureModelResult(alert, 9500, 10000), false);
-  assert.equal(shouldCaptureModelResult(alert, 5000, 10000), true);
+  assert.deepEqual(captureDetectionsForFall(classification, null, 10000), []);
+  const object = { yolo_live: { detections: [{ norm_box: [.4, .4, .6, .6], confidence: .9 }] } };
+  assert.deepEqual(captureDetectionsForFall(object, null, 10000), []);
+});
+
+test('a model capture requires a fresh falling track at the same object location', () => {
+  const detection = { norm_box: [.4, .4, .6, .6], class_name: 'litter_object', confidence: .84 };
+  const result = { yolo_live: { detections: [detection] } };
+  const track = { reason: 'falling_object', norm_box: [.3, .3, .7, .7], trail: [{ cx: .5, cy: .1 }, { cx: .5, cy: .3 }, { cx: .5, cy: .5 }] };
+  const matched = captureDetectionsForFall(result, { at: 9500, detections: [track] }, 10000);
+  assert.equal(matched.length, 1);
+  assert.equal(matched[0].confidence, .84);
+  assert.equal(matched[0].trail, track.trail);
+  assert.deepEqual(captureDetectionsForFall(result, { at: 5000, detections: [track] }, 10000), []);
+  assert.deepEqual(captureDetectionsForFall(result, { at: 9500, detections: [{ ...track, norm_box: [0, 0, .1, .1] }] }, 10000), []);
+  assert.deepEqual(captureDetectionsForFall(result, { at: 9500, detections: [{ ...track, trail: [] }] }, 10000), []);
 });

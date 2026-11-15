@@ -1,0 +1,2763 @@
+{
+  "reviewed_proposals": 136,
+  "accepted_after_duplicate_checks": {
+    "train": 37,
+    "val": 14,
+    "test": 12
+  },
+  "unique_split_counts": {
+    "train": 1055,
+    "val": 229,
+    "test": 306
+  },
+  "train_exposure_weight": {
+    "TACO": 1,
+    "existing_reviewed_background": 10,
+    "new_reviewed_background": 4
+  },
+  "selection": "Crops proposed by object v1, reviewed for non-litter content. Distinct source videos, exact/near duplicate crops excluded. Hard-negative stress test, not a population false-alarm estimate.",
+  "benchmark_note": "TACO held-out benchmark was already inspected after v1; subsequent comparisons are development results, not a fresh blind test. New hard-negative test source videos were not used in training.",
+  "records": [
+    {
+      "id": "H000",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H000.jpg",
+      "source_video": "vid0235.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0235.mp4",
+      "frame_index": 535,
+      "scale": 1,
+      "crop_xyxy": [
+        131,
+        21,
+        231,
+        121
+      ],
+      "proposal_confidence": 0.35441431403160095,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "aa8d509fff43d16f31831e9abec03a82606e82a33496e5792b255d3df0798a67",
+      "phash": "a43558cb1dd89d63"
+    },
+    {
+      "id": "H001",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H001.jpg",
+      "source_video": "vid0235.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0235.mp4",
+      "frame_index": 535,
+      "scale": 1,
+      "crop_xyxy": [
+        90,
+        46,
+        190,
+        146
+      ],
+      "proposal_confidence": 0.3440818786621094,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "423fd207b51241a07c554b6ee482e79f5bcb16c134ff3eb2bb2b41ebd31f682d",
+      "phash": "99bc6f498c325e52"
+    },
+    {
+      "id": "H002",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H002.jpg",
+      "source_video": "vid0235.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0235.mp4",
+      "frame_index": 1087,
+      "scale": 1,
+      "crop_xyxy": [
+        103,
+        144,
+        203,
+        240
+      ],
+      "proposal_confidence": 0.6315599083900452,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "615289f6623eb4d3be099324ad7a0ced5090a91fd4a081f2a9ab6603aff02495",
+      "phash": "d4786b8e3656e2a4"
+    },
+    {
+      "id": "H003",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H003.jpg",
+      "source_video": "vid0235.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0235.mp4",
+      "frame_index": 1087,
+      "scale": 1,
+      "crop_xyxy": [
+        90,
+        47,
+        190,
+        147
+      ],
+      "proposal_confidence": 0.4799884259700775,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "9be18b6c4823b51e4f30ea991b1d6bd25196738b14ef71c67894f79a5d0f34db",
+      "phash": "99be694798925e52"
+    },
+    {
+      "id": "H004",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H004.jpg",
+      "source_video": "vid0235.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0235.mp4",
+      "frame_index": 1087,
+      "scale": 1,
+      "crop_xyxy": [
+        131,
+        19,
+        231,
+        119
+      ],
+      "proposal_confidence": 0.3078765869140625,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "eb7a9b971721b9696f7d310dbfb592c82481e8cb03af708138f6417a72153cc6",
+      "phash": "a43750cb1dd8b1e3"
+    },
+    {
+      "id": "H005",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H005.jpg",
+      "source_video": "vid0445.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0445.mp4",
+      "frame_index": 51,
+      "scale": 1,
+      "crop_xyxy": [
+        26,
+        172,
+        126,
+        272
+      ],
+      "proposal_confidence": 0.6783263087272644,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H006",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H006.jpg",
+      "source_video": "vid0445.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0445.mp4",
+      "frame_index": 51,
+      "scale": 1,
+      "crop_xyxy": [
+        101,
+        141,
+        201,
+        241
+      ],
+      "proposal_confidence": 0.45895084738731384,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H007",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H007.jpg",
+      "source_video": "vid0445.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0445.mp4",
+      "frame_index": 51,
+      "scale": 1,
+      "crop_xyxy": [
+        299,
+        225,
+        399,
+        325
+      ],
+      "proposal_confidence": 0.355336457490921,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "df05843c5e38a413dff891db82169c4525633a6fffc911e274b8b0d67bad77e9",
+      "phash": "eac812b6494fcb99"
+    },
+    {
+      "id": "H008",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H008.jpg",
+      "source_video": "vid0445.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0445.mp4",
+      "frame_index": 103,
+      "scale": 1,
+      "crop_xyxy": [
+        27,
+        171,
+        127,
+        271
+      ],
+      "proposal_confidence": 0.7053449749946594,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H009",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H009.jpg",
+      "source_video": "vid0445.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0445.mp4",
+      "frame_index": 103,
+      "scale": 1,
+      "crop_xyxy": [
+        300,
+        225,
+        400,
+        325
+      ],
+      "proposal_confidence": 0.36909812688827515,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "37330a1263e2232bd51af145c5c54c1973f9ed48741f4b32eafa04351d142d1d",
+      "phash": "eec992b6484e6399"
+    },
+    {
+      "id": "H010",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H010.jpg",
+      "source_video": "vid0445.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0445.mp4",
+      "frame_index": 103,
+      "scale": 1,
+      "crop_xyxy": [
+        31,
+        167,
+        131,
+        267
+      ],
+      "proposal_confidence": 0.3537938594818115,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H011",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H011.jpg",
+      "source_video": "vid0089.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0089.mp4",
+      "frame_index": 148,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        106,
+        472,
+        409
+      ],
+      "proposal_confidence": 0.8558225035667419,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "4335ee2c17fb0af2d54272e5b7722fcd7f4df4566b49ae96e019e0c2611f78c4",
+      "phash": "b361da1f6a792162"
+    },
+    {
+      "id": "H012",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H012.jpg",
+      "source_video": "vid0089.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0089.mp4",
+      "frame_index": 148,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        119,
+        132,
+        268
+      ],
+      "proposal_confidence": 0.78289794921875,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "c348fa7d6fea737464da579b85bd4b2fb9dfe720739586b02d71d41bb889388a",
+      "phash": "94b3c93c66933cc9"
+    },
+    {
+      "id": "H013",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H013.jpg",
+      "source_video": "vid0089.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0089.mp4",
+      "frame_index": 148,
+      "scale": 0.5,
+      "crop_xyxy": [
+        710,
+        246,
+        810,
+        428
+      ],
+      "proposal_confidence": 0.4334486126899719,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "0181e64d8b500b08e5eda71e09f84b4641c386cc31745b9d4c8a0a95b4ce773f",
+      "phash": "af6be38c51434699"
+    },
+    {
+      "id": "H014",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H014.jpg",
+      "source_video": "vid0089.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0089.mp4",
+      "frame_index": 301,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        105,
+        471,
+        411
+      ],
+      "proposal_confidence": 0.8706645965576172,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H015",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H015.jpg",
+      "source_video": "vid0089.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0089.mp4",
+      "frame_index": 301,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        123,
+        132,
+        267
+      ],
+      "proposal_confidence": 0.7301774024963379,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H016",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H016.jpg",
+      "source_video": "vid0089.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0089.mp4",
+      "frame_index": 301,
+      "scale": 0.5,
+      "crop_xyxy": [
+        709,
+        247,
+        809,
+        428
+      ],
+      "proposal_confidence": 0.3975558578968048,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H017",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H017.jpg",
+      "source_video": "vid0407.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0407.mp4",
+      "frame_index": 402,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        390,
+        83,
+        510
+      ],
+      "proposal_confidence": 0.37520551681518555,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "d20545eac14515bb7bff87bae16a26bdd8d690abacf1863eb30fb63100342b90",
+      "phash": "d1f722dac431da46"
+    },
+    {
+      "id": "H018",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H018.jpg",
+      "source_video": "vid0407.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0407.mp4",
+      "frame_index": 402,
+      "scale": 0.5,
+      "crop_xyxy": [
+        806,
+        25,
+        917,
+        125
+      ],
+      "proposal_confidence": 0.27299878001213074,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "fa2fbb579a984c29736d17d0bf715a72fff5d3935ace6972ba027f4f04b2329e",
+      "phash": "db00a71d3fdc6a30"
+    },
+    {
+      "id": "H019",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H019.jpg",
+      "source_video": "vid0059.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0059.mp4",
+      "frame_index": 291,
+      "scale": 0.75,
+      "crop_xyxy": [
+        693,
+        247,
+        793,
+        347
+      ],
+      "proposal_confidence": 0.8144987225532532,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "85229206115b25016a8cde2363665e0fde8d14fb6a319666e09a1f7d7d9ca1e2",
+      "phash": "e116a38e5eda21f8"
+    },
+    {
+      "id": "H020",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H020.jpg",
+      "source_video": "vid0059.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0059.mp4",
+      "frame_index": 291,
+      "scale": 0.75,
+      "crop_xyxy": [
+        692,
+        243,
+        792,
+        360
+      ],
+      "proposal_confidence": 0.46263137459754944,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "8e81ff8ec13594529f251090079c0adea4653144db215617154ea3e25d82b4f3",
+      "phash": "e51ea7825e599839"
+    },
+    {
+      "id": "H021",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H021.jpg",
+      "source_video": "vid0059.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0059.mp4",
+      "frame_index": 291,
+      "scale": 0.75,
+      "crop_xyxy": [
+        299,
+        231,
+        432,
+        439
+      ],
+      "proposal_confidence": 0.3985338807106018,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "f6ee9bf8f87913dcd7907e5cfb9a9d517ab1052e6c094655a183982cb290ae94",
+      "phash": "a703ce39ad0e73a4"
+    },
+    {
+      "id": "H022",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H022.jpg",
+      "source_video": "vid0059.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0059.mp4",
+      "frame_index": 592,
+      "scale": 0.75,
+      "crop_xyxy": [
+        735,
+        130,
+        960,
+        429
+      ],
+      "proposal_confidence": 0.744324266910553,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "328363b18ca855920c1e062a305761f1460186ec81ea2381f01d85aec3e939ff",
+      "phash": "e29c87911a93e31f"
+    },
+    {
+      "id": "H023",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H023.jpg",
+      "source_video": "vid0059.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0059.mp4",
+      "frame_index": 592,
+      "scale": 0.75,
+      "crop_xyxy": [
+        299,
+        231,
+        433,
+        439
+      ],
+      "proposal_confidence": 0.550212562084198,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H024",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H024.jpg",
+      "source_video": "vid0059.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0059.mp4",
+      "frame_index": 592,
+      "scale": 0.75,
+      "crop_xyxy": [
+        625,
+        295,
+        725,
+        395
+      ],
+      "proposal_confidence": 0.2966283857822418,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H025",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H025.jpg",
+      "source_video": "vid0162.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0162.mp4",
+      "frame_index": 200,
+      "scale": 0.75,
+      "crop_xyxy": [
+        468,
+        68,
+        568,
+        322
+      ],
+      "proposal_confidence": 0.3447318375110626,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H026",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H026.jpg",
+      "source_video": "vid0384.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0384.mp4",
+      "frame_index": 61,
+      "scale": 0.5,
+      "crop_xyxy": [
+        537,
+        0,
+        960,
+        540
+      ],
+      "proposal_confidence": 0.8101778030395508,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H027",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H027.jpg",
+      "source_video": "vid0384.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0384.mp4",
+      "frame_index": 61,
+      "scale": 0.5,
+      "crop_xyxy": [
+        202,
+        64,
+        302,
+        231
+      ],
+      "proposal_confidence": 0.785348117351532,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H028",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H028.jpg",
+      "source_video": "vid0384.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0384.mp4",
+      "frame_index": 61,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        364,
+        71,
+        540
+      ],
+      "proposal_confidence": 0.40837618708610535,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H029",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H029.jpg",
+      "source_video": "vid0384.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0384.mp4",
+      "frame_index": 124,
+      "scale": 0.5,
+      "crop_xyxy": [
+        407,
+        59,
+        954,
+        540
+      ],
+      "proposal_confidence": 0.8658263683319092,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H030",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H030.jpg",
+      "source_video": "vid0384.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0384.mp4",
+      "frame_index": 124,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        249,
+        278,
+        540
+      ],
+      "proposal_confidence": 0.8103150129318237,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H031",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H031.jpg",
+      "source_video": "vid0384.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0384.mp4",
+      "frame_index": 124,
+      "scale": 0.5,
+      "crop_xyxy": [
+        632,
+        57,
+        750,
+        199
+      ],
+      "proposal_confidence": 0.7006226181983948,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H032",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H032.jpg",
+      "source_video": "vid0408.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0408.mp4",
+      "frame_index": 324,
+      "scale": 0.75,
+      "crop_xyxy": [
+        183,
+        34,
+        349,
+        160
+      ],
+      "proposal_confidence": 0.719111442565918,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "67a199bb004e12cd21e32d30b50ac215d8c16e8e6ff113106c30128dd78d7fe5",
+      "phash": "98ed4c984da37369"
+    },
+    {
+      "id": "H033",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H033.jpg",
+      "source_video": "vid0408.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0408.mp4",
+      "frame_index": 324,
+      "scale": 0.75,
+      "crop_xyxy": [
+        589,
+        461,
+        689,
+        540
+      ],
+      "proposal_confidence": 0.5954153537750244,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "6c6941b89eec9d648dfb3994d688f50ef56622f64b5f4fa933d55684de5f1518",
+      "phash": "c866e7d84664dacc"
+    },
+    {
+      "id": "H034",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H034.jpg",
+      "source_video": "vid0408.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0408.mp4",
+      "frame_index": 324,
+      "scale": 0.75,
+      "crop_xyxy": [
+        9,
+        372,
+        245,
+        540
+      ],
+      "proposal_confidence": 0.42193764448165894,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "c85589771404e004c749ba4316e7eb209d7c77e9234e420b840c7db747ec468f",
+      "phash": "a5bea609db64c730"
+    },
+    {
+      "id": "H035",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H035.jpg",
+      "source_video": "vid0408.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0408.mp4",
+      "frame_index": 659,
+      "scale": 0.75,
+      "crop_xyxy": [
+        160,
+        15,
+        331,
+        144
+      ],
+      "proposal_confidence": 0.6545315384864807,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H036",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H036.jpg",
+      "source_video": "vid0408.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0408.mp4",
+      "frame_index": 659,
+      "scale": 0.75,
+      "crop_xyxy": [
+        571,
+        440,
+        671,
+        540
+      ],
+      "proposal_confidence": 0.4974530339241028,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "047bdd889230f6624536fd990956f259b76e4b6e70c1b7651461ff604430bef7",
+      "phash": "c84ee42fd84e64da"
+    },
+    {
+      "id": "H037",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H037.jpg",
+      "source_video": "vid0408.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0408.mp4",
+      "frame_index": 659,
+      "scale": 0.75,
+      "crop_xyxy": [
+        274,
+        124,
+        416,
+        225
+      ],
+      "proposal_confidence": 0.4848279654979706,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "74d44f286f617f4aa45144a03ba860e9888df60451ba30258924000ad3316c62",
+      "phash": "db1ce618cc23f28d"
+    },
+    {
+      "id": "H038",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H038.jpg",
+      "source_video": "vid0379.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0379.mp4",
+      "frame_index": 218,
+      "scale": 0.25,
+      "crop_xyxy": [
+        30,
+        316,
+        398,
+        540
+      ],
+      "proposal_confidence": 0.9033057689666748,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H039",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H039.jpg",
+      "source_video": "vid0379.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0379.mp4",
+      "frame_index": 218,
+      "scale": 0.25,
+      "crop_xyxy": [
+        259,
+        291,
+        435,
+        455
+      ],
+      "proposal_confidence": 0.8979403376579285,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H040",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H040.jpg",
+      "source_video": "vid0379.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0379.mp4",
+      "frame_index": 218,
+      "scale": 0.25,
+      "crop_xyxy": [
+        326,
+        215,
+        538,
+        445
+      ],
+      "proposal_confidence": 0.8314882516860962,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H041",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H041.jpg",
+      "source_video": "vid0379.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0379.mp4",
+      "frame_index": 444,
+      "scale": 0.25,
+      "crop_xyxy": [
+        198,
+        277,
+        401,
+        400
+      ],
+      "proposal_confidence": 0.420695424079895,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H042",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H042.jpg",
+      "source_video": "vid0379.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0379.mp4",
+      "frame_index": 444,
+      "scale": 0.25,
+      "crop_xyxy": [
+        184,
+        266,
+        426,
+        442
+      ],
+      "proposal_confidence": 0.38815057277679443,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H043",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H043.jpg",
+      "source_video": "vid0391.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0391.mp4",
+      "frame_index": 234,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        389,
+        82,
+        507
+      ],
+      "proposal_confidence": 0.5677552223205566,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "56f79046317c499eac1e7db85841d2e995008e140a2ac6b26bd44c9578bf0c96",
+      "phash": "c9f13eca643e8d60"
+    },
+    {
+      "id": "H044",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H044.jpg",
+      "source_video": "vid0391.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0391.mp4",
+      "frame_index": 234,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        345,
+        82,
+        520
+      ],
+      "proposal_confidence": 0.3235688805580139,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "0e97eb26da3d0448c8708094d09423c35ae4a79bc63a73b62caf88dce9500bfe",
+      "phash": "cdba17c8351dca70"
+    },
+    {
+      "id": "H045",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H045.jpg",
+      "source_video": "vid0391.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0391.mp4",
+      "frame_index": 476,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        393,
+        83,
+        507
+      ],
+      "proposal_confidence": 0.33541080355644226,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H046",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H046.jpg",
+      "source_video": "vid0391.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0391.mp4",
+      "frame_index": 476,
+      "scale": 0.5,
+      "crop_xyxy": [
+        335,
+        63,
+        435,
+        163
+      ],
+      "proposal_confidence": 0.2797899544239044,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H047",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H047.jpg",
+      "source_video": "vid0448.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0448.mp4",
+      "frame_index": 328,
+      "scale": 0.75,
+      "crop_xyxy": [
+        490,
+        233,
+        590,
+        333
+      ],
+      "proposal_confidence": 0.6163289546966553,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "4ad69754fad9b132187cb0c29606861bbed26f440da6d9f3878d7953520744b4",
+      "phash": "b2c81c7267d8477a"
+    },
+    {
+      "id": "H048",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H048.jpg",
+      "source_video": "vid0448.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0448.mp4",
+      "frame_index": 328,
+      "scale": 0.75,
+      "crop_xyxy": [
+        244,
+        303,
+        344,
+        403
+      ],
+      "proposal_confidence": 0.39390960335731506,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H049",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H049.jpg",
+      "source_video": "vid0448.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0448.mp4",
+      "frame_index": 328,
+      "scale": 0.75,
+      "crop_xyxy": [
+        449,
+        219,
+        613,
+        451
+      ],
+      "proposal_confidence": 0.3926127552986145,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "764eb50d641cb4154e5d5c55baaa503817f03e14f65d15e4be07c93135ac1b19",
+      "phash": "f68c0b7d30c74e70"
+    },
+    {
+      "id": "H050",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H050.jpg",
+      "source_video": "vid0389.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0389.mp4",
+      "frame_index": 147,
+      "scale": 0.75,
+      "crop_xyxy": [
+        403,
+        333,
+        712,
+        540
+      ],
+      "proposal_confidence": 0.40411341190338135,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H051",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H051.jpg",
+      "source_video": "vid0497.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0497.mp4",
+      "frame_index": 113,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        442,
+        401,
+        542,
+        501
+      ],
+      "proposal_confidence": 0.38002830743789673,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H052",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H052.jpg",
+      "source_video": "vid0497.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0497.mp4",
+      "frame_index": 228,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        571,
+        43,
+        754,
+        247
+      ],
+      "proposal_confidence": 0.5081942081451416,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "b9c835ecd2f1495435ce691035edf2ccfe795a754f1959741b6148122b0ff0e6",
+      "phash": "a0f1df07706c33c3"
+    },
+    {
+      "id": "H053",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H053.jpg",
+      "source_video": "vid0194.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0194.mp4",
+      "frame_index": 267,
+      "scale": 0.3,
+      "crop_xyxy": [
+        665,
+        114,
+        785,
+        312
+      ],
+      "proposal_confidence": 0.9291750192642212,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "70239e70aaf528d797c3f6e2a836c9aa1543a4c0138495937fe9f35ead5d1a0f",
+      "phash": "df8fa0967161988d"
+    },
+    {
+      "id": "H054",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H054.jpg",
+      "source_video": "vid0194.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0194.mp4",
+      "frame_index": 267,
+      "scale": 0.3,
+      "crop_xyxy": [
+        390,
+        66,
+        526,
+        244
+      ],
+      "proposal_confidence": 0.9124988317489624,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "ae4bd80718d33175cd3725a34efe4d7ab3ea63c0804cf51c048abf001301b412",
+      "phash": "8d8bf2d0cb7e2423"
+    },
+    {
+      "id": "H055",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H055.jpg",
+      "source_video": "vid0194.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0194.mp4",
+      "frame_index": 267,
+      "scale": 0.3,
+      "crop_xyxy": [
+        170,
+        32,
+        312,
+        179
+      ],
+      "proposal_confidence": 0.899320125579834,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "80f7100e7068f1a75e3d671738bf24a512bb51ef7cf897a602f5834bd6d8b9f5",
+      "phash": "a487929a4c3b2ecf"
+    },
+    {
+      "id": "H056",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H056.jpg",
+      "source_video": "vid0194.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0194.mp4",
+      "frame_index": 541,
+      "scale": 0.3,
+      "crop_xyxy": [
+        666,
+        113,
+        784,
+        312
+      ],
+      "proposal_confidence": 0.9314546585083008,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H057",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H057.jpg",
+      "source_video": "vid0194.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0194.mp4",
+      "frame_index": 541,
+      "scale": 0.3,
+      "crop_xyxy": [
+        390,
+        66,
+        525,
+        244
+      ],
+      "proposal_confidence": 0.9272370338439941,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H058",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H058.jpg",
+      "source_video": "vid0194.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0194.mp4",
+      "frame_index": 541,
+      "scale": 0.3,
+      "crop_xyxy": [
+        171,
+        32,
+        312,
+        179
+      ],
+      "proposal_confidence": 0.9144725799560547,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "10740aa2cae19b16e0f8a9d67fe2ae255eb33ee5516a7c0beec2bc9ea52d6f1e",
+      "phash": "a48592bac93b2fc5"
+    },
+    {
+      "id": "H059",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H059.jpg",
+      "source_video": "vid0335.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0335.mp4",
+      "frame_index": 309,
+      "scale": 0.5,
+      "crop_xyxy": [
+        416,
+        279,
+        533,
+        396
+      ],
+      "proposal_confidence": 0.4060821533203125,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "f3acd62372a657f4b6de406187d1b94dbee9bf89994835d21be10c1750f92d9e",
+      "phash": "d2dc6d003bf84e4e"
+    },
+    {
+      "id": "H060",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H060.jpg",
+      "source_video": "vid0335.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0335.mp4",
+      "frame_index": 309,
+      "scale": 0.5,
+      "crop_xyxy": [
+        379,
+        258,
+        479,
+        504
+      ],
+      "proposal_confidence": 0.30514198541641235,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H061",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H061.jpg",
+      "source_video": "vid0335.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0335.mp4",
+      "frame_index": 626,
+      "scale": 0.5,
+      "crop_xyxy": [
+        673,
+        259,
+        908,
+        540
+      ],
+      "proposal_confidence": 0.6002696752548218,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H062",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H062.jpg",
+      "source_video": "vid0335.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0335.mp4",
+      "frame_index": 626,
+      "scale": 0.5,
+      "crop_xyxy": [
+        473,
+        331,
+        594,
+        431
+      ],
+      "proposal_confidence": 0.5292052030563354,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H063",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H063.jpg",
+      "source_video": "vid0335.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0335.mp4",
+      "frame_index": 626,
+      "scale": 0.5,
+      "crop_xyxy": [
+        461,
+        385,
+        561,
+        540
+      ],
+      "proposal_confidence": 0.251694917678833,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H064",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H064.jpg",
+      "source_video": "vid0474.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0474.mp4",
+      "frame_index": 621,
+      "scale": 1,
+      "crop_xyxy": [
+        0,
+        40,
+        105,
+        240
+      ],
+      "proposal_confidence": 0.5817500948905945,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "b72d3f3316fa408cfaf377f567fd1271325bed683f3e88e6c5b824fc7861c856",
+      "phash": "cdb43256d283cd2d"
+    },
+    {
+      "id": "H065",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H065.jpg",
+      "source_video": "vid0474.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0474.mp4",
+      "frame_index": 621,
+      "scale": 1,
+      "crop_xyxy": [
+        45,
+        25,
+        145,
+        240
+      ],
+      "proposal_confidence": 0.563645601272583,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "3d16da3f0bc2ae8ee927d6d3999184b372eecba2b9c248c733ea76bbca9c3763",
+      "phash": "ee870376f01c3c1e"
+    },
+    {
+      "id": "H066",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H066.jpg",
+      "source_video": "vid0474.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0474.mp4",
+      "frame_index": 1260,
+      "scale": 1,
+      "crop_xyxy": [
+        41,
+        31,
+        141,
+        240
+      ],
+      "proposal_confidence": 0.33420515060424805,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "47885eb5827e7226bc9ed6841a1732c7bff5671175f4cd4d4334b3a9f2dae327",
+      "phash": "d98f0764db1bb809"
+    },
+    {
+      "id": "H067",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H067.jpg",
+      "source_video": "vid0474.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0474.mp4",
+      "frame_index": 1260,
+      "scale": 1,
+      "crop_xyxy": [
+        205,
+        32,
+        305,
+        132
+      ],
+      "proposal_confidence": 0.2658970355987549,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H068",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H068.jpg",
+      "source_video": "vid0423.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0423.mp4",
+      "frame_index": 448,
+      "scale": 0.5,
+      "crop_xyxy": [
+        304,
+        112,
+        410,
+        212
+      ],
+      "proposal_confidence": 0.6487885117530823,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H069",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H069.jpg",
+      "source_video": "vid0423.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0423.mp4",
+      "frame_index": 448,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        390,
+        81,
+        507
+      ],
+      "proposal_confidence": 0.5182420015335083,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "09c37d3050f53f0285299411dd087e38d06f2880a3e52e196440ac82fef2f5fb",
+      "phash": "c8f43ec8e43b8e26"
+    },
+    {
+      "id": "H070",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H070.jpg",
+      "source_video": "vid0423.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0423.mp4",
+      "frame_index": 448,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        350,
+        81,
+        519
+      ],
+      "proposal_confidence": 0.25750142335891724,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "6fdf9e2dab06f82e9783915c6c2bf6c956c707b331ad590eb6baaec450a1873a",
+      "phash": "c9b216c9333dc971"
+    },
+    {
+      "id": "H071",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H071.jpg",
+      "source_video": "vid0423.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0423.mp4",
+      "frame_index": 911,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        394,
+        80,
+        507
+      ],
+      "proposal_confidence": 0.4846065938472748,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "d53b5ae14e2be24a7d388552c476b7c7cddb93c4e0c6982e6e6d477820ed46e1",
+      "phash": "d9f03ccae0359f06"
+    },
+    {
+      "id": "H072",
+      "role": "train",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H072.jpg",
+      "source_video": "vid0423.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0423.mp4",
+      "frame_index": 911,
+      "scale": 0.5,
+      "crop_xyxy": [
+        317,
+        79,
+        417,
+        179
+      ],
+      "proposal_confidence": 0.2754193842411041,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H073",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H073.jpg",
+      "source_video": "vid0099.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0099.mp4",
+      "frame_index": 92,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        643,
+        196,
+        793,
+        370
+      ],
+      "proposal_confidence": 0.8260130882263184,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H074",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H074.jpg",
+      "source_video": "vid0099.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0099.mp4",
+      "frame_index": 92,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        279,
+        186,
+        379,
+        286
+      ],
+      "proposal_confidence": 0.6531438231468201,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H075",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H075.jpg",
+      "source_video": "vid0099.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0099.mp4",
+      "frame_index": 92,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        337,
+        140,
+        546,
+        462
+      ],
+      "proposal_confidence": 0.575659990310669,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H076",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H076.jpg",
+      "source_video": "vid0099.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0099.mp4",
+      "frame_index": 186,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        582,
+        208,
+        750,
+        424
+      ],
+      "proposal_confidence": 0.8554660677909851,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H077",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H077.jpg",
+      "source_video": "vid0099.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0099.mp4",
+      "frame_index": 186,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        100,
+        116,
+        200,
+        216
+      ],
+      "proposal_confidence": 0.6842918395996094,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "9af9815a896371732d6efd3791f6bce2bb9c9417b36068b79f31d6d1d1fc33ba",
+      "phash": "914926dbc831776e"
+    },
+    {
+      "id": "H078",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H078.jpg",
+      "source_video": "vid0099.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0099.mp4",
+      "frame_index": 186,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        278,
+        188,
+        378,
+        288
+      ],
+      "proposal_confidence": 0.6427945494651794,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H079",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H079.jpg",
+      "source_video": "vid0467.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0467.mp4",
+      "frame_index": 395,
+      "scale": 0.5,
+      "crop_xyxy": [
+        523,
+        149,
+        960,
+        540
+      ],
+      "proposal_confidence": 0.9343453049659729,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H080",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H080.jpg",
+      "source_video": "vid0467.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0467.mp4",
+      "frame_index": 395,
+      "scale": 0.5,
+      "crop_xyxy": [
+        809,
+        157,
+        923,
+        335
+      ],
+      "proposal_confidence": 0.5671082139015198,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H081",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H081.jpg",
+      "source_video": "vid0467.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0467.mp4",
+      "frame_index": 395,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        316,
+        110,
+        421
+      ],
+      "proposal_confidence": 0.507668137550354,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "d753a72482231ee0d2c007bd9ef27390dfa47c1c84ac51ad8ede7c05e67f74c7",
+      "phash": "df1a7ee101e26307"
+    },
+    {
+      "id": "H082",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H082.jpg",
+      "source_video": "vid0467.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0467.mp4",
+      "frame_index": 803,
+      "scale": 0.5,
+      "crop_xyxy": [
+        521,
+        149,
+        960,
+        540
+      ],
+      "proposal_confidence": 0.9436445236206055,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H083",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H083.jpg",
+      "source_video": "vid0467.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0467.mp4",
+      "frame_index": 803,
+      "scale": 0.5,
+      "crop_xyxy": [
+        803,
+        173,
+        960,
+        330
+      ],
+      "proposal_confidence": 0.7631333470344543,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H084",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H084.jpg",
+      "source_video": "vid0467.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0467.mp4",
+      "frame_index": 803,
+      "scale": 0.5,
+      "crop_xyxy": [
+        35,
+        139,
+        135,
+        239
+      ],
+      "proposal_confidence": 0.412026047706604,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "1a715e878848cd4ac2169d33fb811ea14158c6e9f630f8b1f511ea5d8d00d7dc",
+      "phash": "ec9b643299a6d998"
+    },
+    {
+      "id": "H085",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H085.jpg",
+      "source_video": "vid0041.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0041.mp4",
+      "frame_index": 98,
+      "scale": 0.5,
+      "crop_xyxy": [
+        459,
+        360,
+        561,
+        460
+      ],
+      "proposal_confidence": 0.40983501076698303,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H086",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H086.jpg",
+      "source_video": "vid0041.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0041.mp4",
+      "frame_index": 98,
+      "scale": 0.5,
+      "crop_xyxy": [
+        719,
+        108,
+        819,
+        208
+      ],
+      "proposal_confidence": 0.35619398951530457,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "0f7d0f4cc6c82c989279b731e40412b0f770618307bff51c9d6c4c7af4c069b3",
+      "phash": "f6f90ee548b40ad8"
+    },
+    {
+      "id": "H087",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H087.jpg",
+      "source_video": "vid0041.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0041.mp4",
+      "frame_index": 98,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        352,
+        72,
+        540
+      ],
+      "proposal_confidence": 0.31288960576057434,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "d2797542bbe31e7a623dc9a59cde8c45c58c5a900f71a15c0a5932929371d4ce",
+      "phash": "b2965636174e06b7"
+    },
+    {
+      "id": "H088",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H088.jpg",
+      "source_video": "vid0041.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0041.mp4",
+      "frame_index": 198,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        355,
+        79,
+        540
+      ],
+      "proposal_confidence": 0.5572010278701782,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "5ec9e5dcbcf2440dbba2d6ad6ad1df08cd5c764d0704c9d294c85e37542aea6e",
+      "phash": "b7c16d361a49a4b3"
+    },
+    {
+      "id": "H089",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H089.jpg",
+      "source_video": "vid0041.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0041.mp4",
+      "frame_index": 198,
+      "scale": 0.5,
+      "crop_xyxy": [
+        724,
+        108,
+        824,
+        208
+      ],
+      "proposal_confidence": 0.3992239832878113,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "8ce255a1b9335838dc5ab378b72452ca2f52903b2b929fa0111100d797556271",
+      "phash": "f5c91ee528b64a94"
+    },
+    {
+      "id": "H090",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H090.jpg",
+      "source_video": "vid0041.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0041.mp4",
+      "frame_index": 198,
+      "scale": 0.5,
+      "crop_xyxy": [
+        488,
+        321,
+        588,
+        421
+      ],
+      "proposal_confidence": 0.37965795397758484,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "0a4cf7c0b0cc0f1387db9df9f1bb798f0b75bff3fe9fb8a24ea2c2ebc6ca39e7",
+      "phash": "ad61c21ced2b7a91"
+    },
+    {
+      "id": "H091",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H091.jpg",
+      "source_video": "vid0339.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0339.mp4",
+      "frame_index": 519,
+      "scale": 1,
+      "crop_xyxy": [
+        211,
+        73,
+        311,
+        173
+      ],
+      "proposal_confidence": 0.7337222099304199,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H092",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H092.jpg",
+      "source_video": "vid0339.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0339.mp4",
+      "frame_index": 519,
+      "scale": 1,
+      "crop_xyxy": [
+        84,
+        128,
+        259,
+        228
+      ],
+      "proposal_confidence": 0.3957275152206421,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "1152eeeec94b616a3789cc05b81854b423d22bdc7d6b8b59a3ba02a16c252b55",
+      "phash": "e8cb1a8c4f32f247"
+    },
+    {
+      "id": "H093",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H093.jpg",
+      "source_video": "vid0339.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0339.mp4",
+      "frame_index": 519,
+      "scale": 1,
+      "crop_xyxy": [
+        67,
+        50,
+        216,
+        150
+      ],
+      "proposal_confidence": 0.26470309495925903,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H094",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H094.jpg",
+      "source_video": "vid0339.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0339.mp4",
+      "frame_index": 1053,
+      "scale": 1,
+      "crop_xyxy": [
+        0,
+        137,
+        198,
+        237
+      ],
+      "proposal_confidence": 0.7586238384246826,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "3e1b24d39d9500246ca36d255d4058010220fdc5e3e376067e128c2d968ca77e",
+      "phash": "b79358ac8446bd0f"
+    },
+    {
+      "id": "H095",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H095.jpg",
+      "source_video": "vid0339.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0339.mp4",
+      "frame_index": 1053,
+      "scale": 1,
+      "crop_xyxy": [
+        155,
+        74,
+        255,
+        174
+      ],
+      "proposal_confidence": 0.7114608883857727,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H096",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H096.jpg",
+      "source_video": "vid0339.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0339.mp4",
+      "frame_index": 1053,
+      "scale": 1,
+      "crop_xyxy": [
+        0,
+        109,
+        196,
+        235
+      ],
+      "proposal_confidence": 0.5361945629119873,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "247130db518c3e06b628a1747811832ca22163b4275e112c2c16b808ebf75029",
+      "phash": "af8b48ef4371e444"
+    },
+    {
+      "id": "H097",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H097.jpg",
+      "source_video": "vid0036.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0036.mp4",
+      "frame_index": 247,
+      "scale": 0.5,
+      "crop_xyxy": [
+        375,
+        209,
+        631,
+        454
+      ],
+      "proposal_confidence": 0.8041023015975952,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "4436acb467fa542b73134654b3d25a88778d8397b1b4cb5b0ef63261f67dea6f",
+      "phash": "cdb26085fad10b3e"
+    },
+    {
+      "id": "H098",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H098.jpg",
+      "source_video": "vid0036.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0036.mp4",
+      "frame_index": 247,
+      "scale": 0.5,
+      "crop_xyxy": [
+        707,
+        247,
+        807,
+        430
+      ],
+      "proposal_confidence": 0.301146924495697,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "8454e347a1372adca05757e0a77daeecded8336f96496568016111ade5424107",
+      "phash": "ae71e7c41943079d"
+    },
+    {
+      "id": "H099",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H099.jpg",
+      "source_video": "vid0036.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0036.mp4",
+      "frame_index": 502,
+      "scale": 0.5,
+      "crop_xyxy": [
+        377,
+        208,
+        631,
+        453
+      ],
+      "proposal_confidence": 0.7304854393005371,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "780059dc938cef3e0a0b2e5570f2b11c024f165f6859fe5debfbbeac1eacdc35",
+      "phash": "cfb26015ea910b7e"
+    },
+    {
+      "id": "H100",
+      "role": "val",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H100.jpg",
+      "source_video": "vid0036.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/train/videos/vid0036.mp4",
+      "frame_index": 502,
+      "scale": 0.5,
+      "crop_xyxy": [
+        64,
+        50,
+        164,
+        150
+      ],
+      "proposal_confidence": 0.25758448243141174,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H101",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H101.jpg",
+      "source_video": "vid0270.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0270.mp4",
+      "frame_index": 65,
+      "scale": 0.5,
+      "crop_xyxy": [
+        487,
+        34,
+        651,
+        151
+      ],
+      "proposal_confidence": 0.40668442845344543,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "32f99700b1e75099e80a7e5207cdcb7256c15a351561fa57f4a21f080dd48955",
+      "phash": "df5f280371a15393"
+    },
+    {
+      "id": "H102",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H102.jpg",
+      "source_video": "vid0270.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0270.mp4",
+      "frame_index": 133,
+      "scale": 0.5,
+      "crop_xyxy": [
+        483,
+        157,
+        620,
+        358
+      ],
+      "proposal_confidence": 0.838887631893158,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "07a594ae105aea62d5f97b392d95be48ead25ae3592f2a650479af04387463f5",
+      "phash": "dfa7b98795848584"
+    },
+    {
+      "id": "H103",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H103.jpg",
+      "source_video": "vid0270.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0270.mp4",
+      "frame_index": 133,
+      "scale": 0.5,
+      "crop_xyxy": [
+        151,
+        218,
+        387,
+        446
+      ],
+      "proposal_confidence": 0.8179951906204224,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H104",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H104.jpg",
+      "source_video": "vid0270.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0270.mp4",
+      "frame_index": 133,
+      "scale": 0.5,
+      "crop_xyxy": [
+        697,
+        286,
+        960,
+        540
+      ],
+      "proposal_confidence": 0.7244319319725037,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H105",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H105.jpg",
+      "source_video": "vid0121.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0121.mp4",
+      "frame_index": 400,
+      "scale": 1,
+      "crop_xyxy": [
+        34,
+        81,
+        170,
+        181
+      ],
+      "proposal_confidence": 0.27581238746643066,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H106",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H106.jpg",
+      "source_video": "vid0121.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0121.mp4",
+      "frame_index": 811,
+      "scale": 1,
+      "crop_xyxy": [
+        33,
+        79,
+        171,
+        179
+      ],
+      "proposal_confidence": 0.3779056966304779,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H107",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H107.jpg",
+      "source_video": "vid0479.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0479.mp4",
+      "frame_index": 216,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        95,
+        359,
+        228,
+        459
+      ],
+      "proposal_confidence": 0.8805813193321228,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H108",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H108.jpg",
+      "source_video": "vid0479.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0479.mp4",
+      "frame_index": 216,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        4,
+        410,
+        104,
+        506
+      ],
+      "proposal_confidence": 0.8269403576850891,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H109",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H109.jpg",
+      "source_video": "vid0479.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0479.mp4",
+      "frame_index": 216,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        705,
+        200,
+        805,
+        300
+      ],
+      "proposal_confidence": 0.6018477082252502,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "728d649bff3ae2ea6e84a1fcc051c080ecf7db04b1dc3b4f8f1e3fec4b23370f",
+      "phash": "ffff3608982432c1"
+    },
+    {
+      "id": "H110",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H110.jpg",
+      "source_video": "vid0479.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0479.mp4",
+      "frame_index": 438,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        120,
+        369,
+        251,
+        469
+      ],
+      "proposal_confidence": 0.8766025900840759,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H111",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H111.jpg",
+      "source_video": "vid0479.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0479.mp4",
+      "frame_index": 438,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        33,
+        421,
+        133,
+        506
+      ],
+      "proposal_confidence": 0.7982766032218933,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H112",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H112.jpg",
+      "source_video": "vid0479.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0479.mp4",
+      "frame_index": 438,
+      "scale": 0.234375,
+      "crop_xyxy": [
+        566,
+        282,
+        672,
+        412
+      ],
+      "proposal_confidence": 0.6335493326187134,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H113",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H113.jpg",
+      "source_video": "vid0154.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0154.mp4",
+      "frame_index": 267,
+      "scale": 0.3,
+      "crop_xyxy": [
+        665,
+        114,
+        784,
+        312
+      ],
+      "proposal_confidence": 0.9344767332077026,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H114",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H114.jpg",
+      "source_video": "vid0154.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0154.mp4",
+      "frame_index": 267,
+      "scale": 0.3,
+      "crop_xyxy": [
+        390,
+        67,
+        525,
+        244
+      ],
+      "proposal_confidence": 0.9267619252204895,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H115",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H115.jpg",
+      "source_video": "vid0154.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0154.mp4",
+      "frame_index": 267,
+      "scale": 0.3,
+      "crop_xyxy": [
+        171,
+        33,
+        311,
+        178
+      ],
+      "proposal_confidence": 0.9232720732688904,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "e2d017e97f2fd552c89eed16fe83251ffd635f6a7ea5c58a5a5e5d64d323e8b6",
+      "phash": "a48992b0c93b2fed"
+    },
+    {
+      "id": "H116",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H116.jpg",
+      "source_video": "vid0154.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0154.mp4",
+      "frame_index": 542,
+      "scale": 0.3,
+      "crop_xyxy": [
+        665,
+        114,
+        785,
+        312
+      ],
+      "proposal_confidence": 0.9256839156150818,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H117",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H117.jpg",
+      "source_video": "vid0154.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0154.mp4",
+      "frame_index": 542,
+      "scale": 0.3,
+      "crop_xyxy": [
+        171,
+        32,
+        311,
+        179
+      ],
+      "proposal_confidence": 0.9150632619857788,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "c4b927a51b3308c7a72e03431eb02045e53b17645b88dd00ba2ac57cfd49a20e",
+      "phash": "a48792b4c93b27c7"
+    },
+    {
+      "id": "H118",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H118.jpg",
+      "source_video": "vid0154.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0154.mp4",
+      "frame_index": 542,
+      "scale": 0.3,
+      "crop_xyxy": [
+        832,
+        123,
+        960,
+        342
+      ],
+      "proposal_confidence": 0.91001296043396,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "afb4f51ed331fedb701dc2970324ad1e2d7dc58e5d823482dcae13bd5ec1f8c2",
+      "phash": "bc95c34add7520b4"
+    },
+    {
+      "id": "H119",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H119.jpg",
+      "source_video": "vid0308.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0308.mp4",
+      "frame_index": 69,
+      "scale": 0.75,
+      "crop_xyxy": [
+        280,
+        330,
+        380,
+        430
+      ],
+      "proposal_confidence": 0.7245656251907349,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H120",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H120.jpg",
+      "source_video": "vid0308.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0308.mp4",
+      "frame_index": 69,
+      "scale": 0.75,
+      "crop_xyxy": [
+        356,
+        309,
+        456,
+        409
+      ],
+      "proposal_confidence": 0.5381574034690857,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H121",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H121.jpg",
+      "source_video": "vid0308.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0308.mp4",
+      "frame_index": 69,
+      "scale": 0.75,
+      "crop_xyxy": [
+        388,
+        320,
+        488,
+        420
+      ],
+      "proposal_confidence": 0.4554428160190582,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H122",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H122.jpg",
+      "source_video": "vid0308.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0308.mp4",
+      "frame_index": 141,
+      "scale": 0.75,
+      "crop_xyxy": [
+        280,
+        331,
+        380,
+        431
+      ],
+      "proposal_confidence": 0.7358372807502747,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H123",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H123.jpg",
+      "source_video": "vid0308.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0308.mp4",
+      "frame_index": 141,
+      "scale": 0.75,
+      "crop_xyxy": [
+        354,
+        309,
+        454,
+        409
+      ],
+      "proposal_confidence": 0.6705652475357056,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H124",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H124.jpg",
+      "source_video": "vid0308.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0308.mp4",
+      "frame_index": 141,
+      "scale": 0.75,
+      "crop_xyxy": [
+        387,
+        320,
+        487,
+        420
+      ],
+      "proposal_confidence": 0.6375027298927307,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H125",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H125.jpg",
+      "source_video": "vid0067.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0067.mp4",
+      "frame_index": 398,
+      "scale": 0.5,
+      "crop_xyxy": [
+        530,
+        148,
+        960,
+        540
+      ],
+      "proposal_confidence": 0.970194935798645,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H126",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H126.jpg",
+      "source_video": "vid0067.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0067.mp4",
+      "frame_index": 398,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        316,
+        110,
+        421
+      ],
+      "proposal_confidence": 0.4944216012954712,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H127",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H127.jpg",
+      "source_video": "vid0067.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0067.mp4",
+      "frame_index": 398,
+      "scale": 0.5,
+      "crop_xyxy": [
+        499,
+        134,
+        599,
+        358
+      ],
+      "proposal_confidence": 0.4814409613609314,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H128",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H128.jpg",
+      "source_video": "vid0067.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0067.mp4",
+      "frame_index": 807,
+      "scale": 0.5,
+      "crop_xyxy": [
+        524,
+        148,
+        960,
+        540
+      ],
+      "proposal_confidence": 0.9675772190093994,
+      "decision": "exclude",
+      "reason": "Visible bag/bottle/litter or ambiguous content; not used as an empty-label image",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H129",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H129.jpg",
+      "source_video": "vid0067.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0067.mp4",
+      "frame_index": 807,
+      "scale": 0.5,
+      "crop_xyxy": [
+        0,
+        316,
+        111,
+        421
+      ],
+      "proposal_confidence": 0.5243800282478333,
+      "decision": "exclude_duplicate",
+      "reason": "Exact or near-duplicate crop already accepted; never cross roles",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15"
+    },
+    {
+      "id": "H130",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H130.jpg",
+      "source_video": "vid0067.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0067.mp4",
+      "frame_index": 807,
+      "scale": 0.5,
+      "crop_xyxy": [
+        483,
+        167,
+        583,
+        451
+      ],
+      "proposal_confidence": 0.47957199811935425,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "8cec0b505279e884f2115ad985124060a93c5af5a8ff9bcd0cc570f4b9b1ef69",
+      "phash": "f2d6dd44182da396"
+    },
+    {
+      "id": "H131",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H131.jpg",
+      "source_video": "vid0134.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0134.mp4",
+      "frame_index": 34,
+      "scale": 0.75,
+      "crop_xyxy": [
+        321,
+        203,
+        517,
+        464
+      ],
+      "proposal_confidence": 0.8484537601470947,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "a8d300f65ae5d3c7013e4786fe1dc144f866b659d688864e49fe5e444c494d99",
+      "phash": "e1cdce9a3830634f"
+    },
+    {
+      "id": "H132",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H132.jpg",
+      "source_video": "vid0134.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0134.mp4",
+      "frame_index": 34,
+      "scale": 0.75,
+      "crop_xyxy": [
+        204,
+        0,
+        580,
+        161
+      ],
+      "proposal_confidence": 0.3679473400115967,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "53bb4c717339c442708eff958014c91d42c968395624e6b36ce427a3e2a7b24b",
+      "phash": "fa3c9c98989ab2c3"
+    },
+    {
+      "id": "H133",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H133.jpg",
+      "source_video": "vid0134.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0134.mp4",
+      "frame_index": 34,
+      "scale": 0.75,
+      "crop_xyxy": [
+        405,
+        224,
+        505,
+        324
+      ],
+      "proposal_confidence": 0.2520054578781128,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "b4a13e87aa59d259756a1c0f48225037644ca53d9e70a7124aadc1e24a0c6fe8",
+      "phash": "b6ccc91924f3e0c7"
+    },
+    {
+      "id": "H134",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H134.jpg",
+      "source_video": "vid0134.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0134.mp4",
+      "frame_index": 69,
+      "scale": 0.75,
+      "crop_xyxy": [
+        320,
+        199,
+        522,
+        463
+      ],
+      "proposal_confidence": 0.7474031448364258,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "f7d7cc5ec31453ba131f7038e3d0e85132e7f5526ab7fc4322fc8ca1fc7accbe",
+      "phash": "f1cccb923833e34c"
+    },
+    {
+      "id": "H135",
+      "role": "test",
+      "file": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/litter_objects_v1/hard_negative_review/H135.jpg",
+      "source_video": "vid0134.mp4",
+      "source_relative_video": "datasets/MIVIA-IWDD 500/test/videos/vid0134.mp4",
+      "frame_index": 69,
+      "scale": 0.75,
+      "crop_xyxy": [
+        208,
+        0,
+        579,
+        161
+      ],
+      "proposal_confidence": 0.2918146252632141,
+      "decision": "accept_background",
+      "reason": "Visual review: intact vehicle/building/person/light fixture, road marking, shadow, sign or maintained receptacle; no litter item visible in crop",
+      "reviewer": "Codex visual review of hard_negative_00..02_review.jpg, 2026-11-15",
+      "sha256": "1d80b4eedaacb3a291703d2eaf7c8699c2ada5b6bf5f8cf136c0d887e4403af6",
+      "phash": "fe6ccc1c9c981a93"
+    }
+  ],
+  "source_video_sha256": {
+    "datasets/MIVIA-IWDD 500/train/videos/vid0235.mp4": "cf42b12b03e1e04279a7bd53c6ce5b30fbfc32444b0aaf9d3de4f4d23c781c97",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0445.mp4": "0b1cfb677068c913a7362a103f2090e0ca8e1e7163cd1fab4d7b5b0c451b5a23",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0089.mp4": "ca5f91f0ffa756d44aacb30463780023c7a3597db243ad566b9f5e2fdc7b4e17",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0407.mp4": "c864cf8c317727c0dd5c4c612696a7098b79cf3245ef722e343cd824638facf3",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0059.mp4": "1d3448927cf2ede1dafe2d904b635a8f477da2bda1f2fc5c966996cedcd08ad7",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0162.mp4": "4cdb11ee0dea6023a055a9ff1b520c84e50dac65b42aabb16be50723a27da524",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0384.mp4": "d30734e2d5719b14d5828ade04a250ff58e204ee118bcd0850f5e96fcaea144d",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0408.mp4": "9525f7cf19c94edef3abb63b8afeefcc88ec8164842bfc5b8173a451690bbe0e",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0379.mp4": "e74bcd08f7693fe81966331bc5b4c64fc6eca82d9948382465be3007a7b93fe6",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0391.mp4": "667caa8779390470f4262b9625fdc2937d488bd3cd7d9fdfd8a1153a9e693331",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0448.mp4": "0850fbf3ad9b6b380f717fcf3d3273f4a69096a2bf8e00df1ce797d685bca65a",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0389.mp4": "00d3db8c5b88c35680b7e664b1f20ef584d3ec1e7c8fe495e8c956c526afe436",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0497.mp4": "59e1c7a87b39332df8fc6724854270bedfe14f8ff80e9972efa2946cae31b46e",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0194.mp4": "5e4240dc09a5041ebe629453fde88c46a1b9787da3564a181f02dfa05637d624",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0335.mp4": "e5898f3aca109c884fe7abb57f81b2ecee395eb5c4cbfeabc651529dc2b7dd78",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0474.mp4": "d4ef0dada5fc0d7690985ed78c8fb143dff5fd218c3fd33c3bae8fcb31a29ef8",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0423.mp4": "d34dd7a99be918f0003775a5b4910d19ce9b9862f0c9f76c12e6e080eedbc864",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0099.mp4": "fd52ee40dcfce6fe4ec27a0cd627863f564547f2716040af4e78f0912e18960a",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0467.mp4": "7de43e97e3860cbcd40a157d7ee887fc8df0dd4ea948bb2e4995ce45244d72e8",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0041.mp4": "c1f83659bc440e639b22e5af1bad68f930bf9db2fbf6fe00d7f1f4cfa9867348",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0339.mp4": "e6e9e6630d77a6f6edbf5f8858da0d09f21a1bc7922a31b6e48370b909d68675",
+    "datasets/MIVIA-IWDD 500/train/videos/vid0036.mp4": "32c6e8d9eabd5531326c1c1f12511d99bee0fc05d91285912b2feae021432e43",
+    "datasets/MIVIA-IWDD 500/test/videos/vid0270.mp4": "fe3961f70e135f7880d07dd8c672fb5d17b1abdaaf24d9ea9a6fc5af0740d1fb",
+    "datasets/MIVIA-IWDD 500/test/videos/vid0121.mp4": "5167231dbc3bdcf5e928c916625acf9260440f9ef23471bcea6f52a18be12aa4",
+    "datasets/MIVIA-IWDD 500/test/videos/vid0479.mp4": "b29550a483f23fa3ce99714dfeab5b50a5206859480bc092b77336527d2fdb18",
+    "datasets/MIVIA-IWDD 500/test/videos/vid0154.mp4": "51626ce148326ea32020e1be21b12d9d9e93ef1d2f8d251ba00d8a0f8aed7289",
+    "datasets/MIVIA-IWDD 500/test/videos/vid0308.mp4": "f109c19c93217c6ecbf6a5f166b20592459b6e722e1e112d0e74ee32d8c2fecf",
+    "datasets/MIVIA-IWDD 500/test/videos/vid0067.mp4": "d96df4dbc8ece898b76f65fda9a1de3009354c5184384e4cf6f063bf4ed62c5d",
+    "datasets/MIVIA-IWDD 500/test/videos/vid0134.mp4": "7201caa86657efc04da4aeb4e50c05e69e51a107d2698c5e8d87f7b1f5fdb2a5"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "input": "12 existing frames of vid0069.mp4",
+  "action_models": [
+    "neural_network",
+    "movinet_a0",
+    "optical_flow_svm"
+  ],
+  "threshold": 0.65,
+  "detected_items": 1,
+  "errors": [],
+  "model_sha256": "c52231bc969212c332142569d52b08ce93485b0daead33f3bc42f0438b039472",
+  "note": "Integration smoke check, not throwing accuracy."
+}

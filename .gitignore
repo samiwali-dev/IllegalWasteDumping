@@ -55,3 +55,16 @@ ENV/
 node_modules/
 .expo/
 expo-app/dist/
+
+# Reproducible object-detector experiment: keep raw imagery and large run outputs local.
+/results/yolo/object_v1/training/
+/results/yolo/object_v1/evaluation/
+/results/yolo/object_v1/*.log
+/results/yolo/object_v1/*_predictions.json
+/results/yolo/object_v1/historical_actor_model.pt
+/results/yolo/object_v1/*_review.jpg
+/results/yolo/object_v1/context_*.jpg
+/results/yolo/object_v1/held_bottle_grid.jpg
+/results/yolo/object_v1/reported_scene_*.json
+/results/yolo/object_v1/reported_strap_*.json
+/results/yolo/object_v1/video_review/

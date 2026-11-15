@@ -1,32 +1,61 @@
 {
   "model": "YOLOv8n",
   "task": "object_detection",
-  "dataset": "Roboflow Littering",
-  "data_yaml": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/datasets/Littering-YOLO/data.yaml",
-  "pretrained": false,
-  "initialization": "random",
-  "architecture_source": "yolov8n.yaml",
+  "dataset": "TACO + reviewed backgrounds",
+  "evaluation_split": "Development test · 306 images (reused)",
+  "data_yaml": "datasets/litter_objects_v1/data_v2.yaml",
+  "pretrained": true,
+  "initialization": "COCO YOLOv8n transfer learning",
+  "class_names": [
+    "litter_object"
+  ],
   "device": "mps",
   "seed": 42,
+  "confidence_threshold": 0.65,
+  "inference": {
+    "imgsz": 640,
+    "rect": false
+  },
   "hyperparameters": {
-    "epochs": 5,
-    "imgsz": 320,
-    "batch": 32,
-    "patience": 5,
-    "workers": 0
+    "initial_epochs": 40,
+    "followup_epochs": 15,
+    "imgsz": 640,
+    "batch": 8,
+    "optimizer": "AdamW",
+    "initial_lr": 0.001,
+    "followup_lr": 0.0003,
+    "weighted_train_exposures": 1310,
+    "unique_train_images": 1055
   },
-  "training_seconds": 821.9389075419749,
-  "evaluation_split": "Roboflow validation (the supplied test images have no COCO labels)",
-  "validation_seconds": 13.534214833984151,
+  "training_seconds": 2255.8083562490065,
   "metrics": {
-    "precision": 0.5108254417440554,
-    "recall": 0.7223650385604113,
-    "map50": 0.5428632534746103,
-    "map50_95": 0.24498013686129183
+    "precision": 0.8129175946547884,
+    "recall": 0.32272325375773653,
+    "map50": 0.449951605526817,
+    "map50_95": 0.30708257984756343
   },
+  "operating_point": {
+    "threshold": 0.65,
+    "tp": 365,
+    "fp": 84,
+    "fn": 766,
+    "precision": 0.8129175946547884,
+    "recall": 0.32272325375773653,
+    "negative_images": 20,
+    "negative_images_with_detection": 2,
+    "f05": 0.6235052955244277,
+    "background_rejection": 0.9,
+    "selection_score": 0.5611547659719849,
+    "match_iou": 0.5,
+    "images": 306
+  },
+  "metric_note": "Precision and recall at validation-selected confidence 0.65 and IoU 0.5, using square 640 inference. mAP integrates confidence thresholds in Ultralytics validation; not throwing-event accuracy. This test set was reused during development.",
   "model_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/yolo/model.pt",
-  "model_size_bytes": 6217265,
-  "training_run_dir": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/yolo/training/yolov8n_littering",
-  "validation_run_dir": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/yolo/validation/yolov8n_littering_val",
-  "note": "YOLOv8n participates in the overall project evaluation. Its object-detection metrics use the labelled Littering validation images and are not equivalent to MIVIA video-classification metrics."
+  "model_sha256": "c52231bc969212c332142569d52b08ce93485b0daead33f3bc42f0438b039472",
+  "model_size_bytes": 6241905,
+  "selected_checkpoint": "results/yolo/object_v1/training/objects_transfer_v2/weights/best.pt",
+  "selection_report": "results/yolo/object_v1/operating_point_selection.json",
+  "experiment_report": "results/yolo/object_v1/README.md",
+  "status": "experimental; low object recall and deployment domain gap remain",
+  "note": "Locates litter-like objects; static presence is not evidence of throwing. The three video classifiers have not been retrained. No event accuracy is claimed."
 }

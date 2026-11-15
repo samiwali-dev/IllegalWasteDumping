@@ -1,0 +1,41 @@
+{
+  "task": "New litter-object task, different from the historical actor-region task",
+  "test_policy": "Held-out TACO source batches and reviewed negative crops; no live-camera accuracy claim",
+  "dataset_manifest_sha256": "c60ac436dcbc08c3d670b226f4f8995b3711585cbedd26b697260e370e8014c7",
+  "models": {
+    "historical_actor_detector": {
+      "checkpoint": "results/yolo/object_v1/historical_actor_model.pt",
+      "map50": 0.005530256368182127,
+      "map50_95": 0.0026243057736434496,
+      "operating_point": {
+        "tp": 1,
+        "fp": 35,
+        "fn": 1130,
+        "images": 294,
+        "negative_images": 8,
+        "negative_images_with_detection": 0,
+        "precision": 0.027777777777777776,
+        "recall": 0.0008841732979664014,
+        "confidence_threshold": 0.25,
+        "match_iou": 0.5
+      }
+    },
+    "object_candidate": {
+      "checkpoint": "results/yolo/object_v1/training/objects_transfer_v1/weights/best.pt",
+      "map50": 0.4495070753810093,
+      "map50_95": 0.3137717159551998,
+      "operating_point": {
+        "tp": 496,
+        "fp": 353,
+        "fn": 635,
+        "images": 294,
+        "negative_images": 8,
+        "negative_images_with_detection": 3,
+        "precision": 0.5842167255594818,
+        "recall": 0.4385499557913351,
+        "confidence_threshold": 0.25,
+        "match_iou": 0.5
+      }
+    }
+  }
+}

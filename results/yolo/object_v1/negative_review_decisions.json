@@ -1,0 +1,722 @@
+[
+  {
+    "id": "N00",
+    "crop_xyxy": [
+      328,
+      367,
+      465,
+      699
+    ],
+    "source_annotation_id": 7265,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_3_7_jpg.rf.d701b806c90087287eafd7fbf579539b.jpg",
+    "source_sha256": "b47fd984ceb59aadda37ba287f7035b2be0897cdd3d559585ec22d89191586b7"
+  },
+  {
+    "id": "N01",
+    "crop_xyxy": [
+      715,
+      424,
+      768,
+      531
+    ],
+    "source_annotation_id": 7390,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_9_10_jpg.rf.d938eb467b3c82eeff421d8551fbb3b4.jpg",
+    "source_sha256": "d405fa0353ef6e899be01f9017e28f148f7019dc4efb13a92f86d74ea1c45f58"
+  },
+  {
+    "id": "N02",
+    "crop_xyxy": [
+      912,
+      482,
+      1002,
+      618
+    ],
+    "source_annotation_id": 4518,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_5_20_jpg.rf.a7b2621a76c07bb550503149d8dbfc05.jpg",
+    "source_sha256": "942b3a4c842abdc2bf0d28395ec9451a7896b5331bf4eef5f9de54dac8166c3b"
+  },
+  {
+    "id": "N03",
+    "crop_xyxy": [
+      98,
+      350,
+      344,
+      648
+    ],
+    "source_annotation_id": 9178,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_3_10_jpg.rf.8635deb560ec9b5e2a3627d727f16db3.jpg",
+    "source_sha256": "80550531c5088e22b8e2e4776408b0a243329172d02253fe5704c4196e2af4f8"
+  },
+  {
+    "id": "N04",
+    "crop_xyxy": [
+      730,
+      360,
+      828,
+      478
+    ],
+    "source_annotation_id": 9531,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_12_30_jpg.rf.8c70338aa3c50af801141ced45297a01.jpg",
+    "source_sha256": "60c2544f49bc54c10432b405834f6aef6d1ce1be8b52566d6adead5ce33ac0ef"
+  },
+  {
+    "id": "N05",
+    "crop_xyxy": [
+      1231,
+      593,
+      1317,
+      737
+    ],
+    "source_annotation_id": 11140,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_2_26_jpg.rf.f3a6abeecc0e14080e4d3a2cca2ca05c.jpg",
+    "source_sha256": "2d790dccf01936a60471bab0947868e5c19e647151e56ec93f72bf5b7eead07a"
+  },
+  {
+    "id": "N06",
+    "crop_xyxy": [
+      1109,
+      550,
+      1292,
+      719
+    ],
+    "source_annotation_id": 8918,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_4_26_jpg.rf.81ceb056e5e7b49281e51c881a44156a.jpg",
+    "source_sha256": "2cb61c5538d4590a8b0ad5e398ff250cb9eefdd3c8c6206ba86c7d054b970ca4"
+  },
+  {
+    "id": "N07",
+    "crop_xyxy": [
+      405,
+      374,
+      607,
+      639
+    ],
+    "source_annotation_id": 11447,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_7_5_jpg.rf.f9098a6dc16965262009e15335216e7f.jpg",
+    "source_sha256": "78588c74a41bce1ccbc896917e652e211d9ff2012c5fb9a7f894c32661f536de"
+  },
+  {
+    "id": "N08",
+    "crop_xyxy": [
+      1020,
+      437,
+      1101,
+      552
+    ],
+    "source_annotation_id": 6624,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_9_6_jpg.rf.cbf22d11bb357663a32ad0155185b001.jpg",
+    "source_sha256": "34c2c54881877b21e2e048bceb4a81fef11fa90a4cea5c30b33e7dacc10945be"
+  },
+  {
+    "id": "N09",
+    "crop_xyxy": [
+      290,
+      318,
+      551,
+      656
+    ],
+    "source_annotation_id": 3571,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_2_11_jpg.rf.70ed08235efd3c8f0b60f9b65bac0477.jpg",
+    "source_sha256": "dcf1cde6a586e8deba15b6faa7ea24b014b287fade827ade61de6c17eec52cd4"
+  },
+  {
+    "id": "N10",
+    "crop_xyxy": [
+      1029,
+      505,
+      1165,
+      614
+    ],
+    "source_annotation_id": 7722,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_3_18_jpg.rf.df3ce0a616e21bfbcc7fdd5c31ded8ee.jpg",
+    "source_sha256": "180af20e9e20d0e40261201ccc11b8c2f806fc75719123f3df02aadfe4e7b85a"
+  },
+  {
+    "id": "N11",
+    "crop_xyxy": [
+      1181,
+      472,
+      1238,
+      593
+    ],
+    "source_annotation_id": 8377,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_10_1_jpg.rf.e9dffc67c7b029ba47800c6b43262811.jpg",
+    "source_sha256": "a6be386a27ce84ebe56a14f505aba4e9b0d8c91b011ea66a428ad9c4b220ef5b"
+  },
+  {
+    "id": "N12",
+    "crop_xyxy": [
+      532,
+      548,
+      654,
+      650
+    ],
+    "source_annotation_id": 7148,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_5_26_jpg.rf.d541811a9ab7b065b0ac2364551b785a.jpg",
+    "source_sha256": "d6421713c47cca98f7277564ab280e7aa6b4aefb21316780bfd831b5781b7271"
+  },
+  {
+    "id": "N13",
+    "crop_xyxy": [
+      1309,
+      368,
+      1451,
+      585
+    ],
+    "source_annotation_id": 8020,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_3_3_jpg.rf.e407685fc0e8327c66fc62fddb0ce0e3.jpg",
+    "source_sha256": "b715b9a49e8bc5f1e5c9456f22b690381a5f5091acf259a83e3cca52d6f02a0f"
+  },
+  {
+    "id": "N14",
+    "crop_xyxy": [
+      1263,
+      175,
+      1390,
+      368
+    ],
+    "source_annotation_id": 11739,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_5_5_jpg.rf.fdccfc680a2695be5da180e3e01e3ec5.jpg",
+    "source_sha256": "76162ef298ad48aec388648346ba87e542961864ce346e44062fc93850648a0f"
+  },
+  {
+    "id": "N15",
+    "crop_xyxy": [
+      1106,
+      403,
+      1223,
+      584
+    ],
+    "source_annotation_id": 6182,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_6_16_jpg.rf.c469f5c42cdefe7e01047d9fddad92b6.jpg",
+    "source_sha256": "7355938e739501a37f8558c860f0f70e2abe9b1709ce04d3a74495c289ebd4bf"
+  },
+  {
+    "id": "N16",
+    "crop_xyxy": [
+      822,
+      589,
+      1054,
+      740
+    ],
+    "source_annotation_id": 5972,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_5_29_jpg.rf.c0e4412ad1f72701bf86473571a2019b.jpg",
+    "source_sha256": "2f73cc0e7ac7da44befa388f0fcd58eb97856ae56a1559f145bea16289348d5c"
+  },
+  {
+    "id": "N17",
+    "crop_xyxy": [
+      867,
+      369,
+      1012,
+      693
+    ],
+    "source_annotation_id": 11585,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_9_24_jpg.rf.fb5e8f249b2f8e4f7048b0e0d37c339a.jpg",
+    "source_sha256": "3d02c8ba56f6ffa88f2b0b0e4f03ef5a9539d0347f1e0a3bf24696929faf3b68"
+  },
+  {
+    "id": "N18",
+    "crop_xyxy": [
+      1141,
+      434,
+      1287,
+      636
+    ],
+    "source_annotation_id": 7347,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_11_9_jpg.rf.d8ac4c4431f142b16a3fa4b0a7eb32a1.jpg",
+    "source_sha256": "630f684f00def752ba76e698967746146ea599b628d81ff966dd356172a1c662"
+  },
+  {
+    "id": "N19",
+    "crop_xyxy": [
+      1255,
+      369,
+      1470,
+      690
+    ],
+    "source_annotation_id": 2813,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_12_2_jpg.rf.64e9ad221c7e88e7e209ff493610d639.jpg",
+    "source_sha256": "5939851e87e991520bc98bc11e0cfb531b62b46057c263aa6549536634ecb025"
+  },
+  {
+    "id": "N20",
+    "crop_xyxy": [
+      1348,
+      704,
+      1412,
+      815
+    ],
+    "source_annotation_id": 7404,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_6_13_jpg.rf.d962ebdb2e3e896c8960d3203dd9a2dd.jpg",
+    "source_sha256": "2615205a3a65d015b81d8eedc9ef3b03e98c3fbf627766a7e4e8761f9fdb9737"
+  },
+  {
+    "id": "N21",
+    "crop_xyxy": [
+      1165,
+      98,
+      1494,
+      328
+    ],
+    "source_annotation_id": 9085,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_5_19_jpg.rf.84a90c5b2547d7435bf500ef59652e31.jpg",
+    "source_sha256": "789efbb47c26f7a60a59f19746f2a52abfdd4d1aa35b18bd3f7ead8fa5b486e8"
+  },
+  {
+    "id": "N22",
+    "crop_xyxy": [
+      1337,
+      494,
+      1412,
+      603
+    ],
+    "source_annotation_id": 1656,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_6_5_jpg.rf.2b62989972b76f50003ca535ac11fdbb.jpg",
+    "source_sha256": "1924a7c6352571ac8cf997726bdee8ead52eb5f92564018a2d0db58230cae33f"
+  },
+  {
+    "id": "N23",
+    "crop_xyxy": [
+      448,
+      384,
+      532,
+      510
+    ],
+    "source_annotation_id": 10557,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_12_1_jpg.rf.9f7342fcfb9032b9649938ea334ec7dd.jpg",
+    "source_sha256": "037c3cc61d302e8f0b318ea11d838435b585abec2a338b0d975cf784cfcf64a0"
+  },
+  {
+    "id": "N24",
+    "crop_xyxy": [
+      1148,
+      102,
+      1255,
+      307
+    ],
+    "source_annotation_id": 8751,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_4_12_jpg.rf.7f2927de3e35d0ba1e5c1bc85373a657.jpg",
+    "source_sha256": "ae53007d245ace536b638fbc094d301841702b398f1c8e990391822b9644eb4c"
+  },
+  {
+    "id": "N25",
+    "crop_xyxy": [
+      986,
+      443,
+      1109,
+      653
+    ],
+    "source_annotation_id": 7191,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_1_12_jpg.rf.d5f94d92d3bb04ec661535d9310a8b8e.jpg",
+    "source_sha256": "ea2cdbf04a08f51f0a2a58ee4b2aec332d680292940d0265e2244d1f344bae26"
+  },
+  {
+    "id": "N26",
+    "crop_xyxy": [
+      671,
+      304,
+      799,
+      539
+    ],
+    "source_annotation_id": 6742,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_2_11_jpg.rf.ce0de4418aa2190df287a4b9086fd6c6.jpg",
+    "source_sha256": "87339972e5240f65ab7d246abe6b90d55fc9a176f16b429a8121bb4016249a83"
+  },
+  {
+    "id": "N27",
+    "crop_xyxy": [
+      659,
+      361,
+      797,
+      628
+    ],
+    "source_annotation_id": 10515,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_2_4_jpg.rf.9e8d04546d666d8fa36b652b6cbef87e.jpg",
+    "source_sha256": "b87fb9b893d2981816f6147b349e5f97f9c57d14e7d936799046090e10467dfe"
+  },
+  {
+    "id": "N28",
+    "crop_xyxy": [
+      551,
+      192,
+      647,
+      422
+    ],
+    "source_annotation_id": 9649,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_7_5_jpg.rf.8ea39954759bf2f74a3433835ebccb72.jpg",
+    "source_sha256": "b2dfea91016c123a62375460a4b0ec5be604b35cac7efcc652e87133457d8a1b"
+  },
+  {
+    "id": "N29",
+    "crop_xyxy": [
+      1405,
+      466,
+      1595,
+      657
+    ],
+    "source_annotation_id": 11495,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_5_14_jpg.rf.f9d575122f74e9cd60f22427af2d8084.jpg",
+    "source_sha256": "2664bcac58ffa09cec99c7951d62b16a3f2a4d93590d1953b60efe3aaba119c9"
+  },
+  {
+    "id": "N30",
+    "crop_xyxy": [
+      1170,
+      401,
+      1262,
+      529
+    ],
+    "source_annotation_id": 10662,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_1_16_jpg.rf.a1677316bfbe1da47d5c2418693c2388.jpg",
+    "source_sha256": "1b02eb8276204a52e730b82a200d19e36ab1b4b75238c1afd2c0a30758b9a68e"
+  },
+  {
+    "id": "N31",
+    "crop_xyxy": [
+      366,
+      178,
+      594,
+      409
+    ],
+    "source_annotation_id": 2185,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_4_9_jpg.rf.5a6a2481e7b981e71152e2eeeb980a2b.jpg",
+    "source_sha256": "0474ea50774369f0c678d6a66b2049b92c105e5780f4762e1c5ef7ffc211b955"
+  },
+  {
+    "id": "N32",
+    "crop_xyxy": [
+      669,
+      560,
+      748,
+      694
+    ],
+    "source_annotation_id": 845,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_12_14_jpg.rf.1d7bfb07b96b7c902e14c49d759aaa2d.jpg",
+    "source_sha256": "f60712b3e903d65f98258bfb5004e8330ac81ef7e1bc0f02db5925346f76b0d2"
+  },
+  {
+    "id": "N33",
+    "crop_xyxy": [
+      556,
+      501,
+      669,
+      621
+    ],
+    "source_annotation_id": 7509,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_5_12_jpg.rf.db9323a1327f282fe403b14df64ab32a.jpg",
+    "source_sha256": "04d8a200a6202538389aaf8ef30199c979700aa6c9fdc1291fcfc16709f99d1e"
+  },
+  {
+    "id": "N34",
+    "crop_xyxy": [
+      425,
+      390,
+      552,
+      508
+    ],
+    "source_annotation_id": 3393,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_3_28_jpg.rf.6e31aa1e30ea61024569e9d3d0e360be.jpg",
+    "source_sha256": "13b33c51555f898fb3c905734ec118f24cbfba250b71f368ff1b34f08f46551b"
+  },
+  {
+    "id": "N35",
+    "crop_xyxy": [
+      1131,
+      336,
+      1270,
+      562
+    ],
+    "source_annotation_id": 5829,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_2_22_jpg.rf.be35bbb1836e3f1bdf8ff81a138ac00f.jpg",
+    "source_sha256": "b085ffd65b07fd6c1ce1de3df478256315c620f8edb36b0700b336ee77d2612b"
+  },
+  {
+    "id": "N36",
+    "crop_xyxy": [
+      666,
+      460,
+      850,
+      757
+    ],
+    "source_annotation_id": 10745,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_9_14_jpg.rf.a294951f9f3cdee942bb32c8aa85c18c.jpg",
+    "source_sha256": "97a7f27ce415244090a5253217da0da7ac394e7aa2a37e8d1b13f39f6620e49e"
+  },
+  {
+    "id": "N37",
+    "crop_xyxy": [
+      205,
+      445,
+      351,
+      611
+    ],
+    "source_annotation_id": 6661,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_1_16_jpg.rf.ccae1503d1a6025aefa86989141d275b.jpg",
+    "source_sha256": "419b1c1d2c19bd2f23c6beb5c0ab7d36e3a13fe6688e5b5cfd56c1cdd2c41ef0"
+  },
+  {
+    "id": "N38",
+    "crop_xyxy": [
+      503,
+      376,
+      624,
+      608
+    ],
+    "source_annotation_id": 8760,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_4_11_jpg.rf.7f43bbf0fbfbaaaeb9f4e6a50e66d327.jpg",
+    "source_sha256": "b99ab2c7b09ef2613a5f5e13545c779528945227016047298609e578ae56fefd"
+  },
+  {
+    "id": "N39",
+    "crop_xyxy": [
+      385,
+      358,
+      518,
+      594
+    ],
+    "source_annotation_id": 11759,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_2_22_jpg.rf.fe1cc1534695ca025ce3c0279e5fb38f.jpg",
+    "source_sha256": "d60b22e7e21dabfeaf506eee8c74b0f4bda090793068bd2463dad5855e3eb663"
+  },
+  {
+    "id": "N40",
+    "crop_xyxy": [
+      848,
+      357,
+      1076,
+      562
+    ],
+    "source_annotation_id": 4596,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_4_20_jpg.rf.a94b3983c4d4be76bb5a6174a3587ec3.jpg",
+    "source_sha256": "83e1d8863d2b73b95dc900fbcead6cfcd9460273533e1bfcc3675b7517db856c"
+  },
+  {
+    "id": "N41",
+    "crop_xyxy": [
+      1168,
+      570,
+      1250,
+      691
+    ],
+    "source_annotation_id": 4930,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_9_9_jpg.rf.af7230d1da583fee0578d4700d3910e0.jpg",
+    "source_sha256": "b76b8f8163b500c81210f35e28a9a4170d1032d785f32b3eb381d915110a7694"
+  },
+  {
+    "id": "N42",
+    "crop_xyxy": [
+      346,
+      322,
+      501,
+      627
+    ],
+    "source_annotation_id": 11756,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_9_10_jpg.rf.fe1308ffa07dab9d12dd142610ec91e6.jpg",
+    "source_sha256": "e999c54dd5ae2ff36a23b0b2352f850b7663a44665129746cc56c46255fa1d88"
+  },
+  {
+    "id": "N43",
+    "crop_xyxy": [
+      1030,
+      63,
+      1160,
+      265
+    ],
+    "source_annotation_id": 9125,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_4_7_jpg.rf.855cd73d091eb97dbd59d7835579f341.jpg",
+    "source_sha256": "fe6883ef225dccc379e572360c97d75d70dff358f89ec59de8faea3b948df33d"
+  },
+  {
+    "id": "N44",
+    "crop_xyxy": [
+      1320,
+      362,
+      1562,
+      604
+    ],
+    "source_annotation_id": 3483,
+    "decision": "accept_background",
+    "reason": "Visually reviewed: only clothing/person/background; no target litter object visible in crop",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_4_28_jpg.rf.6f8949a773e34466ebd58c82f26bb75f.jpg",
+    "source_sha256": "7fee6c0ea58d90c7d3e536b36fb8ba9e84402500087d9675443df9fc9b1b47a6"
+  },
+  {
+    "id": "N45",
+    "crop_xyxy": [
+      876,
+      448,
+      1025,
+      576
+    ],
+    "source_annotation_id": 6113,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_12_23_jpg.rf.c3226370d5aa4dc5e26fac57a7266875.jpg",
+    "source_sha256": "20b1ee96715044100aeb466d2043b97d0eaa160f808e8fe1fdfa893a972ceddd"
+  },
+  {
+    "id": "N46",
+    "crop_xyxy": [
+      1019,
+      185,
+      1138,
+      326
+    ],
+    "source_annotation_id": 7714,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_2_30_jpg.rf.df2b9e1f2f99da7245ef4c57038e8c5d.jpg",
+    "source_sha256": "2f7df7f2cf1ef0f7fd3f80a49b6db8c6c4bd11216ad5a782ae779b2db435ed3f"
+  },
+  {
+    "id": "N47",
+    "crop_xyxy": [
+      829,
+      408,
+      961,
+      537
+    ],
+    "source_annotation_id": 4890,
+    "decision": "exclude",
+    "reason": "Held object, bag, ambiguous content or insufficient visibility: not used as an empty-label image",
+    "reviewer": "Codex visual review of negative_review.jpg, 2026-11-15",
+    "source_relative_file": "datasets/Littering.v8-yolotiny.coco/train/video_11_24_jpg.rf.aea1fd01a6958089097605319dd6d54c.jpg",
+    "source_sha256": "3b1cdcea0fc8e22162aaf1506d23dd8d216c45d8362e85fd8f911401161148d7"
+  }
+]
