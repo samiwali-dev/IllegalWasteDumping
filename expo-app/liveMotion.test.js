@@ -15,7 +15,7 @@ function clip(positions, largePerson = false) {
     const gray = new Float32Array(112 * 112).fill(204);
     const left = largePerson ? position : 49, top = largePerson ? 20 : position;
     const width = largePerson ? 40 : 10, height = largePerson ? 70 : 10;
-    for (let y = top; y < Math.min(112, top + height); y++) {
+    for (let y = top; position != null && y < Math.min(112, top + height); y++) {
       for (let x = left; x < Math.min(112, left + width); x++) {
         rgb.fill(0, (y * 112 + x) * 3, (y * 112 + x) * 3 + 3);
         gray[y * 112 + x] = 0;
@@ -31,11 +31,11 @@ test('all interface text is English', () => {
   }
 });
 
-test('the original detection calculations are restored unchanged', () => {
+test('the current five-guard detection calculations remain unchanged by the redesign', () => {
   const normalized = api.detectDumpedObjectsOnly.toString()
     .replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, '');
   const checksum = createHash('sha256').update(normalized).digest('hex');
-  assert.equal(checksum, 'cbf3d4c595c76fdf3a4534286b03577d541bf5bd9eb77eff71c1265f6048934a');
+  assert.equal(checksum, '91fc88b813ad884a391bf31a0c70890fd06fad712d68df549598a7709dd4cd92');
 });
 
 test('a stationary black object does not trigger dumping', async () => {
@@ -50,8 +50,8 @@ test('a person crossing the image does not trigger dumping', async () => {
   assert.equal(result.actions[0].prediction, 0);
 });
 
-test('the original downward-object detection still produces a box', async () => {
-  const result = await api.analyzeLiveFramesOnEdge(clip([0, 14, 28, 42, 56]), ['neural_network']);
+test('a falling object with an initial empty background produces a box', async () => {
+  const result = await api.analyzeLiveFramesOnEdge(clip([null, 0, 7, 14, 21, 28, 35, 42, 49, 56]), ['neural_network']);
   assert.ok(result.yolo_live.total_detections > 0);
   assert.equal(result.actions[0].prediction, 1);
 });

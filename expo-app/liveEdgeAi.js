@@ -49,7 +49,7 @@ export function isWebCameraMirrored() {
 }
 
 /**
- * Ultra-fast synchronous frame grabber for Web/Vercel (runs in <0.4ms at 16-20 FPS).
+ * Synchronous browser frame grabber, with a separate JPEG for captured evidence.
  * Extracts 112x112 RGB & Grayscale Float32Arrays directly without async Image decoding.
  */
 export function grabWebVideoFrameFast(includeSnapshotUri = true) {
@@ -78,8 +78,8 @@ export function grabWebVideoFrameFast(includeSnapshotUri = true) {
     }
 
     let uri = null;
-    const targetW = 320;
-    const targetH = Math.max(200, Math.round((activeVideo.videoHeight / activeVideo.videoWidth) * targetW));
+    const targetW = Math.min(640, activeVideo.videoWidth);
+    const targetH = Math.max(1, Math.round((activeVideo.videoHeight / activeVideo.videoWidth) * targetW));
     if (includeSnapshotUri) {
       if (!_snapCanvas) {
         _snapCanvas = document.createElement('canvas');
@@ -90,7 +90,7 @@ export function grabWebVideoFrameFast(includeSnapshotUri = true) {
         _snapCanvas.height = targetH;
       }
       _snapCtx.drawImage(activeVideo, 0, 0, targetW, targetH);
-      uri = _snapCanvas.toDataURL('image/jpeg', 0.68);
+      uri = _snapCanvas.toDataURL('image/jpeg', 0.8);
     }
 
     return {
@@ -287,18 +287,18 @@ async function drawDetectionsOnFrame(dataUri, detections) {
         const bw = (nx2 - nx1) * w;
         const bh = (ny2 - ny1) * h;
 
-        ctx.strokeStyle = '#EF4444';
+        ctx.strokeStyle = '#D79533';
         ctx.lineWidth = Math.max(3, Math.round(w / 100));
         ctx.strokeRect(x1, y1, bw, bh);
 
-        ctx.fillStyle = 'rgba(239, 68, 68, 0.22)';
+        ctx.fillStyle = 'rgba(215, 149, 51, 0.12)';
         ctx.fillRect(x1, y1, bw, bh);
 
-        const label = `littering ${(det.confidence * 100).toFixed(0)}%`;
+        const label = 'Motion candidate';
         ctx.font = `bold ${Math.max(12, Math.round(w / 25))}px sans-serif`;
         const textWidth = ctx.measureText(label).width + 12;
         const textHeight = Math.max(20, Math.round(w / 18));
-        ctx.fillStyle = '#EF4444';
+        ctx.fillStyle = '#D79533';
         ctx.fillRect(x1, Math.max(0, y1 - textHeight), textWidth, textHeight);
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(label, x1 + 6, Math.max(14, y1 - 5));

@@ -10,11 +10,12 @@ import {
   Text,
   TextInput,
   View,
-   useWindowDimensions,
+  useWindowDimensions,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
+import { frameUri, captureFromResult, retainCaptures } from './captureStore';
 import {
   analyzeLiveFramesOnEdge,
   grabWebVideoFrameFast,
@@ -146,23 +147,61 @@ const MODEL_META = {
 };
 
 const NAV_ITEMS = [
-  { id: 'live', icon: '📷', label: 'Live Cam' },
-  { id: 'analyze', icon: '🎞️', label: 'MP4 Video' },
-  { id: 'samples', icon: '📂', label: 'MIVIA Set' },
-  { id: 'frames', icon: '🖼️', label: 'YOLO Frames' },
-  { id: 'matrix', icon: '📊', label: 'Confusion' },
-  { id: 'settings', icon: '⚙️', label: 'API Config' },
+  { id: 'monitor', label: 'Live monitor', icon: 'camera' },
+  { id: 'analysis', label: 'Video analysis', icon: 'video' },
+  { id: 'evaluation', label: 'Evaluation', icon: 'chart' },
+  { id: 'settings', label: 'Connection', icon: 'settings' },
 ];
 
+function Icon({ name = 'camera', size = 18, color = 'currentColor' }) {
+  if (Platform.OS !== 'web') return <Text style={{ color, fontSize: size }}>•</Text>;
+  const paths = {
+    camera: 'M14 4l1.5 3H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h4.5L10 4z M16 13a4 4 0 1 1-8 0 4 4 0 0 1 8 0',
+    video: 'M15 10l6-4v12l-6-4 M3 5h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3z',
+    chart: 'M4 4v16h17 M9 16v-5 M14 16V7 M19 16v-8',
+    settings: 'M4 7h16 M4 17h16 M8 4v6 M16 14v6',
+    download: 'M12 3v12 M7 10l5 5 5-5 M4 16v5h16v-5',
+    play: 'M7 4l14 8-14 8z',
+    stop: 'M6 6h12v12H6z',
+    refresh: 'M20 7v5h-5 M4 17v-5h5 M6 7a7 7 0 0 1 12-2l2 2 M18 17a7 7 0 0 1-12 2l-2-2',
+    upload: 'M12 16V3 M7 8l5-5 5 5 M4 16v5h16v-5',
+    image: 'M3 3h18v18H3z M3 16l5-5 4 4 3-3 6 6 M8 7h.01',
+  };
+  return React.createElement('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: color, strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true },
+    React.createElement('path', { d: paths[name] || paths.camera }));
+}
+
+function Button({ children, onPress, icon, primary, danger, disabled, small }) {
+  return (
+    <Pressable accessibilityRole="button" onPress={onPress} disabled={disabled}
+      style={({ hovered }) => [styles.button, small && styles.buttonSmall, primary && styles.buttonPrimary, danger && styles.buttonDanger, hovered && !disabled && styles.buttonHover, disabled && styles.disabled]}>
+      {icon && <Icon name={icon} size={16} color={primary ? '#FFFFFF' : danger ? '#C64545' : '#435169'} />}
+      <Text style={[styles.buttonText, primary && styles.buttonTextPrimary, danger && styles.buttonTextDanger]}>{children}</Text>
+    </Pressable>
+  );
+}
+
+function readCaptures() {
+  if (Platform.OS !== 'web' || typeof sessionStorage === 'undefined') return [];
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('wastewatch.captures') || '[]');
+    return Array.isArray(saved) ? saved.filter(item => item?.uri && item?.capturedAt).slice(0, 6) : [];
+  } catch { return []; }
+}
+
 export default function App() {
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const isDesktop = windowWidth >= 980;
+  const { width: windowWidth } = useWindowDimensions();
+  const isDesktop = windowWidth >= 1080;
+  const isCompact = windowWidth < 600;
 
   // Primary mode: 'live' (camera stage) or 'analyze' (MP4 stage)
-  const [stageMode, setStageMode] = useState('analyze');
-  // Bottom panel view: 'samples' | 'frames' | 'matrix' | 'settings'
-  const [bottomPanel, setBottomPanel] = useState('samples');
-  const [activeNav, setActiveNav] = useState('analyze');
+  const [stageMode, setStageMode] = useState('live');
+  const [page, setPage] = useState('monitor');
+  const [captures, setCaptures] = useState(readCaptures);
+  const [selectedCaptureId, setSelectedCaptureId] = useState(null);
+  const [captureBusy, setCaptureBusy] = useState(false);
+  const [frameTotal, setFrameTotal] = useState(0);
+  const lastAutoCaptureRef = useRef(0);
 
   const [apiBase, setApiBase] = useState('http://localhost:8000');
   const [selectedChoice, setSelectedChoice] = useState('all');
@@ -191,7 +230,6 @@ export default function App() {
   const [cameraMirrored, setCameraMirrored] = useState(false);
 
   const cameraRef = useRef(null);
-  const baselineFrameRef = useRef(null);
   const frameBufferRef = useRef([]);
   const liveTimerRef = useRef(null);
   const busyLockRef = useRef(false);
@@ -253,19 +291,6 @@ export default function App() {
     return () => clearInterval(timer);
   }, [stageMode, cameraFacing, cameraReady]);
 
-  const handleNavClick = (id) => {
-    setActiveNav(id);
-    if (id === 'live') {
-      setStageMode('live');
-      setBottomPanel('frames');
-    } else if (id === 'analyze') {
-      setStageMode('analyze');
-      setBottomPanel('samples');
-    } else {
-      setBottomPanel(id);
-    }
-  };
-
   const getSelectedModelsList = () =>
     selectedChoice === 'all'
       ? ['neural_network', 'movinet_a0', 'optical_flow_svm', 'yolov8n']
@@ -296,20 +321,51 @@ export default function App() {
   };
 
   const runFramesAnalysis = async (framesToAnalyze) => {
-    const modelsParam = getSelectedModelsList();
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam);
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, ['neural_network']);
   };
 
-  const handleResetBaseline = async () => {
-    if (!cameraReady) return;
-    const base = await captureSingleFastFrame(true);
-    if (base) {
-      baselineFrameRef.current = base;
-      frameBufferRef.current = [base];
-      setBufferedCount(1);
-      setLiveResult(null);
-      setLiveStatus('Reference background locked.');
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof sessionStorage !== 'undefined') {
+      try { sessionStorage.setItem('wastewatch.captures', JSON.stringify(captures)); } catch { /* Keep the in-memory copy if storage is full. */ }
     }
+  }, [captures]);
+
+  const addCapture = capture => {
+    if (!capture?.uri) return;
+    setCaptures(previous => retainCaptures(previous, capture));
+    setSelectedCaptureId(capture.id);
+  };
+
+  const acceptLiveResult = (result, frames) => {
+    setLiveResult(result);
+    const capture = captureFromResult(result, frames);
+    if (capture && Date.now() - lastAutoCaptureRef.current > 3000) {
+      lastAutoCaptureRef.current = Date.now();
+      addCapture(capture);
+    }
+  };
+
+  const handleCaptureSnapshot = async () => {
+    if (!cameraReady || captureBusy) return;
+    setCaptureBusy(true);
+    try {
+      const frame = await captureSingleFastFrame(true);
+      const uri = frameUri(frame);
+      if (!uri) throw new Error('No camera image available yet.');
+      const now = Date.now();
+      addCapture({ id: String(now), uri, capturedAt: now, kind: 'Manual capture', regions: 0 });
+      setLiveStatus('Snapshot saved to this session.');
+    } catch (error) { setLiveStatus(`Capture failed: ${error.message}`); }
+    finally { setCaptureBusy(false); }
+  };
+
+  const navigate = nextPage => {
+    if (nextPage !== 'monitor') {
+      stopLiveMonitoring();
+      setCameraReady(false);
+    }
+    setPage(nextPage);
+    setStageMode(nextPage === 'monitor' ? 'live' : 'analyze');
   };
 
   const handleCaptureBurstAndAnalyze = async () => {
@@ -337,16 +393,15 @@ export default function App() {
       }
       frameBufferRef.current = burst;
       setBufferedCount(burst.length);
-      setLiveStatus('Running 4-model spatiotemporal analysis...');
+      setLiveStatus('Analyzing the captured sequence...');
       const res = await runFramesAnalysis(burst);
-      setLiveResult(res);
-      setBottomPanel('frames');
+      acceptLiveResult(res, burst);
       const anyDumping = res.actions && res.actions.some((a) => a.prediction === 1);
       const boxCount = res.yolo_live?.total_detections || 0;
       setLiveStatus(
         anyDumping
-          ? `DUMPING DETECTED (${boxCount} tracked region${boxCount === 1 ? '' : 's'}).`
-          : 'NO DUMPING detected in captured sequence.'
+          ? `Motion alert: ${boxCount} tracked region${boxCount === 1 ? '' : 's'}. Snapshot saved.`
+          : 'No motion alert in this sequence.'
       );
     } catch (err) {
       setLiveStatus(`Camera error: ${err.message}`);
@@ -360,7 +415,9 @@ export default function App() {
       setLiveStatus('Waiting for camera sensor...');
       return;
     }
+    if (liveTimerRef.current) clearInterval(liveTimerRef.current);
     frameBufferRef.current = [];
+    setFrameTotal(0);
     fpsCounterRef.current = { count: 0, lastTs: Date.now() };
     detectionHoldUntilRef.current = 0;
     setLiveMonitoring(true);
@@ -374,9 +431,10 @@ export default function App() {
       busyLockRef.current = true;
       tick++;
       try {
-        const withSnap = tick % 2 === 0;
+        const withSnap = true; // Preserve every source frame for an event snapshot.
         const frame = await captureSingleFastFrame(withSnap);
         if (frame) {
+          setFrameTotal(count => count + 1);
           frameBufferRef.current = [...frameBufferRef.current, frame].slice(-24);
           setBufferedCount(frameBufferRef.current.length);
 
@@ -395,16 +453,16 @@ export default function App() {
 
             if (isDump) {
               detectionHoldUntilRef.current = Date.now() + 3500;
-              setLiveResult(res);
-              setLiveStatus('⚠️ DUMPING DETECTED — Trajectory locked.');
+              acceptLiveResult(res, recentWindow);
+              setLiveStatus('Motion alert. A snapshot has been saved for review.');
             } else if (Date.now() > detectionHoldUntilRef.current) {
               setLiveResult(res);
-              setLiveStatus('Live monitoring active • Scene clear.');
+              setLiveStatus('Monitoring camera frames. No current motion alert.');
             }
           }
         }
-      } catch (_e) {
-        // ignore transient frame error
+      } catch (error) {
+        setLiveStatus(`Camera analysis error: ${error.message}`);
       } finally {
         busyLockRef.current = false;
       }
@@ -419,6 +477,7 @@ export default function App() {
     busyLockRef.current = false;
     setLiveMonitoring(false);
     setLiveFps(0);
+    setLiveResult(null);
     setLiveStatus('Live monitoring paused.');
   };
 
@@ -435,6 +494,7 @@ export default function App() {
         setAnalysisResult(null);
         setSelectedFramePreview(null);
         setStageMode('analyze');
+        setPage('analysis');
         setStatusText(`Loaded MP4: ${asset.name}`);
       }
     } catch (err) {
@@ -448,6 +508,7 @@ export default function App() {
     setAnalysisResult(null);
     setSelectedFramePreview(null);
     setStageMode('analyze');
+    setPage('analysis');
     setStatusText(
       `Selected MIVIA sample: ${sample.video_id} (${
         sample.label === 1 ? 'Ground Truth: Dumping' : 'Ground Truth: No Dumping'
@@ -504,1628 +565,375 @@ export default function App() {
       if (data.yolo?.frame_results?.length > 0) {
         const withDet = data.yolo.frame_results.find((f) => f.detections?.length > 0);
         setSelectedFramePreview(withDet || data.yolo.frame_results[0]);
-        setBottomPanel('frames');
       }
       setApiConnected(true);
       setStatusText(`Analysis complete for ${data.video_name}.`);
-    } catch (_err) {
-      setStatusText(`API unreachable at ${cleanBaseUrl}. Ensure "python api.py" is running.`);
+    } catch (error) {
+      setStatusText(`Analysis failed: ${error.message}. Check the Python API connection.`);
     } finally {
       setAnalyzing(false);
     }
   };
 
-  // Active result object (either from Live Camera or MP4 Analysis)
-  const activeResult = stageMode === 'live' ? liveResult : analysisResult;
   const modelsEval = evaluationData?.models || FALLBACK_EVALUATION.models;
+  const selectedCapture = captures.find(item => item.id === selectedCaptureId) || captures[0];
+  const liveAlert = (liveResult?.yolo_live?.total_detections || 0) > 0;
+  const clock = value => new Date(value).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
+  const videoUrl = pickedFile?.uri || (selectedSample ? `${cleanBaseUrl}/api/sample-video/${selectedSample.video_id}` : null);
 
-  // Map latest action predictions by model slug
-  const actionMap = {};
-  if (activeResult?.actions) {
-    for (const a of activeResult.actions) {
-      actionMap[a.model] = a;
-    }
-  }
+  const downloadCapture = () => {
+    if (!selectedCapture || Platform.OS !== 'web') return;
+    const link = document.createElement('a');
+    link.href = selectedCapture.uri;
+    link.download = `wastewatch-${new Date(selectedCapture.capturedAt).toISOString().replace(/[:.]/g, '-')}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
 
-  const yoloDetCount =
-    stageMode === 'live'
-      ? liveResult?.yolo_live?.total_detections ?? null
-      : analysisResult?.yolo?.total_detections ?? null;
-
-  // Determine video source URL for the Top Stage when in MP4 mode on Web
-  const stageVideoUrl =
-    stageMode === 'analyze'
-      ? pickedFile?.uri
-        ? pickedFile.uri
-        : selectedSample
-        ? `${cleanBaseUrl}/api/sample-video/${selectedSample.video_id}`
-        : null
-      : null;
-
-  // ============================================================================
-  // 1. LEFT VERTICAL ICON SIDEBAR (Wireframe Left Rail)
-  // ============================================================================
-  const renderLeftSidebar = () => (
-    <View style={[styles.leftRail, !isDesktop && styles.leftRailMobile]}>
-      {/* Top Brand Icon */}
-      <Pressable
-        style={styles.brandSquare}
-        onPress={() => {
-          setSelectedChoice('all');
-          fetchBackendData();
-        }}
-      >
-        <Text style={styles.brandSquareIcon}>🛡️</Text>
-        <View
-          style={[
-            styles.brandOnlineDot,
-            { backgroundColor: apiConnected ? '#10B981' : '#F59E0B' },
-          ]}
-        />
-      </Pressable>
-
-      {/* Center 6 Navigation Squares */}
-      <View style={[styles.navStack, !isDesktop && styles.navStackMobile]}>
-        {NAV_ITEMS.map((item) => {
-          const isActive =
-            (item.id === 'live' && stageMode === 'live') ||
-            (item.id === 'analyze' && stageMode === 'analyze' && bottomPanel === 'samples') ||
-            (item.id !== 'live' && item.id !== 'analyze' && bottomPanel === item.id);
-          return (
-            <Pressable
-              key={item.id}
-              onPress={() => handleNavClick(item.id)}
-              style={[styles.navSquare, isActive && styles.navSquareActive]}
-            >
-              <Text style={styles.navSquareIcon}>{item.icon}</Text>
-              <Text style={[styles.navSquareLabel, isActive && styles.navSquareLabelActive]}>
-                {item.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* Bottom Quick-Reset / All-Models Toggle Square */}
-      <Pressable
-        style={[
-          styles.navSquare,
-          styles.bottomRailSquare,
-          selectedChoice === 'all' && styles.navSquareAllActive,
-        ]}
-        onPress={() => setSelectedChoice('all')}
-      >
-        <Text style={styles.navSquareIcon}>⚡</Text>
-        <Text style={styles.navSquareLabel}>
-          {selectedChoice === 'all' ? '4 Models' : 'Reset 4'}
-        </Text>
-      </Pressable>
-    </View>
-  );
-
-  // ============================================================================
-  // 2. CENTER COLUMN — TOP VIEWPORT STAGE + FLOATING 4-BUTTON DOCK
-  // ============================================================================
-  const renderTopStage = () => (
-    <View style={styles.topStageWrapper}>
-      <View style={styles.stageScreen}>
-        {/* Top HUD Overlay Bar */}
-        <View style={styles.stageHudTop}>
-          <View style={styles.hudBadgeRow}>
-            <View
-              style={[
-                styles.livePulseDot,
-                {
-                  backgroundColor:
-                    stageMode === 'live'
-                      ? liveMonitoring
-                        ? '#EF4444'
-                        : '#10B981'
-                      : analyzing
-                      ? '#38BDF8'
-                      : '#10B981',
-                },
-              ]}
-            />
-            <Text style={styles.hudTitleText}>
-              {stageMode === 'live'
-                ? liveMonitoring
-                  ? `LIVE AI STREAM • ${liveFps} FPS • BUFFER ${bufferedCount}/24`
-                  : 'LIVE CAMERA VIEWPORT'
-                : pickedFile
-                ? `MP4 STREAM • ${pickedFile.name}`
-                : selectedSample
-                ? `MIVIA TEST SAMPLE • ${selectedSample.video_id}`
-                : 'SURVEILLANCE VIEWPORT'}
-            </Text>
+  const capturePanel = () => (
+    <View style={[styles.evidenceColumn, isDesktop && { width: 348 }]}>
+      <View style={styles.card}>
+        <View style={styles.cardHeading}>
+          <View>
+            <Text style={styles.eyebrow}>EVIDENCE</Text>
+            <Text style={styles.cardTitle}>Latest capture</Text>
           </View>
-
-          <View style={styles.hudRightPills}>
-            {activeResult?.ground_truth_verdict && stageMode === 'analyze' && (
-              <View style={styles.gtHudPill}>
-                <Text style={styles.gtHudPillText}>
-                  GT: {activeResult.ground_truth_verdict}
-                </Text>
-              </View>
-            )}
-            <Pressable
-              style={styles.modeSwitchPill}
-              onPress={() => setStageMode((m) => (m === 'live' ? 'analyze' : 'live'))}
-            >
-              <Text style={styles.modeSwitchPillText}>
-                {stageMode === 'live' ? 'Switch to MP4 Mode' : 'Switch to Live Camera'}
-              </Text>
-            </Pressable>
-          </View>
+          <View style={styles.countPill}><Text style={styles.countText}>{String(captures.length).padStart(2, '0')}</Text></View>
         </View>
-
-        {/* Main Visual Content inside the Stage */}
-        {stageMode === 'live' ? (
-          !permission?.granted ? (
-            <View style={styles.stageEmptyState}>
-              <Text style={styles.stageEmptyIcon}>📷</Text>
-              <Text style={styles.stageEmptyTitle}>Camera Permission Required</Text>
-              <Text style={styles.stageEmptySub}>
-                Enable camera access to run real-time 5-Guard Falling-Object & MLP detection.
-              </Text>
-              <Pressable style={styles.stageGrantBtn} onPress={requestPermission}>
-                <Text style={styles.stageGrantBtnText}>Allow Camera Access</Text>
-              </Pressable>
-            </View>
+        <View style={styles.captureImage} testID="capture-preview">
+          {selectedCapture ? (
+            <Image testID="saved-capture-image" accessibilityLabel={`Saved ${selectedCapture.kind}`} source={{ uri: selectedCapture.uri }} style={styles.imageFill} resizeMode="contain" />
           ) : (
-            <View testID="live-camera-frame" style={styles.cameraStageFill}>
-              {Platform.OS === 'web' &&
-                React.createElement(
-                  'style',
-                  null,
-                  '[data-testid="live-camera-frame"] video { object-fit: contain !important; width: 100% !important; height: 100% !important; }'
-                )}
-              <CameraView
-                ref={cameraRef}
-                style={styles.cameraView}
-                facing={cameraFacing}
-                onCameraReady={() => setCameraReady(true)}
-              />
-              {/* Real-Time Bounding Box Overlay */}
-              {liveResult?.yolo_live?.detections?.map((det, idx) => {
-                const [nx1, ny1, nx2, ny2] = det.norm_box || [0.25, 0.25, 0.75, 0.75];
-                const left = Platform.OS === 'web' && cameraMirrored ? 1 - nx2 : nx1;
-                return (
-                  <View
-                    key={idx}
-                    pointerEvents="none"
-                    style={{
-                      position: 'absolute',
-                      left: `${left * 100}%`,
-                      top: `${ny1 * 100}%`,
-                      width: `${Math.max(8, (nx2 - nx1) * 100)}%`,
-                      height: `${Math.max(8, (ny2 - ny1) * 100)}%`,
-                      borderWidth: 3,
-                      borderColor: '#EF4444',
-                      backgroundColor: 'rgba(239, 68, 68, 0.20)',
-                      borderRadius: 6,
-                    }}
-                  >
-                    <View style={styles.bboxTag}>
-                      <Text style={styles.bboxTagText}>
-                        LITTERING {(Number(det.confidence || 0.85) * 100).toFixed(0)}%
-                      </Text>
-                    </View>
-                  </View>
-                );
-              })}
+            <View style={styles.captureEmpty}>
+              <View style={styles.emptyIcon}><Icon name="image" size={26} color="#7E8EA3" /></View>
+              <Text style={styles.emptyTitle}>Your next capture appears here</Text>
+              <Text style={styles.emptyCopy}>Alerts save a snapshot automatically. You can also capture a frame at any time.</Text>
             </View>
-          )
-        ) : (
-          /* MP4 / Sample / YOLO Frame Stage */
-          <View style={styles.mp4StageFill}>
-            {selectedFramePreview ? (
-              <View style={styles.previewSplitStage}>
-                <Image
-                  source={{ uri: selectedFramePreview.image_url }}
-                  style={styles.stagePreviewImage}
-                  resizeMode="contain"
-                />
-                <View style={styles.previewFrameBadge}>
-                  <Text style={styles.previewFrameBadgeText}>
-                    YOLOv8n Frame #{selectedFramePreview.frame_number} (
-                    {selectedFramePreview.timestamp_seconds}s) •{' '}
-                    {selectedFramePreview.detections?.length || 0} box(es)
-                  </Text>
-                  <Pressable onPress={() => setSelectedFramePreview(null)}>
-                    <Text style={styles.backToVideoLink}>Back to Video ✕</Text>
-                  </Pressable>
-                </View>
-              </View>
-            ) : Platform.OS === 'web' && stageVideoUrl ? (
-              <View style={styles.webVideoWrapper}>
-                {React.createElement('video', {
-                  key: stageVideoUrl,
-                  src: stageVideoUrl,
-                  controls: true,
-                  playsInline: true,
-                  style: {
-                    width: '100%',
-                    height: '100%',
-                    maxHeight: 330,
-                    objectFit: 'contain',
-                    backgroundColor: '#090D16',
-                  },
-                })}
-              </View>
-            ) : (
-              <View style={styles.stageEmptyState}>
-                <Text style={styles.stageEmptyIcon}>🎬</Text>
-                <Text style={styles.stageEmptyTitle}>
-                  {pickedFile
-                    ? pickedFile.name
-                    : selectedSample
-                    ? `Sample ${selectedSample.video_id}`
-                    : 'No Video Loaded'}
-                </Text>
-                <Text style={styles.stageEmptySub}>{statusText}</Text>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* FLOATING 4-BUTTON ACTION DOCK AT BOTTOM OF STAGE (Matches the 4 Red Bars in Wireframe) */}
-        <View style={styles.stageActionDock}>
-          {stageMode === 'live' ? (
-            <>
-              <Pressable
-                style={[
-                  styles.dockActionBtn,
-                  liveMonitoring ? styles.dockBtnDanger : styles.dockBtnCrimson,
-                ]}
-                onPress={liveMonitoring ? stopLiveMonitoring : startLiveMonitoring}
-              >
-                <Text style={styles.dockActionBtnText}>
-                  {liveMonitoring ? '⏹ Stop Live AI' : '▶ Start Live AI'}
-                </Text>
-              </Pressable>
-
-              <Pressable
-                style={[
-                  styles.dockActionBtn,
-                  styles.dockBtnCrimson,
-                  (!cameraReady || liveAnalyzing) && styles.buttonDisabled,
-                ]}
-                disabled={!cameraReady || liveAnalyzing}
-                onPress={handleCaptureBurstAndAnalyze}
-              >
-                <Text style={styles.dockActionBtnText}>
-                  {liveAnalyzing ? '⏳ Capturing 24f...' : '⚡ Capture 24f Burst'}
-                </Text>
-              </Pressable>
-
-              <Pressable
-                style={[styles.dockActionBtn, styles.dockBtnCrimsonSecondary]}
-                onPress={handleResetBaseline}
-              >
-                <Text style={styles.dockActionBtnText}>🎯 Lock Background</Text>
-              </Pressable>
-
-              <Pressable
-                style={[styles.dockActionBtn, styles.dockBtnCrimsonSecondary]}
-                onPress={() => {
-                  baselineFrameRef.current = null;
-                  setCameraFacing((prev) => (prev === 'back' ? 'front' : 'back'));
-                }}
-              >
-                <Text style={styles.dockActionBtnText}>🔄 Flip Camera</Text>
-              </Pressable>
-            </>
-          ) : (
-            <>
-              <Pressable
-                style={[
-                  styles.dockActionBtn,
-                  styles.dockBtnCrimson,
-                  ((!pickedFile && !selectedSample) || analyzing) && styles.buttonDisabled,
-                ]}
-                disabled={(!pickedFile && !selectedSample) || analyzing}
-                onPress={handleRunAnalysis}
-              >
-                <Text style={styles.dockActionBtnText}>
-                  {analyzing ? '⏳ Analyzing...' : '▶ Analyze Video'}
-                </Text>
-              </Pressable>
-
-              <Pressable
-                style={[styles.dockActionBtn, styles.dockBtnCrimsonSecondary]}
-                onPress={handlePickVideo}
-              >
-                <Text style={styles.dockActionBtnText}>📁 Upload MP4</Text>
-              </Pressable>
-
-              <Pressable
-                style={[styles.dockActionBtn, styles.dockBtnCrimsonSecondary]}
-                onPress={() => {
-                  setBottomPanel('samples');
-                  if (samples.length > 0) {
-                    const idx = samples.findIndex((s) => s.video_id === selectedSample?.video_id);
-                    const next = samples[(idx + 1) % samples.length];
-                    handleSelectSample(next);
-                  }
-                }}
-              >
-                <Text style={styles.dockActionBtnText}>🎞️ Next MIVIA Sample</Text>
-              </Pressable>
-
-              <Pressable
-                style={[styles.dockActionBtn, styles.dockBtnCrimsonSecondary]}
-                onPress={() => setStageMode('live')}
-              >
-                <Text style={styles.dockActionBtnText}>📷 Live Camera</Text>
-              </Pressable>
-            </>
           )}
         </View>
+        {selectedCapture ? (
+          <View style={styles.captureMeta}>
+            <View style={styles.inlineBetween}>
+              <Text style={styles.captureKind}>{selectedCapture.kind}</Text>
+              <Text style={styles.time}>{clock(selectedCapture.capturedAt)}</Text>
+            </View>
+            <Text style={styles.mutedSmall}>{selectedCapture.kind === 'Manual capture' ? 'A frame saved directly from your camera.' : 'A captured candidate for visual review.'}</Text>
+            {Platform.OS === 'web' && <Button icon="download" onPress={downloadCapture}>Download image</Button>}
+          </View>
+        ) : <Text style={[styles.mutedSmall, { padding: 18 }]}>Captures stay visible when the live result changes.</Text>}
+      </View>
+      <View style={styles.card}>
+        <View style={styles.cardHeading}>
+          <Text style={styles.smallTitle}>Session captures</Text>
+          {captures.length > 0 && <Pressable accessibilityRole="button" onPress={() => { setCaptures([]); setSelectedCaptureId(null); }}><Text style={styles.textLink}>Clear</Text></Pressable>}
+        </View>
+        {captures.length ? (
+          <View style={styles.thumbnailGrid}>
+            {captures.map(item => (
+              <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`View ${item.kind} at ${clock(item.capturedAt)}`}
+                onPress={() => setSelectedCaptureId(item.id)} style={[styles.thumbnail, selectedCapture?.id === item.id && styles.thumbnailSelected]}>
+                <Image source={{ uri: item.uri }} style={styles.thumbnailImage} resizeMode="cover" />
+                <Text style={styles.thumbnailTime}>{clock(item.capturedAt)}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : <Text style={[styles.mutedSmall, { paddingHorizontal: 20, paddingBottom: 20 }]}>No captures yet. Start with “Capture frame”.</Text>}
+        <Text style={styles.sessionNote}>Stored in this browser tab. Download an image to keep a copy.</Text>
       </View>
     </View>
   );
 
-  // ============================================================================
-  // 3. CENTER COLUMN — BOTTOM WORKSPACE PANEL (Wireframe Lower-Center Box)
-  // ============================================================================
-  const renderBottomWorkspace = () => {
-    const selectedEvalObj = modelsEval[selectedEvalModel] || modelsEval.neural_network;
-    const cm = selectedEvalObj?.metrics?.confusion_matrix || [
-      [37, 13],
-      [13, 37],
-    ];
-
-    return (
-      <View style={styles.bottomWorkspaceCard}>
-        {/* Sub-navigation bar inside Bottom Workspace */}
-        <View style={styles.workspaceHeader}>
-          <View style={styles.workspaceTabsRow}>
-            {[
-              { id: 'samples', title: `📂 MIVIA Test Set (${samples.length || 12})` },
-              {
-                id: 'frames',
-                title: `🖼️ YOLOv8n Detections (${
-                  stageMode === 'live'
-                    ? liveResult?.yolo_live?.total_detections || 0
-                    : analysisResult?.yolo?.frame_results?.length || 0
-                })`,
-              },
-              { id: 'matrix', title: `📊 Confusion Matrix (${MODEL_META[selectedEvalModel]?.shortTitle})` },
-              { id: 'settings', title: '⚙️ API & Stream Config' },
-            ].map((tab) => {
-              const active = bottomPanel === tab.id;
-              return (
-                <Pressable
-                  key={tab.id}
-                  onPress={() => setBottomPanel(tab.id)}
-                  style={[styles.wsTabPill, active && styles.wsTabPillActive]}
-                >
-                  <Text style={[styles.wsTabText, active && styles.wsTabTextActive]}>
-                    {tab.title}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          <Text style={styles.wsStatusMini} numberOfLines={1}>
-            {stageMode === 'live' ? liveStatus : statusText}
-          </Text>
-        </View>
-
-        {/* TAB 1: MIVIA Official Test Samples Grid */}
-        {bottomPanel === 'samples' && (
-          <View style={styles.wsBody}>
-            <Text style={styles.wsHelper}>
-              Click any official MIVIA test video below to load it into the viewport above, then press "Analyze Video":
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.samplesCardStrip}
-            >
-              {samples.length > 0 ? (
-                samples.map((s) => {
-                  const isSel = selectedSample?.video_id === s.video_id;
-                  const isDump = s.label === 1;
-                  return (
-                    <Pressable
-                      key={s.video_id}
-                      onPress={() => handleSelectSample(s)}
-                      style={[styles.sampleTile, isSel && styles.sampleTileSelected]}
-                    >
-                      <View style={styles.sampleTileTop}>
-                        <Text style={styles.sampleTileIcon}>{isDump ? '🚨' : '✅'}</Text>
-                        <View
-                          style={[
-                            styles.sampleTileTag,
-                            {
-                              backgroundColor: isDump
-                                ? 'rgba(239, 68, 68, 0.18)'
-                                : 'rgba(16, 185, 129, 0.18)',
-                            },
-                          ]}
-                        >
-                          <Text
-                            style={[
-                              styles.sampleTileTagText,
-                              { color: isDump ? '#FCA5A5' : '#6EE7B7' },
-                            ]}
-                          >
-                            {isDump ? 'DUMPING' : 'NO DUMPING'}
-                          </Text>
-                        </View>
-                      </View>
-                      <Text style={styles.sampleTileTitle}>{s.video_id}</Text>
-                      <Text style={styles.sampleTileSub}>Official Test Split • 24f</Text>
-                    </Pressable>
-                  );
-                })
-              ) : (
-                <Text style={styles.wsHelper}>
-                  Connect to Python API ({cleanBaseUrl}) to browse the 12 official MIVIA test videos.
-                </Text>
-              )}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* TAB 2: YOLOv8n Annotated Frames / Live Snapshot */}
-        {bottomPanel === 'frames' && (
-          <View style={styles.wsBody}>
-            {stageMode === 'live' && liveResult?.yolo_live?.annotated_data_uri ? (
-              <View style={styles.liveSnapRow}>
-                <Image
-                  source={{ uri: liveResult.yolo_live.annotated_data_uri }}
-                  style={styles.liveSnapThumb}
-                  resizeMode="contain"
-                />
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                  <Text style={styles.wsSectionTitle}>
-                    Live Projectile Trajectory Snapshot
-                  </Text>
-                  <Text style={styles.wsHelper}>
-                    5-Guard Falling Object Tracker verified {liveResult.yolo_live.total_detections}{' '}
-                    dropped object(s) while rejecting human body/head motion.
-                  </Text>
-                </View>
+  const monitorPage = () => (
+    <>
+      <View style={styles.pageHeading}>
+        <View><Text style={styles.eyebrow}>CAMERA WORKSPACE</Text><Text style={styles.pageTitle}>Live monitor</Text><Text style={styles.pageSubtitle}>Full camera view. Captures kept within reach.</Text></View>
+        <View style={styles.modeBadge}><View style={styles.modeDot} /><Text style={styles.modeText}>Browser motion preview</Text></View>
+      </View>
+      <View style={[styles.mainColumns, !isDesktop && styles.stacked]}>
+        <View style={styles.monitorColumn}>
+          <View style={styles.card}>
+            <View style={styles.feedHeader}>
+              <View style={styles.inlineRow}>
+                <View style={[styles.statusDot, { backgroundColor: liveMonitoring ? '#14A580' : '#9AA7B8' }]} />
+                <Text style={styles.feedTitle}>{liveMonitoring ? 'LIVE CAMERA' : 'CAMERA PREVIEW'}</Text>
               </View>
-            ) : analysisResult?.yolo?.frame_results?.length > 0 ? (
-              <>
-                <Text style={styles.wsHelper}>
-                  YOLOv8n scanned {analysisResult.yolo.frames_sampled} evenly-spaced frames (
-                  {analysisResult.yolo.total_detections} total boxes). Click any frame to inspect in main viewport:
-                </Text>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.samplesCardStrip}
-                >
-                  {analysisResult.yolo.frame_results.map((frame) => {
-                    const hasBox = frame.detections?.length > 0;
-                    const isFocused =
-                      selectedFramePreview?.frame_number === frame.frame_number;
-                    return (
-                      <Pressable
-                        key={frame.frame_number}
-                        onPress={() => setSelectedFramePreview(frame)}
-                        style={[
-                          styles.yoloFrameTile,
-                          hasBox && styles.yoloFrameTileDetected,
-                          isFocused && styles.yoloFrameTileFocused,
-                        ]}
-                      >
-                        <Image
-                          source={{ uri: frame.image_url }}
-                          style={styles.yoloFrameImg}
-                          resizeMode="cover"
-                        />
-                        <View style={styles.yoloFrameFooter}>
-                          <Text style={styles.yoloFrameTitle}>
-                            #{frame.frame_number} ({frame.timestamp_seconds}s)
-                          </Text>
-                          <Text
-                            style={[
-                              styles.yoloFrameCount,
-                              { color: hasBox ? '#FCA5A5' : '#94A3B8' },
-                            ]}
-                          >
-                            {hasBox ? `${frame.detections.length} box` : 'Clear'}
-                          </Text>
-                        </View>
-                      </Pressable>
-                    );
+              <Text style={styles.feedMeta}>{liveMonitoring ? `${liveFps} FPS` : cameraReady ? 'Ready when you are' : 'Camera inactive'}</Text>
+            </View>
+            <View style={[styles.cameraViewport, { aspectRatio: cameraAspect }, !permission?.granted && { minHeight: 320 }]} testID="live-camera-frame">
+              {Platform.OS === 'web' && React.createElement('style', null,
+                '[data-testid="live-camera-frame"] video { object-fit: contain !important; width: 100% !important; height: 100% !important; }')}
+              {permission?.granted ? (
+                <>
+                  <CameraView ref={cameraRef} facing={cameraFacing} style={styles.imageFill}
+                    onCameraReady={() => setCameraReady(true)}
+                    onMountError={error => { setCameraReady(false); setLiveStatus(`Camera error: ${error.message}`); }} />
+                  {liveResult?.yolo_live?.detections?.map((detection, i) => {
+                    const [x1, y1, x2, y2] = detection.norm_box || [0, 0, 0, 0];
+                    const left = Platform.OS === 'web' && cameraMirrored ? 1 - x2 : x1;
+                    return <View key={i} pointerEvents="none" style={[styles.detectionBox, { left: `${left * 100}%`, top: `${y1 * 100}%`, width: `${(x2 - x1) * 100}%`, height: `${(y2 - y1) * 100}%` }]}>
+                      <Text style={styles.detectionLabel}>Motion candidate</Text>
+                    </View>;
                   })}
-                </ScrollView>
-              </>
-            ) : (
-              <View style={styles.wsEmptyBox}>
-                <Text style={styles.wsHelper}>
-                  Run "Analyze Video" on an MP4/sample or "Capture 24f Burst" on Live Camera to inspect annotated YOLOv8n frames here.
-                </Text>
+                  <View pointerEvents="none" style={styles.cameraCorner}><Text style={styles.cameraCornerText}>CAM 01</Text></View>
+                </>
+              ) : (
+                <View style={styles.permissionPanel}>
+                  <View style={styles.cameraEmptyIcon}><Icon name="camera" size={35} color="#D4E0EC" /></View>
+                  <Text style={styles.permissionTitle}>Your camera, front and center.</Text>
+                  <Text style={styles.permissionCopy}>Enable your camera to start monitoring and save a snapshot.</Text>
+                  <Button primary icon="camera" onPress={requestPermission}>Enable camera</Button>
+                </View>
+              )}
+            </View>
+            <View style={styles.feedControls}>
+              <View style={styles.controlGroup}>
+                <Button primary={!liveMonitoring} danger={liveMonitoring} icon={liveMonitoring ? 'stop' : 'play'}
+                  disabled={!cameraReady || liveAnalyzing} onPress={liveMonitoring ? stopLiveMonitoring : startLiveMonitoring}>
+                  {liveMonitoring ? 'Stop monitoring' : 'Start monitoring'}
+                </Button>
+                <Button icon="camera" disabled={!cameraReady || captureBusy} onPress={handleCaptureSnapshot}>{captureBusy ? 'Capturing…' : 'Capture frame'}</Button>
               </View>
-            )}
-          </View>
-        )}
-
-        {/* TAB 3: Interactive 2x2 Confusion Matrix for Selected Model */}
-        {bottomPanel === 'matrix' && (
-          <View style={styles.wsBody}>
-            <View style={styles.matrixWorkspaceRow}>
-              {[
-                {
-                  code: 'TN',
-                  title: 'True Negative',
-                  val: cm[0][0],
-                  sub: 'Actual: Clean → Pred: Clean',
-                  color: '#10B981',
-                },
-                {
-                  code: 'FP',
-                  title: 'False Positive',
-                  val: cm[0][1],
-                  sub: 'Actual: Clean → Pred: Dumping',
-                  color: '#F59E0B',
-                },
-                {
-                  code: 'FN',
-                  title: 'False Negative',
-                  val: cm[1][0],
-                  sub: 'Actual: Dumping → Pred: Clean',
-                  color: '#EF4444',
-                },
-                {
-                  code: 'TP',
-                  title: 'True Positive',
-                  val: cm[1][1],
-                  sub: 'Actual: Dumping → Pred: Dumping',
-                  color: '#3B82F6',
-                },
-              ].map((cell) => (
-                <View
-                  key={cell.code}
-                  style={[styles.wsMatrixCell, { borderColor: `${cell.color}66` }]}
-                >
-                  <View style={styles.wsMatrixTop}>
-                    <Text style={[styles.wsMatrixCode, { color: cell.color }]}>{cell.code}</Text>
-                    <Text style={styles.wsMatrixNumber}>{cell.val}</Text>
-                  </View>
-                  <Text style={styles.wsMatrixTitle}>{cell.title}</Text>
-                  <Text style={styles.wsMatrixSub}>{cell.sub}</Text>
-                </View>
-              ))}
+              <Button small icon="refresh" disabled={!cameraReady} onPress={() => { stopLiveMonitoring(); setCameraReady(false); setLiveResult(null); setCameraFacing(value => value === 'back' ? 'front' : 'back'); }}>Switch camera</Button>
+            </View>
+            <View style={[styles.feedStatus, liveAlert && styles.feedStatusAlert]}>
+              <View style={[styles.statusDot, { backgroundColor: liveAlert ? '#D79533' : '#8395A9' }]} />
+              <Text style={styles.feedStatusText}>{permission?.granted ? liveStatus : 'Enable your camera to start monitoring.'}</Text>
+              {(liveAnalyzing || captureBusy) && <ActivityIndicator size="small" color="#0B8163" />}
             </View>
           </View>
-        )}
-
-        {/* TAB 4: API Endpoint & Filter Settings */}
-        {bottomPanel === 'settings' && (
-          <View style={styles.wsBody}>
-            <Text style={styles.wsHelper}>
-              Python Backend Server URL (serves MIVIA samples, MoViNet A0, Optical Flow SVM, MLP & YOLOv8n):
-            </Text>
-            <View style={styles.serverRow}>
-              <TextInput
-                style={styles.serverInput}
-                value={apiBase}
-                onChangeText={setApiBase}
-                placeholder="http://localhost:8000"
-                placeholderTextColor="#64748B"
-                autoCapitalize="none"
-              />
-              <Pressable style={styles.refreshBtn} onPress={fetchBackendData}>
-                <Text style={styles.refreshBtnText}>Reconnect API</Text>
-              </Pressable>
+          <View style={styles.sessionBar}>
+            <View><Text style={styles.statValue}>{frameTotal.toLocaleString('en-US')}</Text><Text style={styles.statLabel}>Frames captured</Text></View>
+            <View style={styles.statDivider} />
+            <View><Text style={styles.statValue}>{bufferedCount}<Text style={styles.statSuffix}> / 24</Text></Text><Text style={styles.statLabel}>Current buffer</Text></View>
+            <View style={styles.statDivider} />
+            <View><Text style={styles.statValue}>{captures.length}</Text><Text style={styles.statLabel}>Saved captures</Text></View>
+          </View>
+          <View style={styles.noteCard}>
+            <View style={styles.inlineBetween}><Text style={styles.smallTitle}>Camera tools</Text><Text style={styles.noteBadge}>OPTIONAL</Text></View>
+            <Text style={styles.mutedSmall}>Analyze a short camera sequence on demand. Saved images stay in the capture panel.</Text>
+            <View style={styles.controlGroup}>
+              <Button small disabled={!cameraReady || liveAnalyzing} onPress={handleCaptureBurstAndAnalyze}>{liveAnalyzing ? 'Analyzing sequence…' : 'Analyze 24-frame burst'}</Button>
             </View>
           </View>
-        )}
-      </View>
-    );
-  };
-
-  // ============================================================================
-  // 4. RIGHT ANALYTICS SIDEBAR (Top 2x2 Grid + 7 Stacked Telemetry/Metric Bars)
-  // ============================================================================
-  const renderRightSidebar = () => {
-    const modelSlugs = ['neural_network', 'movinet_a0', 'optical_flow_svm', 'yolov8n'];
-    const selectedEvalObj = modelsEval[selectedEvalModel] || modelsEval.neural_network;
-    const cm = selectedEvalObj?.metrics?.confusion_matrix || [
-      [37, 13],
-      [13, 37],
-    ];
-
-    const anyDumping =
-      activeResult?.actions && activeResult.actions.some((a) => a.prediction === 1);
-
-    return (
-      <View style={[styles.rightSidebar, !isDesktop && styles.rightSidebarMobile]}>
-        {/* TOP 2x2 GRID OF 4 ALGORITHM CARDS (Matches the 4 Top Rectangles in Wireframe) */}
-        <View style={styles.grid2x2}>
-          {modelSlugs.map((slug) => {
-            const meta = MODEL_META[slug];
-            const act = actionMap[slug];
-            const isSelectedFilter = selectedChoice === slug;
-            const isYolo = slug === 'yolov8n';
-
-            let liveBadgeText = meta.badge;
-            let liveVerdictColor = '#94A3B8';
-            let cardBorderColor = isSelectedFilter ? meta.color : '#2A3444';
-
-            if (isYolo && yoloDetCount !== null) {
-              liveBadgeText = yoloDetCount > 0 ? `${yoloDetCount} BOXES` : '0 BOXES';
-              liveVerdictColor = yoloDetCount > 0 ? '#F87171' : '#34D399';
-              if (yoloDetCount > 0) cardBorderColor = '#EF4444';
-            } else if (act) {
-              const isDump = act.prediction === 1;
-              liveBadgeText = isDump ? 'DUMPING' : 'CLEAR';
-              liveVerdictColor = isDump ? '#F87171' : '#34D399';
-              if (isDump) cardBorderColor = '#EF4444';
-            }
-
-            return (
-              <Pressable
-                key={slug}
-                onPress={() => {
-                  setSelectedChoice((prev) => (prev === slug ? 'all' : slug));
-                  if (slug !== 'yolov8n') setSelectedEvalModel(slug);
-                }}
-                style={[
-                  styles.gridCard,
-                  { borderColor: cardBorderColor },
-                  isSelectedFilter && { backgroundColor: '#1E293B' },
-                ]}
-              >
-                <View style={styles.gridCardTopRow}>
-                  <Text style={styles.gridCardIcon}>{meta.icon}</Text>
-                  <View
-                    style={[
-                      styles.gridCardPill,
-                      { backgroundColor: `${liveVerdictColor}20` },
-                    ]}
-                  >
-                    <Text style={[styles.gridCardPillText, { color: liveVerdictColor }]}>
-                      {liveBadgeText}
-                    </Text>
-                  </View>
-                </View>
-
-                <Text style={styles.gridCardTitle} numberOfLines={1}>
-                  {meta.shortTitle}
-                </Text>
-                <Text style={styles.gridCardSub} numberOfLines={1}>
-                  {act
-                    ? `Score: ${Number(act.score).toFixed(3)} • ${(Number(act.seconds) * 1000).toFixed(0)}ms`
-                    : meta.subtitle}
-                </Text>
-              </Pressable>
-            );
-          })}
+          <Text style={styles.footnote}>Browser alerts use motion tracking and need review. Trained-model results are available in Video analysis through the Python API.</Text>
         </View>
+        {capturePanel()}
+      </View>
+    </>
+  );
 
-        {/* STACK OF 7 HORIZONTAL TELEMETRY & BENCHMARK BARS (Matches the 7 Bars in Wireframe) */}
-        <View style={styles.barsStack}>
-          {/* Bar 1: Overall Verdict & Active Filter Status */}
-          <Pressable
-            style={[
-              styles.stackBar,
-              activeResult && {
-                borderColor: anyDumping ? '#EF4444' : '#10B981',
-                backgroundColor: anyDumping
-                  ? 'rgba(239, 68, 68, 0.12)'
-                  : 'rgba(16, 185, 129, 0.10)',
-              },
-            ]}
-            onPress={() => setSelectedChoice('all')}
-          >
-            <View style={{ flex: 1 }}>
-              <Text style={styles.stackBarLabel}>1. ENSEMBLE VERDICT & ACTIVE FILTER</Text>
-              <Text style={styles.stackBarValue} numberOfLines={1}>
-                {activeResult
-                  ? anyDumping
-                    ? '🚨 POSSIBLE ILLEGAL DUMPING DETECTED'
-                    : '✅ NO DUMPING DETECTED (SCENE CLEAR)'
-                  : `Ready • Active: ${
-                      selectedChoice === 'all' ? 'All 4 Algorithms' : MODEL_META[selectedChoice]?.title
-                    }`}
-              </Text>
+  const analysisPage = () => (
+    <>
+      <View style={styles.pageHeading}><View><Text style={styles.eyebrow}>SAVED MODEL INFERENCE</Text><Text style={styles.pageTitle}>Video analysis</Text><Text style={styles.pageSubtitle}>Upload a video or choose an official test sample.</Text></View>
+        <View style={styles.modeBadge}><View style={[styles.modeDot, { backgroundColor: apiConnected ? '#14A580' : '#9AA7B8' }]} /><Text style={styles.modeText}>{apiConnected ? 'Python API connected' : 'Python API required'}</Text></View>
+      </View>
+      <View style={[styles.mainColumns, !isDesktop && styles.stacked]}>
+        <View style={styles.monitorColumn}>
+          <View style={styles.card}>
+            <View style={styles.feedHeader}><Text style={styles.feedTitle}>{pickedFile?.name || selectedSample?.video_id || 'VIDEO WORKSPACE'}</Text><Text style={styles.feedMeta}>MP4</Text></View>
+            <View style={[styles.cameraViewport, { aspectRatio: 16 / 9 }, !videoUrl && { minHeight: 300 }]}>
+              {Platform.OS === 'web' && videoUrl ? React.createElement('video', { src: videoUrl, controls: true, playsInline: true, style: { width: '100%', height: '100%', objectFit: 'contain' } }) :
+                <View style={styles.permissionPanel}><Icon name="video" size={38} color="#B8C9DB" /><Text style={styles.permissionTitle}>Choose a video to begin</Text><Text style={styles.permissionCopy}>Your results and annotated frames will appear alongside the video.</Text><Button primary icon="upload" onPress={handlePickVideo}>Choose MP4</Button></View>}
             </View>
-            {(analyzing || liveAnalyzing) && <ActivityIndicator size="small" color="#38BDF8" />}
-          </Pressable>
-
-          {/* Bar 2: Neural Network (MLP) Benchmark + Live Score */}
-          <Pressable
-            style={[
-              styles.stackBar,
-              selectedEvalModel === 'neural_network' && styles.stackBarSelected,
-            ]}
-            onPress={() => {
-              setSelectedEvalModel('neural_network');
-              setBottomPanel('matrix');
-            }}
-          >
-            <View style={[styles.barAccent, { backgroundColor: '#10B981' }]} />
-            <View style={{ flex: 1 }}>
-              <View style={styles.stackBarRowBetween}>
-                <Text style={styles.stackBarTitle}>2. Neural Network (MLP)</Text>
-                <Text style={[styles.stackBarMetric, { color: '#10B981' }]}>
-                  Acc 74.0% • F1 74.0%
-                </Text>
-              </View>
-              <Text style={styles.stackBarSub}>
-                {actionMap.neural_network
-                  ? `Live Verdict: ${actionMap.neural_network.verdict} (Prob: ${Number(
-                      actionMap.neural_network.score
-                    ).toFixed(4)})`
-                  : '528 features • 21.5s train • 0.15 MiB checkpoint'}
-              </Text>
-            </View>
-          </Pressable>
-
-          {/* Bar 3: MoViNet A0 Benchmark + Live Score */}
-          <Pressable
-            style={[
-              styles.stackBar,
-              selectedEvalModel === 'movinet_a0' && styles.stackBarSelected,
-            ]}
-            onPress={() => {
-              setSelectedEvalModel('movinet_a0');
-              setBottomPanel('matrix');
-            }}
-          >
-            <View style={[styles.barAccent, { backgroundColor: '#3B82F6' }]} />
-            <View style={{ flex: 1 }}>
-              <View style={styles.stackBarRowBetween}>
-                <Text style={styles.stackBarTitle}>3. MoViNet A0 (3D CNN)</Text>
-                <Text style={[styles.stackBarMetric, { color: '#3B82F6' }]}>
-                  Acc 72.0% • F1 72.5%
-                </Text>
-              </View>
-              <Text style={styles.stackBarSub}>
-                {actionMap.movinet_a0
-                  ? `Live Verdict: ${actionMap.movinet_a0.verdict} (Sigmoid: ${Number(
-                      actionMap.movinet_a0.score
-                    ).toFixed(4)})`
-                  : '24×112×112 RGB • Recall 74.0% • 7.38 MiB checkpoint'}
-              </Text>
-            </View>
-          </Pressable>
-
-          {/* Bar 4: Optical Flow + SVM Benchmark + Live Score */}
-          <Pressable
-            style={[
-              styles.stackBar,
-              selectedEvalModel === 'optical_flow_svm' && styles.stackBarSelected,
-            ]}
-            onPress={() => {
-              setSelectedEvalModel('optical_flow_svm');
-              setBottomPanel('matrix');
-            }}
-          >
-            <View style={[styles.barAccent, { backgroundColor: '#F59E0B' }]} />
-            <View style={{ flex: 1 }}>
-              <View style={styles.stackBarRowBetween}>
-                <Text style={styles.stackBarTitle}>4. Optical Flow + SVM</Text>
-                <Text style={[styles.stackBarMetric, { color: '#F59E0B' }]}>
-                  Acc 64.0% • F1 65.4%
-                </Text>
-              </View>
-              <Text style={styles.stackBarSub}>
-                {actionMap.optical_flow_svm
-                  ? `Live Verdict: ${actionMap.optical_flow_svm.verdict} (Margin: ${Number(
-                      actionMap.optical_flow_svm.score
-                    ).toFixed(4)})`
-                  : 'Farnebäck 4×4×4 grid • Recall 68.0% • 0.38 MiB'}
-              </Text>
-            </View>
-          </Pressable>
-
-          {/* Bar 5: YOLOv8n Object Detector Benchmark + Live Detections */}
-          <Pressable
-            style={styles.stackBar}
-            onPress={() => setBottomPanel('frames')}
-          >
-            <View style={[styles.barAccent, { backgroundColor: '#8B5CF6' }]} />
-            <View style={{ flex: 1 }}>
-              <View style={styles.stackBarRowBetween}>
-                <Text style={styles.stackBarTitle}>5. YOLOv8n Region Detector</Text>
-                <Text style={[styles.stackBarMetric, { color: '#A78BFA' }]}>
-                  mAP@50 54.3% • Rec 72.2%
-                </Text>
-              </View>
-              <Text style={styles.stackBarSub}>
-                {yoloDetCount !== null
-                  ? `Detected ${yoloDetCount} littering region(s) in current video`
-                  : 'Roboflow Littering val (1,168 imgs) • 5.93 MiB'}
-              </Text>
-            </View>
-          </Pressable>
-
-          {/* Bar 6: Confusion Matrix Summary Bar */}
-          <Pressable
-            style={styles.stackBar}
-            onPress={() => setBottomPanel('matrix')}
-          >
-            <View style={{ flex: 1 }}>
-              <View style={styles.stackBarRowBetween}>
-                <Text style={styles.stackBarLabel}>
-                  6. CONFUSION MATRIX ({MODEL_META[selectedEvalModel]?.shortTitle})
-                </Text>
-                <Text style={styles.stackBarMiniLink}>Inspect ↗</Text>
-              </View>
-              <View style={styles.cmInlineRow}>
-                <Text style={[styles.cmInlineItem, { color: '#34D399' }]}>TN: {cm[0][0]}</Text>
-                <Text style={[styles.cmInlineItem, { color: '#FBBF24' }]}>FP: {cm[0][1]}</Text>
-                <Text style={[styles.cmInlineItem, { color: '#F87171' }]}>FN: {cm[1][0]}</Text>
-                <Text style={[styles.cmInlineItem, { color: '#60A5FA' }]}>TP: {cm[1][1]}</Text>
-              </View>
-            </View>
-          </Pressable>
-
-          {/* Bar 7: System & Dataset Telemetry Bar */}
-          <Pressable
-            style={styles.stackBar}
-            onPress={() => setBottomPanel('settings')}
-          >
-            <View style={{ flex: 1 }}>
-              <View style={styles.stackBarRowBetween}>
-                <Text style={styles.stackBarLabel}>7. SYSTEM & DATASET TELEMETRY</Text>
-                <Text
-                  style={[
-                    styles.stackBarMetric,
-                    { color: apiConnected ? '#10B981' : '#38BDF8' },
-                  ]}
-                >
-                  {apiConnected ? '● API ONLINE' : '● EDGE MODE'}
-                </Text>
-              </View>
-              <Text style={styles.stackBarSub} numberOfLines={1}>
-                MIVIA Split: 320 Train / 80 Val / 100 Test • {cleanBaseUrl}
-              </Text>
-            </View>
-          </Pressable>
+            <View style={styles.feedControls}><View style={styles.controlGroup}><Button primary icon="play" disabled={(!pickedFile && !selectedSample) || analyzing} onPress={handleRunAnalysis}>{analyzing ? 'Analyzing…' : 'Analyze video'}</Button><Button icon="upload" onPress={handlePickVideo}>Choose MP4</Button></View></View>
+            <View style={styles.feedStatus}><Text style={styles.feedStatusText}>{statusText}</Text>{analyzing && <ActivityIndicator size="small" color="#0B8163" />}</View>
+          </View>
+          <View style={styles.noteCard}><Text style={styles.smallTitle}>Models to run</Text><View style={styles.modelChoices}>
+            {[{ id: 'all', title: 'All four models' }, ...Object.entries(MODEL_META).map(([id, item]) => ({ id, title: item.title }))].map(item => <Pressable accessibilityRole="button" key={item.id} onPress={() => setSelectedChoice(item.id)} style={[styles.choice, selectedChoice === item.id && styles.choiceActive]}><Text style={[styles.choiceText, selectedChoice === item.id && styles.choiceTextActive]}>{item.title}</Text></Pressable>)}
+          </View></View>
+          <View style={styles.card}><View style={styles.cardHeading}><Text style={styles.smallTitle}>Official MIVIA samples</Text><Text style={styles.mutedSmall}>{samples.length} available</Text></View>
+            {samples.length ? <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sampleStrip}>{samples.map(sample => <Pressable accessibilityRole="button" key={sample.video_id} onPress={() => handleSelectSample(sample)} style={[styles.sample, selectedSample?.video_id === sample.video_id && styles.sampleSelected]}><Text style={styles.captureKind}>{sample.video_id}</Text><Text style={styles.mutedSmall}>{sample.label === 1 ? 'Dumping' : 'No dumping'}</Text></Pressable>)}</ScrollView> : <View style={styles.inner}><Text style={styles.mutedSmall}>Connect the Python API to browse the official test videos.</Text><Button small onPress={() => navigate('settings')}>Open connection settings</Button></View>}
+          </View>
+        </View>
+        <View style={[styles.evidenceColumn, isDesktop && { width: 348 }]}>
+          <View style={styles.card}><View style={styles.cardHeading}><Text style={styles.cardTitle}>Analysis results</Text></View>
+            {analysisResult ? <View style={styles.inner}>
+              {analysisResult.actions?.map(action => <View style={styles.resultRow} key={action.model}><Text style={styles.captureKind}>{MODEL_META[action.model]?.title || action.label_title}</Text><Text style={[styles.resultVerdict, action.prediction === 1 && { color: '#B4651A' }]}>{action.prediction === 1 ? 'Predicted dumping' : 'Predicted no dumping'}</Text><Text style={styles.mutedSmall}>Score {Number(action.score).toFixed(3)} · {Math.round(action.seconds * 1000)} ms</Text></View>)}
+              {analysisResult.yolo && <Text style={styles.mutedSmall}>YOLOv8n: {analysisResult.yolo.total_detections} boxes across {analysisResult.yolo.frames_sampled} sampled frames.</Text>}
+              {analysisResult.errors?.map((error, i) => <Text key={i} style={styles.errorText}>{error}</Text>)}
+            </View> : <View style={styles.inner}><Text style={styles.mutedSmall}>Run an analysis to see the saved models’ predictions here.</Text></View>}
+          </View>
+          <View style={styles.card}><View style={styles.cardHeading}><Text style={styles.smallTitle}>Annotated frames</Text></View>
+            {selectedFramePreview ? <><View style={styles.captureImage}><Image source={{ uri: selectedFramePreview.image_url }} style={styles.imageFill} resizeMode="contain" /></View><View style={styles.inner}><Text style={styles.mutedSmall}>Frame {selectedFramePreview.frame_number} · {selectedFramePreview.timestamp_seconds}s</Text></View></> : <View style={styles.inner}><Text style={styles.mutedSmall}>Detection frames appear after video analysis.</Text></View>}
+            <ScrollView horizontal contentContainerStyle={styles.sampleStrip}>{analysisResult?.yolo?.frame_results?.map(frame => <Pressable key={frame.frame_number} onPress={() => setSelectedFramePreview(frame)}><Image source={{ uri: frame.image_url }} style={styles.frameThumbnail} resizeMode="cover" /></Pressable>)}</ScrollView>
+          </View>
         </View>
       </View>
-    );
+    </>
+  );
+
+  const evaluationPage = () => {
+    const selected = modelsEval[selectedEvalModel] || FALLBACK_EVALUATION.models.neural_network;
+    const matrix = selected?.metrics?.confusion_matrix || [[0, 0], [0, 0]];
+    return <>
+      <View style={styles.pageHeading}><View><Text style={styles.eyebrow}>RECORDED EXPERIMENTS</Text><Text style={styles.pageTitle}>Model evaluation</Text><Text style={styles.pageSubtitle}>Saved benchmarks, separate from the current camera session.</Text></View><Button icon="refresh" onPress={fetchBackendData}>Refresh results</Button></View>
+      <View style={styles.card}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>Video classification</Text><Text style={styles.mutedSmall}>MIVIA · 100 official test videos · 50 dumping / 50 no dumping</Text></View></View>
+        <ScrollView horizontal><View style={styles.metricTable}>
+          <View style={[styles.metricTableRow, styles.metricTableHeader]}>{['Model', 'Accuracy', 'Precision', 'Recall', 'F1'].map((title, i) => <Text key={title} style={[styles.tableLabel, i === 0 ? styles.modelCell : styles.metricCell]}>{title}</Text>)}</View>
+          {['neural_network', 'movinet_a0', 'optical_flow_svm'].map(slug => { const metrics = (modelsEval[slug] || FALLBACK_EVALUATION.models[slug]).metrics; return <Pressable key={slug} onPress={() => setSelectedEvalModel(slug)} style={[styles.metricTableRow, selectedEvalModel === slug && styles.selectedTableRow]}><Text style={[styles.modelCell, styles.tableModel]}>{MODEL_META[slug].title}</Text>{['accuracy', 'precision', 'recall', 'f1'].map(key => <Text style={styles.metricCell} key={key}>{percent(metrics[key])}</Text>)}</Pressable>; })}
+        </View></ScrollView>
+      </View>
+      <View style={[styles.mainColumns, !isDesktop && styles.stacked, { marginTop: 24 }]}>
+        <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>Confusion matrix</Text><Text style={styles.mutedSmall}>{MODEL_META[selectedEvalModel].title} · select a model above</Text></View></View><View style={styles.matrixGrid}>{[{ label: 'True negative', value: matrix[0][0], tone: '#0B8163' }, { label: 'False positive', value: matrix[0][1], tone: '#B46D21' }, { label: 'False negative', value: matrix[1][0], tone: '#BF4D4D' }, { label: 'True positive', value: matrix[1][1], tone: '#367AA9' }].map(item => <View style={styles.matrixCell} key={item.label}><Text style={[styles.matrixNumber, { color: item.tone }]}>{item.value}</Text><Text style={styles.mutedSmall}>{item.label}</Text></View>)}</View></View>
+        <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>YOLOv8n detection</Text><Text style={styles.mutedSmall}>Littering validation set · 1,168 images</Text></View></View><View style={styles.detectionMetrics}>{[['Precision', 'precision'], ['Recall', 'recall'], ['mAP@50', 'map50'], ['mAP@50:95', 'map50_95']].map(([label, key]) => <View style={styles.detectionMetric} key={key}><Text style={styles.statValue}>{percent((modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).metrics[key])}</Text><Text style={styles.statLabel}>{label}</Text></View>)}</View><Text style={[styles.footnote, { padding: 20 }]}>Box-detection metrics and video-classification metrics measure different tasks.</Text></View>
+      </View>
+      <Text style={styles.footnote}>MIVIA results are exploratory because the official test set was reused during protocol development. These benchmarks are not live confidence scores.</Text>
+    </>;
   };
+
+  const settingsPage = () => (
+    <>
+      <View style={styles.pageHeading}><View><Text style={styles.eyebrow}>WORKSPACE SETTINGS</Text><Text style={styles.pageTitle}>Connection</Text><Text style={styles.pageSubtitle}>Connect the Python API for trained-model inference and test videos.</Text></View></View>
+      <View style={[styles.card, { maxWidth: 760 }]}><View style={styles.cardHeading}><Text style={styles.cardTitle}>Python API</Text><View style={styles.modeBadge}><View style={[styles.modeDot, { backgroundColor: apiConnected ? '#14A580' : '#9AA7B8' }]} /><Text style={styles.modeText}>{apiConnected ? 'Connected' : 'Not connected'}</Text></View></View>
+        <View style={styles.inner}><Text style={styles.fieldLabel}>SERVER ADDRESS</Text><TextInput value={apiBase} onChangeText={setApiBase} autoCapitalize="none" autoCorrect={false} placeholder="http://localhost:8000" style={styles.input} accessibilityLabel="Python API server address" />
+          <View style={styles.controlGroup}><Button primary icon="refresh" onPress={fetchBackendData}>Connect API</Button><Button onPress={() => navigate('monitor')}>Back to camera</Button></View>
+          <View style={styles.explanation}><Text style={styles.smallTitle}>Run locally on your Mac</Text><Text selectable style={styles.code}>.venv/bin/python api.py --port 8000</Text><Text style={styles.mutedSmall}>The API runs the saved MLP, MoViNet, SVM and YOLO checkpoints for video analysis. The browser camera preview remains available without this connection.</Text></View>
+        </View>
+      </View>
+    </>
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="light" />
-      <ScrollView
-        contentContainerStyle={[
-          styles.outerScroll,
-          isDesktop && { minHeight: windowHeight },
-        ]}
-      >
-        <View style={[styles.dashboardShell, !isDesktop && styles.dashboardShellMobile]}>
-          {/* Column 1: Left Icon Rail */}
-          {renderLeftSidebar()}
-
-          {/* Column 2: Center Split (Top Stage + Bottom Workspace) */}
-          <View style={styles.centerColumn}>
-            {renderTopStage()}
-            {renderBottomWorkspace()}
+      <StatusBar style="dark" />
+      {Platform.OS === 'web' && React.createElement('style', null,
+        'html,body,#root{margin:0;min-height:100%;background:#F5F7FA}*{box-sizing:border-box}button,a,input{font:inherit}::selection{background:#D2EEE4}button:focus-visible,[role=button]:focus-visible{outline:3px solid #82CDB7;outline-offset:3px}')}
+      <ScrollView contentContainerStyle={styles.outerScroll}>
+        <View style={[styles.header, isCompact && { paddingHorizontal: 18 }]}>
+          <View style={styles.brand}><View style={styles.brandIcon}><Icon name="camera" size={21} color="#0A8063" /></View><View><Text style={styles.brandName}>wastewatch<Text style={styles.brandDot}>.</Text></Text><Text style={styles.brandSubtitle}>MONITORING WORKSPACE</Text></View></View>
+          <View style={[styles.navigation, !isDesktop && { width: '100%' }]}>
+            {NAV_ITEMS.map(item => <Pressable accessibilityRole="tab" accessibilityState={{ selected: page === item.id }} key={item.id} onPress={() => navigate(item.id)} style={[styles.navItem, page === item.id && styles.navItemActive]}><Icon name={item.icon} size={16} color={page === item.id ? '#08775A' : '#738096'} /><Text style={[styles.navText, page === item.id && styles.navTextActive]}>{item.label}</Text></Pressable>)}
           </View>
-
-          {/* Column 3: Right Analytics Panel (2x2 Grid + 7 Telemetry Rows) */}
-          {renderRightSidebar()}
+          {isDesktop && <View style={styles.headerSession}><View style={styles.sessionIndicator} /><Text style={styles.headerSessionText}>Local session</Text></View>}
         </View>
+        <View style={[styles.page, isCompact && { paddingHorizontal: 18, paddingTop: 28 }]}>{page === 'monitor' ? monitorPage() : page === 'analysis' ? analysisPage() : page === 'evaluation' ? evaluationPage() : settingsPage()}</View>
+        <View style={styles.footer}><Text style={styles.footerText}>Wastewatch / Illegal Waste Dumping Detection</Text><Text style={styles.footerText}>Capture. Review. Keep the evidence.</Text></View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#12151C',
-  },
-  outerScroll: {
-    flexGrow: 1,
-    padding: 12,
-    justifyContent: 'center',
-  },
-  dashboardShell: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#181C24',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#262D3B',
-    overflow: 'hidden',
-    minHeight: 740,
-  },
-  dashboardShellMobile: {
-    flexDirection: 'column',
-  },
-
-  // ---------------------------------------------------------------------------
-  // 1. LEFT VERTICAL ICON SIDEBAR
-  // ---------------------------------------------------------------------------
-  leftRail: {
-    width: 74,
-    backgroundColor: '#1E232E',
-    borderRightWidth: 1,
-    borderRightColor: '#2A3140',
-    paddingVertical: 14,
-    paddingHorizontal: 8,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  leftRailMobile: {
-    width: '100%',
-    flexDirection: 'row',
-    borderRightWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2A3140',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  brandSquare: {
-    width: 52,
-    height: 52,
-    borderRadius: 12,
-    backgroundColor: '#84CC16',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  brandSquareIcon: {
-    fontSize: 22,
-  },
-  brandOnlineDot: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-    borderWidth: 1.5,
-    borderColor: '#1E232E',
-  },
-  navStack: {
-    gap: 10,
-    alignItems: 'center',
-    width: '100%',
-  },
-  navStackMobile: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    flex: 1,
-    marginHorizontal: 8,
-  },
-  navSquare: {
-    width: 56,
-    height: 54,
-    borderRadius: 11,
-    backgroundColor: '#262C3A',
-    borderWidth: 1,
-    borderColor: '#323A4B',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 4,
-  },
-  navSquareActive: {
-    backgroundColor: '#84CC16',
-    borderColor: '#A3E635',
-  },
-  navSquareAllActive: {
-    borderColor: '#84CC16',
-    backgroundColor: 'rgba(132, 204, 22, 0.18)',
-  },
-  navSquareIcon: {
-    fontSize: 17,
-  },
-  navSquareLabel: {
-    color: '#94A3B8',
-    fontSize: 9.5,
-    fontWeight: '700',
-    marginTop: 3,
-  },
-  navSquareLabelActive: {
-    color: '#0F172A',
-    fontWeight: '800',
-  },
-  bottomRailSquare: {
-    marginTop: 6,
-  },
-
-  // ---------------------------------------------------------------------------
-  // 2. CENTER COLUMN (TOP VIEWPORT + BOTTOM PANEL)
-  // ---------------------------------------------------------------------------
-  centerColumn: {
-    flex: 1.45,
-    backgroundColor: '#161A22',
-    padding: 14,
-    justifyContent: 'space-between',
-    gap: 14,
-  },
-  topStageWrapper: {
-    flex: 1.15,
-    minHeight: 370,
-    backgroundColor: '#222733',
-    borderRadius: 14,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#2E3646',
-  },
-  stageScreen: {
-    flex: 1,
-    backgroundColor: '#0D1017',
-    borderRadius: 10,
-    overflow: 'hidden',
-    position: 'relative',
-    justifyContent: 'space-between',
-  },
-  stageHudTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    backgroundColor: 'rgba(13, 16, 23, 0.86)',
-    borderBottomWidth: 1,
-    borderBottomColor: '#1E2532',
-    zIndex: 10,
-    gap: 8,
-  },
-  hudBadgeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  livePulseDot: {
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-  },
-  hudTitleText: {
-    color: '#E2E8F0',
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 0.4,
-  },
-  hudRightPills: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  gtHudPill: {
-    backgroundColor: 'rgba(56, 189, 248, 0.16)',
-    borderWidth: 1,
-    borderColor: '#38BDF8',
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  gtHudPillText: {
-    color: '#38BDF8',
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  modeSwitchPill: {
-    backgroundColor: '#1E293B',
-    borderWidth: 1,
-    borderColor: '#334155',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 6,
-  },
-  modeSwitchPillText: {
-    color: '#CBD5E1',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  cameraStageFill: {
-    flex: 1,
-    minHeight: 260,
-    position: 'relative',
-  },
-  cameraView: {
-    width: '100%',
-    height: '100%',
-  },
-  bboxTag: {
-    backgroundColor: '#EF4444',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderBottomRightRadius: 6,
-  },
-  bboxTagText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '800',
-  },
-  mp4StageFill: {
-    flex: 1,
-    minHeight: 260,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  webVideoWrapper: {
-    width: '100%',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  previewSplitStage: {
-    width: '100%',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 8,
-  },
-  stagePreviewImage: {
-    width: '100%',
-    height: 250,
-    borderRadius: 8,
-  },
-  previewFrameBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    marginTop: 6,
-  },
-  previewFrameBadgeText: {
-    color: '#F8FAFC',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  backToVideoLink: {
-    color: '#38BDF8',
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  stageEmptyState: {
-    padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stageEmptyIcon: {
-    fontSize: 36,
-    marginBottom: 8,
-  },
-  stageEmptyTitle: {
-    color: '#F8FAFC',
-    fontSize: 16,
-    fontWeight: '800',
-  },
-  stageEmptySub: {
-    color: '#94A3B8',
-    fontSize: 12.5,
-    marginTop: 4,
-    textAlign: 'center',
-    maxWidth: 420,
-  },
-  stageGrantBtn: {
-    marginTop: 12,
-    backgroundColor: '#DC2626',
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 8,
-  },
-  stageGrantBtnText: {
-    color: '#FFFFFF',
-    fontWeight: '800',
-    fontSize: 12.5,
-  },
-
-  // 4-BUTTON FLOATING DOCK AT BOTTOM OF VIEWPORT (Matches Wireframe Red Bar)
-  stageActionDock: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    backgroundColor: '#2A303D',
-    padding: 7,
-    marginHorizontal: 16,
-    marginBottom: 10,
-    borderRadius: 10,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: '#3A4254',
-  },
-  dockActionBtn: {
-    flex: 1,
-    minWidth: 115,
-    paddingVertical: 9,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dockBtnCrimson: {
-    backgroundColor: '#C83232',
-  },
-  dockBtnCrimsonSecondary: {
-    backgroundColor: '#992626',
-  },
-  dockBtnDanger: {
-    backgroundColor: '#EF4444',
-  },
-  dockActionBtnText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  buttonDisabled: {
-    opacity: 0.45,
-  },
-
-  // ---------------------------------------------------------------------------
-  // 3. BOTTOM WORKSPACE PANEL
-  // ---------------------------------------------------------------------------
-  bottomWorkspaceCard: {
-    flex: 0.85,
-    minHeight: 240,
-    backgroundColor: '#232834',
-    borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: '#31394A',
-    justifyContent: 'space-between',
-  },
-  workspaceHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 8,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2E3646',
-  },
-  workspaceTabsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  wsTabPill: {
-    backgroundColor: '#181C24',
-    paddingHorizontal: 11,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#2E3646',
-  },
-  wsTabPillActive: {
-    backgroundColor: '#323B4E',
-    borderColor: '#84CC16',
-  },
-  wsTabText: {
-    color: '#94A3B8',
-    fontSize: 11.5,
-    fontWeight: '700',
-  },
-  wsTabTextActive: {
-    color: '#F8FAFC',
-  },
-  wsStatusMini: {
-    color: '#94A3B8',
-    fontSize: 11.5,
-    maxWidth: 260,
-  },
-  wsBody: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingTop: 10,
-  },
-  wsHelper: {
-    color: '#94A3B8',
-    fontSize: 12,
-    marginBottom: 10,
-  },
-  wsSectionTitle: {
-    color: '#F8FAFC',
-    fontSize: 14,
-    fontWeight: '800',
-    marginBottom: 4,
-  },
-  samplesCardStrip: {
-    gap: 10,
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  sampleTile: {
-    width: 145,
-    backgroundColor: '#161A22',
-    borderRadius: 10,
-    padding: 11,
-    borderWidth: 1,
-    borderColor: '#2E3646',
-  },
-  sampleTileSelected: {
-    borderColor: '#84CC16',
-    backgroundColor: 'rgba(132, 204, 22, 0.10)',
-  },
-  sampleTileTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  sampleTileIcon: {
-    fontSize: 16,
-  },
-  sampleTileTag: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 5,
-  },
-  sampleTileTagText: {
-    fontSize: 9.5,
-    fontWeight: '800',
-  },
-  sampleTileTitle: {
-    color: '#F8FAFC',
-    fontSize: 13.5,
-    fontWeight: '800',
-  },
-  sampleTileSub: {
-    color: '#64748B',
-    fontSize: 11,
-    marginTop: 2,
-  },
-  yoloFrameTile: {
-    width: 156,
-    backgroundColor: '#161A22',
-    borderRadius: 10,
-    padding: 6,
-    borderWidth: 1,
-    borderColor: '#2E3646',
-  },
-  yoloFrameTileDetected: {
-    borderColor: '#EF4444',
-  },
-  yoloFrameTileFocused: {
-    borderColor: '#84CC16',
-    borderWidth: 2,
-  },
-  yoloFrameImg: {
-    width: '100%',
-    height: 92,
-    borderRadius: 6,
-    backgroundColor: '#0D1017',
-  },
-  yoloFrameFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 6,
-    paddingHorizontal: 2,
-  },
-  yoloFrameTitle: {
-    color: '#CBD5E1',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  yoloFrameCount: {
-    fontSize: 10.5,
-    fontWeight: '800',
-  },
-  liveSnapRow: {
-    flexDirection: 'row',
-    gap: 14,
-    alignItems: 'center',
-  },
-  liveSnapThumb: {
-    width: 190,
-    height: 125,
-    borderRadius: 10,
-    backgroundColor: '#0D1017',
-    borderWidth: 1,
-    borderColor: '#EF4444',
-  },
-  wsEmptyBox: {
-    paddingVertical: 24,
-    alignItems: 'center',
-  },
-  matrixWorkspaceRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  wsMatrixCell: {
-    flex: 1,
-    minWidth: 130,
-    backgroundColor: '#161A22',
-    borderRadius: 10,
-    padding: 12,
-    borderWidth: 1.5,
-  },
-  wsMatrixTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  wsMatrixCode: {
-    fontSize: 12,
-    fontWeight: '900',
-  },
-  wsMatrixNumber: {
-    color: '#F8FAFC',
-    fontSize: 22,
-    fontWeight: '900',
-  },
-  wsMatrixTitle: {
-    color: '#E2E8F0',
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 4,
-  },
-  wsMatrixSub: {
-    color: '#64748B',
-    fontSize: 10.5,
-    marginTop: 2,
-  },
-  serverRow: {
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'center',
-  },
-  serverInput: {
-    flex: 1,
-    backgroundColor: '#161A22',
-    color: '#F8FAFC',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 9,
-    borderWidth: 1,
-    borderColor: '#31394A',
-    fontSize: 13,
-  },
-  refreshBtn: {
-    backgroundColor: '#84CC16',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  refreshBtnText: {
-    color: '#0F172A',
-    fontWeight: '800',
-    fontSize: 12.5,
-  },
-
-  // ---------------------------------------------------------------------------
-  // 4. RIGHT ANALYTICS SIDEBAR (2x2 GRID + 7 HORIZONTAL BARS)
-  // ---------------------------------------------------------------------------
-  rightSidebar: {
-    flex: 1,
-    minWidth: 330,
-    maxWidth: 430,
-    backgroundColor: '#202531',
-    borderLeftWidth: 1,
-    borderLeftColor: '#2C3344',
-    padding: 14,
-    justifyContent: 'space-between',
-    gap: 14,
-  },
-  rightSidebarMobile: {
-    maxWidth: '100%',
-    borderLeftWidth: 0,
-    borderTopWidth: 1,
-    borderTopColor: '#2C3344',
-  },
-  grid2x2: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  gridCard: {
-    width: '48.2%',
-    flexGrow: 1,
-    backgroundColor: '#2A3140',
-    borderRadius: 10,
-    padding: 12,
-    borderWidth: 1.5,
-    borderColor: '#363F52',
-    minHeight: 88,
-    justifyContent: 'space-between',
-  },
-  gridCardTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  gridCardIcon: {
-    fontSize: 18,
-  },
-  gridCardPill: {
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 5,
-  },
-  gridCardPillText: {
-    fontSize: 10,
-    fontWeight: '900',
-  },
-  gridCardTitle: {
-    color: '#F8FAFC',
-    fontSize: 13,
-    fontWeight: '800',
-    marginTop: 6,
-  },
-  gridCardSub: {
-    color: '#94A3B8',
-    fontSize: 11,
-    marginTop: 2,
-  },
-  barsStack: {
-    flex: 1,
-    justifyContent: 'space-between',
-    gap: 8,
-  },
-  stackBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2A3140',
-    borderRadius: 9,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: '#363F52',
-    gap: 10,
-  },
-  stackBarSelected: {
-    borderColor: '#84CC16',
-    backgroundColor: '#2F384A',
-  },
-  barAccent: {
-    width: 4,
-    height: '100%',
-    minHeight: 28,
-    borderRadius: 2,
-  },
-  stackBarRowBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 6,
-  },
-  stackBarLabel: {
-    color: '#94A3B8',
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-  stackBarValue: {
-    color: '#F8FAFC',
-    fontSize: 12.5,
-    fontWeight: '800',
-    marginTop: 2,
-  },
-  stackBarTitle: {
-    color: '#F8FAFC',
-    fontSize: 12.5,
-    fontWeight: '800',
-  },
-  stackBarMetric: {
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  stackBarSub: {
-    color: '#94A3B8',
-    fontSize: 11,
-    marginTop: 2,
-  },
-  stackBarMiniLink: {
-    color: '#84CC16',
-    fontSize: 10.5,
-    fontWeight: '800',
-  },
-  cmInlineRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 4,
-  },
-  cmInlineItem: {
-    fontSize: 11.5,
-    fontWeight: '800',
-  },
+  safeArea: { flex: 1, backgroundColor: '#F5F7FA' },
+  outerScroll: { flexGrow: 1 },
+  header: { paddingHorizontal: 28, paddingVertical: 20, backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#E4E9EF', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 22, flexWrap: 'wrap' },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: 11 },
+  brandIcon: { height: 40, width: 40, borderRadius: 12, backgroundColor: '#E7F4EE', alignItems: 'center', justifyContent: 'center' },
+  brandName: { color: '#17283C', fontSize: 23, fontWeight: '800', letterSpacing: -1 },
+  brandDot: { color: '#0A8063' },
+  brandSubtitle: { fontSize: 8, fontWeight: '700', color: '#8492A4', letterSpacing: 1.9, marginTop: 2 },
+  navigation: { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
+  navItem: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingVertical: 11, borderRadius: 9 },
+  navItemActive: { backgroundColor: '#E8F4EE' },
+  navText: { color: '#6B788D', fontSize: 13, fontWeight: '600' },
+  navTextActive: { color: '#08775A' },
+  headerSession: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  sessionIndicator: { width: 7, height: 7, borderRadius: 4, backgroundColor: '#4CAB8D' },
+  headerSessionText: { color: '#7C899B', fontSize: 12 },
+  page: { width: '100%', maxWidth: 1440, alignSelf: 'center', paddingHorizontal: 28, paddingTop: 36, paddingBottom: 45 },
+  pageHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25, gap: 16, flexWrap: 'wrap' },
+  eyebrow: { fontSize: 9, fontWeight: '700', color: '#8B98A9', letterSpacing: 1.7, marginBottom: 8 },
+  pageTitle: { fontSize: 31, fontWeight: '700', color: '#17283C', letterSpacing: -1.2 },
+  pageSubtitle: { fontSize: 13, color: '#7E8B9E', marginTop: 8, lineHeight: 20 },
+  modeBadge: { flexDirection: 'row', alignItems: 'center', gap: 7, paddingVertical: 8, paddingHorizontal: 11, borderRadius: 7, backgroundColor: '#ECF0F4' },
+  modeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#7E90A4' },
+  modeText: { color: '#64758A', fontSize: 10, fontWeight: '600' },
+  mainColumns: { flexDirection: 'row', alignItems: 'flex-start', gap: 24 },
+  stacked: { flexDirection: 'column', alignItems: 'stretch' },
+  monitorColumn: { flex: 1, minWidth: 0, gap: 18 },
+  evidenceColumn: { gap: 18, alignSelf: 'stretch' },
+  card: { backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E2E7ED', borderRadius: 13, overflow: 'hidden' },
+  cardHeading: { paddingHorizontal: 20, paddingVertical: 19, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  cardTitle: { color: '#203248', fontSize: 17, fontWeight: '700', letterSpacing: -0.4 },
+  smallTitle: { color: '#26384E', fontSize: 13, fontWeight: '700' },
+  feedHeader: { paddingHorizontal: 21, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  inlineRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  inlineBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
+  statusDot: { width: 6, height: 6, borderRadius: 3 },
+  feedTitle: { color: '#52647B', fontSize: 10, letterSpacing: 1.1, fontWeight: '700' },
+  feedMeta: { color: '#8B98A8', fontSize: 10 },
+  cameraViewport: { width: '100%', backgroundColor: '#111D2C', position: 'relative', overflow: 'hidden' },
+  imageFill: { width: '100%', height: '100%' },
+  cameraCorner: { position: 'absolute', top: 18, left: 18, paddingVertical: 5, paddingHorizontal: 8, borderRadius: 4, backgroundColor: 'rgba(8,19,30,0.50)' },
+  cameraCornerText: { color: '#D4DFE9', fontSize: 9, fontWeight: '700', letterSpacing: 1 },
+  permissionPanel: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 28, gap: 15 },
+  cameraEmptyIcon: { height: 70, width: 70, borderRadius: 22, backgroundColor: '#213246', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
+  permissionTitle: { color: '#F3F6FA', fontSize: 21, fontWeight: '600', textAlign: 'center', letterSpacing: -0.6 },
+  permissionCopy: { color: '#8EA2B8', fontSize: 12, textAlign: 'center', lineHeight: 20, maxWidth: 320, marginBottom: 5 },
+  detectionBox: { position: 'absolute', borderWidth: 2, borderColor: '#F2AE4E', backgroundColor: 'rgba(242,174,78,0.08)' },
+  detectionLabel: { position: 'absolute', top: -22, left: -2, backgroundColor: '#F2AE4E', color: '#302414', paddingHorizontal: 6, paddingVertical: 3, fontSize: 9, fontWeight: '700' },
+  feedControls: { paddingHorizontal: 18, paddingVertical: 17, gap: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' },
+  controlGroup: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, alignItems: 'center' },
+  button: { minHeight: 39, paddingHorizontal: 14, paddingVertical: 11, borderWidth: 1, borderColor: '#DAE2E9', borderRadius: 7, flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF' },
+  buttonSmall: { minHeight: 32, paddingVertical: 8, paddingHorizontal: 10 },
+  buttonPrimary: { backgroundColor: '#0A8063', borderColor: '#0A8063' },
+  buttonDanger: { backgroundColor: '#FFF7F6', borderColor: '#EBC9C6' },
+  buttonHover: { opacity: 0.84 },
+  buttonText: { color: '#46566C', fontSize: 11, fontWeight: '600' },
+  buttonTextPrimary: { color: '#FFFFFF' },
+  buttonTextDanger: { color: '#BE4E48' },
+  disabled: { opacity: 0.45 },
+  feedStatus: { borderTopWidth: 1, borderTopColor: '#EDF0F4', paddingHorizontal: 19, paddingVertical: 13, backgroundColor: '#FBFCFD', flexDirection: 'row', alignItems: 'center', gap: 9 },
+  feedStatusAlert: { backgroundColor: '#FFFBF1' },
+  feedStatusText: { fontSize: 10, color: '#8190A4', flex: 1, lineHeight: 17 },
+  countPill: { height: 26, minWidth: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: '#EEF3F6', borderRadius: 6 },
+  countText: { color: '#6D7F93', fontSize: 11, fontWeight: '600' },
+  captureImage: { backgroundColor: '#EEF2F5', width: '100%', aspectRatio: 4 / 3, borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#EDF0F4' },
+  captureEmpty: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 25 },
+  emptyIcon: { marginBottom: 15 },
+  emptyTitle: { fontSize: 12, fontWeight: '600', color: '#6C7F94', textAlign: 'center', marginBottom: 8 },
+  emptyCopy: { fontSize: 11, lineHeight: 19, color: '#96A3B3', textAlign: 'center', maxWidth: 240 },
+  captureMeta: { padding: 17, gap: 12 },
+  captureKind: { color: '#4B5E76', fontSize: 12, fontWeight: '600' },
+  time: { color: '#97A3B2', fontSize: 10, fontVariant: ['tabular-nums'] },
+  mutedSmall: { color: '#8B98A9', fontSize: 11, lineHeight: 19 },
+  thumbnailGrid: { paddingHorizontal: 16, paddingBottom: 16, flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
+  thumbnail: { width: 92, borderRadius: 7, overflow: 'hidden', borderWidth: 2, borderColor: 'transparent', backgroundColor: '#F0F3F6' },
+  thumbnailSelected: { borderColor: '#0A8063' },
+  thumbnailImage: { width: '100%', height: 61 },
+  thumbnailTime: { color: '#8B98A9', fontSize: 8, textAlign: 'center', paddingVertical: 5 },
+  sessionNote: { borderTopWidth: 1, borderTopColor: '#EDF0F4', paddingHorizontal: 18, paddingVertical: 12, color: '#A1ACB9', fontSize: 9, lineHeight: 16 },
+  textLink: { color: '#8997A8', fontSize: 10 },
+  sessionBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', backgroundColor: '#ECF1F5', paddingHorizontal: 16, paddingVertical: 21, borderRadius: 10 },
+  statValue: { color: '#2F425B', fontSize: 22, fontWeight: '600', letterSpacing: -0.5 },
+  statSuffix: { color: '#9CA9B8', fontSize: 14, fontWeight: '400' },
+  statLabel: { color: '#95A2B2', fontSize: 9, marginTop: 6 },
+  statDivider: { height: 29, width: 1, backgroundColor: '#D8E1E9' },
+  noteCard: { padding: 20, gap: 13, borderWidth: 1, borderColor: '#E3E8EE', borderRadius: 10, backgroundColor: '#F8FAFC' },
+  noteBadge: { color: '#A4AFBC', fontSize: 8, letterSpacing: 1.2 },
+  footnote: { color: '#9BA8B8', fontSize: 10, lineHeight: 18, marginTop: 8 },
+  footer: { marginTop: 'auto', paddingHorizontal: 28, paddingVertical: 19, borderTopWidth: 1, borderTopColor: '#E6EBF1', flexDirection: 'row', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' },
+  footerText: { color: '#A6B0BD', fontSize: 9 },
+  modelChoices: { flexDirection: 'row', flexWrap: 'wrap', gap: 7 },
+  choice: { borderWidth: 1, borderColor: '#DFE6ED', backgroundColor: '#FFFFFF', paddingHorizontal: 11, paddingVertical: 8, borderRadius: 6 },
+  choiceActive: { borderColor: '#9FCFBE', backgroundColor: '#EAF5EF' },
+  choiceText: { color: '#8C99AA', fontSize: 10 },
+  choiceTextActive: { color: '#167958' },
+  inner: { paddingHorizontal: 20, paddingBottom: 20, gap: 14 },
+  sampleStrip: { paddingHorizontal: 18, paddingBottom: 18, gap: 9 },
+  sample: { borderWidth: 1, borderColor: '#E4E9EF', padding: 13, borderRadius: 8, width: 130, gap: 6 },
+  sampleSelected: { borderColor: '#93C6B2', backgroundColor: '#F1F8F4' },
+  resultRow: { paddingBottom: 14, gap: 6, borderBottomWidth: 1, borderBottomColor: '#EBF0F5' },
+  resultVerdict: { fontSize: 11, color: '#167958' },
+  errorText: { color: '#BA5650', fontSize: 11, lineHeight: 18 },
+  frameThumbnail: { height: 62, width: 88, borderRadius: 5 },
+  metricTable: { minWidth: 720, width: '100%' },
+  metricTableRow: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#E9EEF3', paddingHorizontal: 22, paddingVertical: 18 },
+  metricTableHeader: { backgroundColor: '#F9FBFC' },
+  tableLabel: { color: '#91A0B1', fontSize: 10, fontWeight: '600' },
+  modelCell: { width: 260 },
+  metricCell: { width: 110, color: '#60738B', fontSize: 12 },
+  tableModel: { color: '#41566F', fontSize: 12, fontWeight: '600' },
+  selectedTableRow: { backgroundColor: '#F0F8F3' },
+  matrixGrid: { flexDirection: 'row', flexWrap: 'wrap', padding: 18, gap: 12 },
+  matrixCell: { width: '46%', backgroundColor: '#F4F7FA', borderRadius: 8, padding: 20, gap: 6 },
+  matrixNumber: { fontSize: 29, fontWeight: '600' },
+  detectionMetrics: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 21, paddingBottom: 10, gap: 20 },
+  detectionMetric: { width: '42%', paddingVertical: 12 },
+  fieldLabel: { color: '#8F9DAE', fontSize: 9, letterSpacing: 1.2, fontWeight: '600' },
+  input: { backgroundColor: '#F7F9FB', borderWidth: 1, borderColor: '#DDE5ED', borderRadius: 7, padding: 14, color: '#4B627D', fontSize: 13 },
+  explanation: { marginTop: 15, gap: 14, paddingTop: 22, borderTopWidth: 1, borderTopColor: '#E9EEF3' },
+  code: { backgroundColor: '#F1F5F8', color: '#5D728A', padding: 13, borderRadius: 6, fontFamily: Platform.OS === 'web' ? 'ui-monospace, SFMono-Regular, Menlo, monospace' : 'monospace', fontSize: 11 },
 });

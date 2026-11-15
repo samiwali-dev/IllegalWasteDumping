@@ -4,7 +4,7 @@
     "slug": "illegal-waste-dumping-ai",
     "version": "1.0.0",
     "orientation": "default",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
