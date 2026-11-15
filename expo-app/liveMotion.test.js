@@ -55,3 +55,19 @@ test('the original downward-object detection still produces a box', async () => 
   assert.ok(result.yolo_live.total_detections > 0);
   assert.equal(result.actions[0].prediction, 1);
 });
+
+test('overlay mirroring follows the actual video, including a mirrored desktop camera', () => {
+  const video = { readyState: 4, videoWidth: 1280, videoHeight: 720 };
+  const document = { querySelectorAll: () => [video] };
+  let transform = 'matrix(-1, 0, 0, 1, 0, 0)';
+  const window = { getComputedStyle: () => ({ transform }) };
+  const mirrored = new Function('Platform', 'document', 'window', `${source}\nreturn isWebCameraMirrored;`)
+    ({ OS: 'web' }, document, window);
+  assert.equal(mirrored(), true);
+  transform = 'matrix3d(-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
+  assert.equal(mirrored(), true);
+  transform = 'none';
+  assert.equal(mirrored(), false);
+  transform = 'matrix(1, 0, 0, 1, 0, 0)';
+  assert.equal(mirrored(), false);
+});

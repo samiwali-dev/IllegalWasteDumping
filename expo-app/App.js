@@ -14,7 +14,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { analyzeLiveFramesOnEdge, grabWebVideoFrameBase64, grabWebVideoFrameFast, getWebCameraAspectRatio } from './liveEdgeAi';
+import { analyzeLiveFramesOnEdge, grabWebVideoFrameBase64, grabWebVideoFrameFast, getWebCameraAspectRatio, isWebCameraMirrored } from './liveEdgeAi';
 
 const FALLBACK_EVALUATION = {
   dataset: 'MIVIA-IWDD 500',
@@ -164,6 +164,7 @@ export default function App() {
   const [bufferedCount, setBufferedCount] = useState(0);
   const [liveFps, setLiveFps] = useState(0);
   const [cameraAspect, setCameraAspect] = useState(16 / 9);
+  const [cameraMirrored, setCameraMirrored] = useState(false);
 
   const cameraRef = useRef(null);
   const baselineFrameRef = useRef(null);
@@ -219,6 +220,7 @@ export default function App() {
       const aspect = getWebCameraAspectRatio();
       if (aspect) {
         setCameraAspect(aspect);
+        setCameraMirrored(isWebCameraMirrored());
         clearInterval(timer);
       }
     }, 200);
@@ -234,7 +236,10 @@ export default function App() {
     // On Web (Vercel / Browser), grab 112x112 pixels synchronously from HTML5 <video> (<0.4ms, 17-20 FPS)
     if (Platform.OS === 'web') {
       const fastFrame = grabWebVideoFrameFast(withSnapshot);
-      if (fastFrame) return fastFrame;
+      if (fastFrame) {
+        setCameraMirrored(isWebCameraMirrored());
+        return fastFrame;
+      }
     }
     if (!cameraRef.current || !cameraReady) return null;
     try {
@@ -708,7 +713,7 @@ export default function App() {
                 Array.isArray(liveResult.yolo_live.detections) &&
                 liveResult.yolo_live.detections.map((det, idx) => {
                   const [nx1, ny1, nx2, ny2] = det.norm_box || [0.25, 0.25, 0.75, 0.75];
-                  const left = Platform.OS === 'web' && cameraFacing === 'front' ? 1 - nx2 : nx1;
+                  const left = Platform.OS === 'web' && cameraMirrored ? 1 - nx2 : nx1;
                   return (
                     <View
                       key={idx}

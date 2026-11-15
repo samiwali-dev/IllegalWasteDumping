@@ -41,6 +41,13 @@ export function getWebCameraAspectRatio() {
   return video ? video.videoWidth / video.videoHeight : null;
 }
 
+export function isWebCameraMirrored() {
+  const video = findActiveVideoElement();
+  if (!video) return false;
+  const transform = window.getComputedStyle(video).transform;
+  return transform !== 'none' && Number(transform.slice(transform.indexOf('(') + 1).split(',')[0]) < 0;
+}
+
 /**
  * Ultra-fast synchronous frame grabber for Web/Vercel (runs in <0.4ms at 16-20 FPS).
  * Extracts 112x112 RGB & Grayscale Float32Arrays directly without async Image decoding.
