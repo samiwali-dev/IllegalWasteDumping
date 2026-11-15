@@ -215,6 +215,9 @@ export default function App() {
   const [evaluationData, setEvaluationData] = useState(FALLBACK_EVALUATION);
   const [selectedEvalModel, setSelectedEvalModel] = useState('neural_network');
   const [apiConnected, setApiConnected] = useState(false);
+  const [apiLiveResult, setApiLiveResult] = useState(null);
+  const [apiLiveBusy, setApiLiveBusy] = useState(false);
+  const [apiLiveError, setApiLiveError] = useState('');
 
   // Live Camera state
   const [permission, requestPermission] = useCameraPermissions();
@@ -336,6 +339,44 @@ export default function App() {
     setSelectedCaptureId(capture.id);
   };
 
+  // Keep trained-model requests separate so a slow API cannot freeze camera capture.
+  useEffect(() => {
+    if (!liveMonitoring || !apiConnected) return;
+    const controller = new AbortController();
+    let active = true;
+    let pending = false;
+    const analyzeModels = async () => {
+      if (pending || frameBufferRef.current.length < 6) return;
+      pending = true;
+      setApiLiveBusy(true);
+      const frames = frameBufferRef.current.slice(-24).map(frameUri).filter(Boolean);
+      try {
+        const response = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ frames, models: Object.keys(MODEL_META) }),
+          signal: controller.signal,
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Live model request failed.');
+        if (!active) return;
+        setApiLiveResult({ ...result, mode: 'python_api', receivedAt: Date.now() });
+        setApiLiveError(result.errors?.join(' · ') || '');
+        const capture = captureFromResult({ ...result, mode: 'python_api' }, frames);
+        if (capture && Date.now() - lastAutoCaptureRef.current > 3000) {
+          lastAutoCaptureRef.current = Date.now();
+          addCapture(capture);
+        }
+      } catch (error) {
+        if (active) setApiLiveError(`Live models: ${error.message}`);
+      } finally {
+        pending = false;
+        if (active) setApiLiveBusy(false);
+      }
+    };
+    const timer = setInterval(analyzeModels, 3000);
+    return () => { active = false; controller.abort(); clearInterval(timer); setApiLiveBusy(false); };
+  }, [liveMonitoring, apiConnected, cleanBaseUrl]);
+
   const acceptLiveResult = (result, frames) => {
     setLiveResult(result);
     const capture = captureFromResult(result, frames);
@@ -417,6 +458,8 @@ export default function App() {
     }
     if (liveTimerRef.current) clearInterval(liveTimerRef.current);
     frameBufferRef.current = [];
+    setApiLiveResult(null);
+    setApiLiveError('');
     setFrameTotal(0);
     fpsCounterRef.current = { count: 0, lastTs: Date.now() };
     detectionHoldUntilRef.current = 0;
@@ -576,6 +619,10 @@ export default function App() {
   };
 
   const modelsEval = evaluationData?.models || FALLBACK_EVALUATION.models;
+  const stageAspect = isCompact ? 4 / 3 : 16 / 9;
+  const cameraRegion = cameraAspect > stageAspect
+    ? { width: '100%', height: `${100 * stageAspect / cameraAspect}%` }
+    : { height: '100%', width: `${100 * cameraAspect / stageAspect}%` };
   const selectedCapture = captures.find(item => item.id === selectedCaptureId) || captures[0];
   const liveAlert = (liveResult?.yolo_live?.total_detections || 0) > 0;
   const clock = value => new Date(value).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -594,6 +641,34 @@ export default function App() {
 
   const capturePanel = () => (
     <View style={[styles.evidenceColumn, isDesktop && { width: 348 }]}>
+      <View style={styles.card}>
+        <View style={styles.cardHeading}>
+          <View><Text style={styles.eyebrow}>LIVE INFERENCE</Text><Text style={styles.cardTitle}>Live algorithms</Text></View>
+          {apiLiveBusy && <ActivityIndicator size="small" color="#0B8163" />}
+        </View>
+        <View style={styles.liveModelGrid}>
+          {Object.entries(MODEL_META).map(([id, model]) => {
+            const apiAction = apiLiveResult?.actions?.find(action => action.model === id);
+            const localAction = !apiConnected && id === 'neural_network' ? liveResult?.actions?.find(action => action.model === id) : null;
+            const action = apiAction || localAction;
+            const yolo = id === 'yolov8n' ? apiLiveResult?.yolo_live : null;
+            const hasResult = Boolean(action || yolo);
+            const positive = action?.prediction === 1 || (yolo?.total_detections || 0) > 0;
+            const status = hasResult ? positive ? 'ALERT' : 'NO ALERT' : apiConnected || id === 'neural_network' ? liveMonitoring ? 'WAITING' : 'IDLE' : 'API REQUIRED';
+            return <View key={id} style={styles.liveModelCard}>
+              <Text style={[styles.liveModelBadge, positive && styles.liveModelAlert]}>{status}</Text>
+              <Text style={styles.liveModelTitle}>{id === 'neural_network' ? 'Neural Network (MLP)' : model.title}</Text>
+              <Text style={styles.liveModelSource}>{apiAction || yolo ? 'Python model' : id === 'neural_network' && !apiConnected ? 'Local MLP + motion' : 'Python API'}</Text>
+              <Text style={styles.liveModelScore}>{action ? `Score ${Number(action.score).toFixed(3)} · ${Math.round(action.seconds * 1000)} ms` : yolo ? `${yolo.total_detections} detected regions` : 'Awaiting frames'}</Text>
+            </View>;
+          })}
+        </View>
+        <View style={styles.liveModelNote}>
+          <Text style={styles.mutedSmall}>{apiConnected ? apiLiveResult ? `Last model update ${clock(apiLiveResult.receivedAt)}. Results refresh while monitoring.` : 'All four trained models run through the connected API while monitoring.' : 'MLP + motion runs locally. Connect the Python API to run MoViNet, SVM and YOLO live.'}</Text>
+          {apiLiveError ? <Text style={styles.errorText}>{apiLiveError}</Text> : null}
+          {!apiConnected && <Pressable accessibilityRole="button" onPress={() => navigate('settings')}><Text style={styles.liveModelLink}>Connect all four models →</Text></Pressable>}
+        </View>
+      </View>
       <View style={styles.card}>
         <View style={styles.cardHeading}>
           <View>
@@ -649,7 +724,7 @@ export default function App() {
     <>
       <View style={styles.pageHeading}>
         <View><Text style={styles.eyebrow}>CAMERA WORKSPACE</Text><Text style={styles.pageTitle}>Live monitor</Text><Text style={styles.pageSubtitle}>Full camera view. Captures kept within reach.</Text></View>
-        <View style={styles.modeBadge}><View style={styles.modeDot} /><Text style={styles.modeText}>Browser motion preview</Text></View>
+        <View style={styles.modeBadge}><View style={[styles.modeDot, apiConnected && { backgroundColor: '#14A580' }]} /><Text style={styles.modeText}>{apiConnected ? '4 models connected' : 'Browser motion preview'}</Text></View>
       </View>
       <View style={[styles.mainColumns, !isDesktop && styles.stacked]}>
         <View style={styles.monitorColumn}>
@@ -661,11 +736,11 @@ export default function App() {
               </View>
               <Text style={styles.feedMeta}>{liveMonitoring ? `${liveFps} FPS` : cameraReady ? 'Ready when you are' : 'Camera inactive'}</Text>
             </View>
-            <View style={[styles.cameraViewport, { aspectRatio: cameraAspect }, !permission?.granted && { minHeight: 320 }]} testID="live-camera-frame">
+            <View style={[styles.cameraViewport, { aspectRatio: stageAspect }, !permission?.granted && { minHeight: 320 }]} testID="live-camera-frame">
               {Platform.OS === 'web' && React.createElement('style', null,
                 '[data-testid="live-camera-frame"] video { object-fit: contain !important; width: 100% !important; height: 100% !important; }')}
               {permission?.granted ? (
-                <>
+                <View style={[styles.cameraRegion, cameraRegion]} testID="camera-image-region">
                   <CameraView ref={cameraRef} facing={cameraFacing} style={styles.imageFill}
                     onCameraReady={() => setCameraReady(true)}
                     onMountError={error => { setCameraReady(false); setLiveStatus(`Camera error: ${error.message}`); }} />
@@ -677,7 +752,7 @@ export default function App() {
                     </View>;
                   })}
                   <View pointerEvents="none" style={styles.cameraCorner}><Text style={styles.cameraCornerText}>CAM 01</Text></View>
-                </>
+                </View>
               ) : (
                 <View style={styles.permissionPanel}>
                   <View style={styles.cameraEmptyIcon}><Icon name="camera" size={35} color="#D4E0EC" /></View>
@@ -717,7 +792,7 @@ export default function App() {
               <Button small disabled={!cameraReady || liveAnalyzing} onPress={handleCaptureBurstAndAnalyze}>{liveAnalyzing ? 'Analyzing sequence…' : 'Analyze 24-frame burst'}</Button>
             </View>
           </View>
-          <Text style={styles.footnote}>Browser alerts use motion tracking and need review. Trained-model results are available in Video analysis through the Python API.</Text>
+          <Text style={styles.footnote}>Browser alerts use motion tracking and need review. The four trained models run live when the Python API is connected.</Text>
         </View>
         {capturePanel()}
       </View>
@@ -844,6 +919,15 @@ const styles = StyleSheet.create({
   stacked: { flexDirection: 'column', alignItems: 'stretch' },
   monitorColumn: { flex: 1, minWidth: 0, gap: 18 },
   evidenceColumn: { gap: 18, alignSelf: 'stretch' },
+  liveModelGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, paddingHorizontal: 16, paddingBottom: 16 },
+  liveModelCard: { flexBasis: '46%', flexGrow: 1, padding: 12, borderRadius: 8, backgroundColor: '#F4F7FA', gap: 7 },
+  liveModelBadge: { fontSize: 8, fontWeight: '700', letterSpacing: 0.5, color: '#738399' },
+  liveModelAlert: { color: '#B46520' },
+  liveModelTitle: { fontSize: 12, fontWeight: '700', color: '#2F425B', lineHeight: 17 },
+  liveModelSource: { fontSize: 9, color: '#7C8EA3' },
+  liveModelScore: { fontSize: 10, color: '#516982', fontVariant: ['tabular-nums'] },
+  liveModelNote: { padding: 17, paddingTop: 0, gap: 8 },
+  liveModelLink: { color: '#0A8063', fontSize: 11, fontWeight: '600' },
   card: { backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E2E7ED', borderRadius: 13, overflow: 'hidden' },
   cardHeading: { paddingHorizontal: 20, paddingVertical: 19, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   cardTitle: { color: '#203248', fontSize: 17, fontWeight: '700', letterSpacing: -0.4 },
@@ -854,7 +938,8 @@ const styles = StyleSheet.create({
   statusDot: { width: 6, height: 6, borderRadius: 3 },
   feedTitle: { color: '#52647B', fontSize: 10, letterSpacing: 1.1, fontWeight: '700' },
   feedMeta: { color: '#8B98A8', fontSize: 10 },
-  cameraViewport: { width: '100%', backgroundColor: '#111D2C', position: 'relative', overflow: 'hidden' },
+  cameraViewport: { width: '100%', backgroundColor: '#111D2C', position: 'relative', overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  cameraRegion: { position: 'relative' },
   imageFill: { width: '100%', height: '100%' },
   cameraCorner: { position: 'absolute', top: 18, left: 18, paddingVertical: 5, paddingHorizontal: 8, borderRadius: 4, backgroundColor: 'rgba(8,19,30,0.50)' },
   cameraCornerText: { color: '#D4DFE9', fontSize: 9, fontWeight: '700', letterSpacing: 1 },
