@@ -42,12 +42,12 @@ test('a newly visible stationary object is not dumping, including a locked empty
   assert.equal(result.actions[0].score, null);
 });
 
-test('ordinary downward movement does not become a fall at different grid alignments or colors', () => {
+test('an object moved while held next to a visible hand is rejected', () => {
   for (const color of [[0, 0, 0], [0.1, 0.2, 0.9], [1, 1, 1]]) {
     for (const speed of [3, 5, 7]) {
       for (const offset of [0, 3, 6, 9]) {
         const positions = Array.from({ length: 12 }, (_, i) => 5 + offset + i * speed);
-        assert.equal(detectDropMotion(clip(positions, { color, brightness: 0.5 })).boxes.length, 0,
+        assert.equal(detectDropMotion(clip(positions, { color, brightness: 0.5, hand: true })).boxes.length, 0,
           `constant movement: speed=${speed}, offset=${offset}, color=${color}`);
       }
     }
@@ -73,7 +73,7 @@ test('an accelerating falling object remains detectable and is labeled as a poss
   assert.equal(result.actions[0].verdict, 'POSSIBLE_FALL');
   assert.equal(result.yolo_live.detections[0].class_name, 'possible_fall');
   assert.equal(result.yolo_live.detector, 'temporal_motion');
-  assert.ok(result.yolo_live.detections[0].trail.length >= 6);
+  assert.ok(result.yolo_live.detections[0].trail.length >= 3);
 });
 
 test('a fall separated from a stationary hand can still be detected', () => {
@@ -95,11 +95,30 @@ test('browser output never impersonates the trained Python models or invents the
   for (const models of [['neural_network'], ['movinet_a0'], ['optical_flow_svm'], ['yolov8n']]) {
     const result = await analyze(clip(fall), models);
     assert.deepEqual(result.actions.map(action => action.model), ['edge_motion']);
-    assert.equal(result.actions[0].score_kind, 'اتساق مسار الحركة، وليس احتمال رمي نفايات');
+    assert.equal(result.actions[0].score_kind, 'فحص حركة للأسفل عبر عدة إطارات');
   }
 });
 
 test('native fallback rejects encoded bytes instead of treating base64 characters as pixels', async () => {
   await assert.rejects(analyze(['data:image/jpeg;base64,not-a-decoded-frame'], ['neural_network']),
     /خادم Python/);
+});
+
+// A quick drop may not provide the six accelerating observations previously required.
+test('a quick drop is detected from four captured frames without an acceleration fit', () => {
+  const result = detectDropMotion(clip([10, 24, 38, 52]));
+  assert.equal(result.boxes.length, 1);
+  assert.equal(result.boxes[0].reason, 'downward_motion');
+});
+
+test('horizontal or upward movement alone does not trigger a drop', () => {
+  assert.equal(detectDropMotion(clip([80, 65, 50, 35, 20])).boxes.length, 0);
+  const horizontal = [5, 17, 29, 41, 53].map((x, i) => {
+    const image = frame(null, 1000 + i * 60);
+    for (let y = 40; y < 50; y++) {
+      for (let col = x; col < x + 10; col++) image.rgb.fill(0, (y * 112 + col) * 3, (y * 112 + col) * 3 + 3);
+    }
+    return image;
+  });
+  assert.equal(detectDropMotion(horizontal).boxes.length, 0);
 });

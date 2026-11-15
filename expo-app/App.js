@@ -368,7 +368,7 @@ export default function App() {
           }
 
           // Check the latest motion window every four captured frames.
-          if (tick % 4 === 0 && frameBufferRef.current.length >= 6) {
+          if (tick % 4 === 0 && frameBufferRef.current.length >= 4) {
             const recentWindow = frameBufferRef.current.slice(-16);
             const res = await runFramesAnalysis(recentWindow);
             const isDump = res.event_detected ?? res.actions?.some((a) => a.prediction === 1);

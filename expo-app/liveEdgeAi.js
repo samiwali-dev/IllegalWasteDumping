@@ -282,8 +282,8 @@ export async function analyzeLiveFramesOnEdge(rawFrames, _selectedModels, _expli
       label_title: 'فحص مسار الحركة المحلي',
       prediction: detected ? 1 : 0,
       verdict: detected ? 'POSSIBLE_FALL' : 'NO_EVENT',
-      score: detected ? boxes[0].confidence : null,
-      score_kind: 'اتساق مسار الحركة، وليس احتمال رمي نفايات',
+      score: null,
+      score_kind: 'فحص حركة للأسفل عبر عدة إطارات',
       seconds: (Date.now() - started) / 1000,
     }],
     yolo_live: {
