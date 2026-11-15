@@ -14,7 +14,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { analyzeLiveFramesOnEdge, grabWebVideoFrameBase64 } from './liveEdgeAi';
+import { analyzeLiveFramesOnEdge, grabWebVideoFrameBase64, grabWebVideoFrameFast } from './liveEdgeAi';
 
 const FALLBACK_EVALUATION = {
   dataset: 'MIVIA-IWDD 500',
@@ -159,15 +159,18 @@ export default function App() {
   const [cameraReady, setCameraReady] = useState(false);
   const [liveMonitoring, setLiveMonitoring] = useState(false);
   const [liveAnalyzing, setLiveAnalyzing] = useState(false);
-  const [liveStatus, setLiveStatus] = useState('الكاميرا جاهزة للبث والتحليل المباشر.');
+  const [liveStatus, setLiveStatus] = useState('الكاميرا جاهزة للبث والتحليل المباشر بسرعة 17 FPS.');
   const [liveResult, setLiveResult] = useState(null);
   const [bufferedCount, setBufferedCount] = useState(0);
+  const [liveFps, setLiveFps] = useState(0);
 
   const cameraRef = useRef(null);
   const baselineFrameRef = useRef(null);
   const frameBufferRef = useRef([]);
   const liveTimerRef = useRef(null);
   const busyLockRef = useRef(false);
+  const detectionHoldUntilRef = useRef(0);
+  const fpsCounterRef = useRef({ count: 0, lastTs: Date.now() });
 
   const cleanBaseUrl = apiBase.replace(/\/+$/, '');
 
@@ -214,17 +217,17 @@ export default function App() {
       ? ['neural_network', 'movinet_a0', 'optical_flow_svm', 'yolov8n']
       : [selectedChoice];
 
-  const captureSingleBase64Frame = async () => {
-    // On Web (Vercel / Browser), grab directly from the HTML5 <video> element for 0ms lag and unlimited captures
+  const captureSingleFastFrame = async (withSnapshot = true) => {
+    // On Web (Vercel / Browser), grab 112x112 pixels synchronously from HTML5 <video> (<0.4ms, 17-20 FPS)
     if (Platform.OS === 'web') {
-      const webFrame = grabWebVideoFrameBase64();
-      if (webFrame) return webFrame;
+      const fastFrame = grabWebVideoFrameFast(withSnapshot);
+      if (fastFrame) return fastFrame;
     }
     if (!cameraRef.current || !cameraReady) return null;
     try {
       const photo = await cameraRef.current.takePictureAsync({
         base64: true,
-        quality: 0.55,
+        quality: 0.5,
         skipProcessing: true,
       });
       if (!photo) return null;
@@ -242,41 +245,46 @@ export default function App() {
 
   const runFramesAnalysis = async (framesToAnalyze) => {
     const modelsParam = getSelectedModelsList();
-    // Use explicit baseline if manually locked, otherwise use the first frame of the current window so every throw works fresh
-    const refBaseline = baselineFrameRef.current || framesToAnalyze[0];
-    const anchoredFrames = baselineFrameRef.current
-      ? [baselineFrameRef.current, ...framesToAnalyze]
-      : framesToAnalyze;
+    // Only pass explicitBaseline if the user manually clicked "تثبيت خلفية المشهد"
+    const explicitBaseline = baselineFrameRef.current || null;
 
-    // Try Python Backend first if reachable; otherwise run Edge/Browser AI (for Vercel & Offline Mobile)
+    // On Web/Vercel or when fast decoded frames are buffered, run high-FPS Edge AI directly (<15ms latency)
+    if (Platform.OS === 'web' || !apiConnected) {
+      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
+    }
+
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
-      const res = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          frames: anchoredFrames,
-          models: modelsParam,
-        }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const data = await res.json();
-        setApiConnected(true);
-        return { ...data, mode: 'python_backend' };
+      const base64Frames = framesToAnalyze
+        .map((f) => (typeof f === 'string' ? f : f?.uri))
+        .filter(Boolean);
+      if (base64Frames.length >= 2) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const res = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            frames: base64Frames,
+            models: modelsParam,
+          }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const data = await res.json();
+          setApiConnected(true);
+          return { ...data, mode: 'python_backend' };
+        }
       }
     } catch (_err) {
       setApiConnected(false);
     }
-    // Fallback to Edge AI (uses exported PyTorch Neural Network weights + 8x8 bounding-box localization)
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, refBaseline);
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
   };
 
   const handleResetBaseline = async () => {
     if (!cameraReady) return;
-    const base = await captureSingleBase64Frame();
+    const base = await captureSingleFastFrame(true);
     if (base) {
       baselineFrameRef.current = base;
       frameBufferRef.current = [base];
@@ -291,28 +299,37 @@ export default function App() {
     setLiveAnalyzing(true);
     try {
       const burst = [];
-      const totalSteps = 8;
+      const totalSteps = Platform.OS === 'web' ? 24 : 10;
+      const stepDelayMs = Platform.OS === 'web' ? 60 : 140; // ~17 FPS on Web (24 frames in 1.44s)
+      const tStart = Date.now();
       for (let i = 1; i <= totalSteps; i++) {
-        setLiveStatus(`📸 جاري رصد حركة الرمي (${i}/${totalSteps})... ارمِ أو حرّك الغرض أمام الكاميرا الآن!`);
-        const frame = await captureSingleBase64Frame();
+        if (i % 4 === 1 || i === totalSteps) {
+          setLiveStatus(
+            `📸 جاري التقاط 24 إطاراً بسرعة عالية (${i}/${totalSteps})... ارمِ الغرض من يدك الآن!`
+          );
+        }
+        const frame = await captureSingleFastFrame(true);
         if (frame) burst.push(frame);
-        await new Promise((r) => setTimeout(r, 220));
+        await new Promise((r) => setTimeout(r, stepDelayMs));
       }
+      const elapsedSec = Math.max(0.1, (Date.now() - tStart) / 1000);
+      setLiveFps(Math.round(burst.length / elapsedSec));
+
       if (burst.length === 0) {
         setLiveStatus('تعذر التقاط إطارات من الكاميرا. تأكد من السماح بصلاحية الكاميرا.');
         return;
       }
       frameBufferRef.current = burst;
       setBufferedCount(burst.length);
-      setLiveStatus('🧠 جاري تحليل الحركة ورسم مربعات الكشف (Littering Boxes)...');
+      setLiveStatus('🧠 جاري تتبع مسار سقوط الغرض ورسم مربعات الكشف (Littering Boxes)...');
       const res = await runFramesAnalysis(burst);
       setLiveResult(res);
       const anyDumping = res.actions && res.actions.some((a) => a.prediction === 1);
       const boxCount = res.yolo_live?.total_detections || 0;
       setLiveStatus(
         anyDumping
-          ? `⚠️ تم رصد عملية رمي (DUMPING DETECTED) ورسم ${boxCount} مربع littering حول الغرض!`
-          : '✅ المشهد سليم (NO DUMPING) — حرّك أو ارمِ الغرض أثناء العد ليتم رصده.'
+          ? `⚠️ تم رصد سقوط/رمي الغرض (DUMPING DETECTED) ورسم ${boxCount} مربع littering مع مسار السقوط!`
+          : '✅ المشهد سليم (NO DUMPING) — حركتك الشخصية مستبعدة تلقائياً؛ ارمِ غرضاً من يدك للأسفل لرصد السقوط.'
       );
     } catch (err) {
       setLiveStatus(`خطأ أثناء تحليل الكاميرا: ${err.message}`);
@@ -327,19 +344,55 @@ export default function App() {
       return;
     }
     frameBufferRef.current = [];
+    fpsCounterRef.current = { count: 0, lastTs: Date.now() };
+    detectionHoldUntilRef.current = 0;
     setLiveMonitoring(true);
-    setLiveStatus('🔴 المراقبة المستمرة نشطة: ارمِ أي غرض في أي وقت وستظهر مربعات littering الحمراء مباشرة على الكاميرا!');
+    setLiveStatus(
+      '🔴 المراقبة السريعة نشطة (17 FPS • 24 إطاراً): ارمِ أي غرض من يدك وسيتم اصطياد سقوطه فوراً مع تجاهل حركة جسمك!'
+    );
+
+    const intervalMs = Platform.OS === 'web' ? 58 : 180; // ~17 FPS on Web/Vercel
+    let tick = 0;
+
     liveTimerRef.current = setInterval(async () => {
       if (busyLockRef.current) return;
       busyLockRef.current = true;
+      tick++;
       try {
-        const frame = await captureSingleBase64Frame();
+        // Capture snapshot JPEG every 2nd frame to keep 17 FPS ultra-smooth while still having mid-air snapshots
+        const withSnap = tick % 2 === 0;
+        const frame = await captureSingleFastFrame(withSnap);
         if (frame) {
-          frameBufferRef.current = [...frameBufferRef.current, frame].slice(-6);
+          frameBufferRef.current = [...frameBufferRef.current, frame].slice(-24);
           setBufferedCount(frameBufferRef.current.length);
-          if (frameBufferRef.current.length >= 2) {
-            const res = await runFramesAnalysis(frameBufferRef.current);
-            setLiveResult(res);
+
+          fpsCounterRef.current.count += 1;
+          const now = Date.now();
+          const dt = (now - fpsCounterRef.current.lastTs) / 1000;
+          if (dt >= 0.8) {
+            setLiveFps(Math.round(fpsCounterRef.current.count / dt));
+            fpsCounterRef.current = { count: 0, lastTs: now };
+          }
+
+          // Run neural network + drop trajectory check every 4 frames (~4.2 times/sec)
+          if (tick % 4 === 0 && frameBufferRef.current.length >= 6) {
+            const recentWindow = frameBufferRef.current.slice(-16);
+            const res = await runFramesAnalysis(recentWindow);
+            const isDump = res.actions && res.actions.some((a) => a.prediction === 1);
+
+            if (isDump) {
+              // Hold the detected drop on screen for 3.5 seconds so the user clearly sees the box & snapshot!
+              detectionHoldUntilRef.current = Date.now() + 3500;
+              setLiveResult(res);
+              setLiveStatus(
+                '⚠️ تم اصطياد غرض يسقط من اليد (DUMPING DETECTED)! المربع الأحمر ومسار السقوط معروضان الآن.'
+              );
+            } else if (Date.now() > detectionHoldUntilRef.current) {
+              setLiveResult(res);
+              setLiveStatus(
+                '🟢 المراقبة السريعة نشطة (حركة جسمك/وجهك مستبعدة) — ارمِ غرضاً من يدك لرصد السقوط.'
+              );
+            }
           }
         }
       } catch (_e) {
@@ -347,7 +400,7 @@ export default function App() {
       } finally {
         busyLockRef.current = false;
       }
-    }, 550);
+    }, intervalMs);
   };
 
   const stopLiveMonitoring = () => {
@@ -357,6 +410,7 @@ export default function App() {
     }
     busyLockRef.current = false;
     setLiveMonitoring(false);
+    setLiveFps(0);
     setLiveStatus('تم إيقاف المراقبة التلقائية.');
   };
 
@@ -616,7 +670,9 @@ export default function App() {
               </Text>
             </View>
             <View style={styles.gtBadge}>
-              <Text style={styles.gtBadgeText}>الإطارات المخزنة: {bufferedCount}</Text>
+              <Text style={styles.gtBadgeText}>
+                {liveFps > 0 ? `⚡ ${liveFps} FPS • ` : ''}الإطارات: {bufferedCount}/24
+              </Text>
             </View>
           </View>
 
@@ -737,7 +793,7 @@ export default function App() {
               onPress={handleCaptureBurstAndAnalyze}
             >
               <Text style={styles.analyzeCtaText}>
-                {liveAnalyzing ? 'جاري الالتقاط والتحليل...' : '⚡ التقاط وتحليل فوري (Capture & Analyze)'}
+                {liveAnalyzing ? 'جاري الالتقاط بسرعة 17 FPS...' : '⚡ التقاط 24 إطاراً وتحليل فوري (17 FPS)'}
               </Text>
             </Pressable>
 
