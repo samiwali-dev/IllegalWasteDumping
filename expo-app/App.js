@@ -14,7 +14,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { analyzeLiveFramesOnEdge, grabWebVideoFrameFast } from './liveEdgeAi';
+import { analyzeLiveFramesOnEdge, grabWebVideoFrameFast, getWebCameraAspectRatio } from './liveEdgeAi';
 
 const FALLBACK_EVALUATION = {
   dataset: 'MIVIA-IWDD 500',
@@ -163,12 +163,14 @@ export default function App() {
   const [liveResult, setLiveResult] = useState(null);
   const [bufferedCount, setBufferedCount] = useState(0);
   const [liveFps, setLiveFps] = useState(0);
+  const [capturedCount, setCapturedCount] = useState(0);
+  const [analysisCount, setAnalysisCount] = useState(0);
+  const [cameraAspect, setCameraAspect] = useState(16 / 9);
 
   const cameraRef = useRef(null);
   const frameBufferRef = useRef([]);
   const liveTimerRef = useRef(null);
   const busyLockRef = useRef(false);
-  const detectionHoldUntilRef = useRef(0);
   const fpsCounterRef = useRef({ count: 0, lastTs: Date.now() });
 
   const cleanBaseUrl = apiBase.replace(/\/+$/, '');
@@ -211,6 +213,18 @@ export default function App() {
     };
   }, [activeTab]);
 
+  useEffect(() => {
+    if (Platform.OS !== 'web' || activeTab !== 'live') return;
+    const timer = setInterval(() => {
+      const aspect = getWebCameraAspectRatio();
+      if (aspect) {
+        setCameraAspect(aspect);
+        clearInterval(timer);
+      }
+    }, 200);
+    return () => clearInterval(timer);
+  }, [activeTab, cameraFacing, cameraReady]);
+
   const getSelectedModelsList = () =>
     selectedChoice === 'all'
       ? ['neural_network', 'movinet_a0', 'optical_flow_svm', 'yolov8n']
@@ -237,17 +251,17 @@ export default function App() {
         return { uri: photo.uri, ts: Date.now() };
       }
       return null;
-    } catch (_e) {
-      return null;
+    } catch (error) {
+      throw new Error(`تعذر التقاط صورة من الكاميرا: ${error.message}`);
     }
   };
 
-  const runFramesAnalysis = async (framesToAnalyze) => {
+  const runFramesAnalysis = async (framesToAnalyze, annotate = true) => {
     const modelsParam = getSelectedModelsList();
 
     // The browser fallback reports possible motion events, not Python model predictions.
     if (Platform.OS === 'web' || !apiConnected) {
-      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam);
+      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, { annotate });
     }
 
     try {
@@ -276,13 +290,14 @@ export default function App() {
     } catch (_err) {
       setApiConnected(false);
     }
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam);
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, { annotate });
   };
 
   const handleResetLiveWindow = () => {
     frameBufferRef.current = [];
-    detectionHoldUntilRef.current = 0;
     setBufferedCount(0);
+    setCapturedCount(0);
+    setAnalysisCount(0);
     setLiveResult(null);
     setLiveStatus('تم مسح سجل الحركة. ظهور غرض ثابت وحده لا يُعد حادثة رمي.');
   };
@@ -302,7 +317,9 @@ export default function App() {
           );
         }
         const frame = await captureSingleFastFrame(true);
-        if (frame) burst.push(frame);
+        if (!frame) throw new Error("لم تصل صورة من الكاميرا. أعد تشغيلها.");
+        burst.push(frame);
+        setCapturedCount(count => count + 1);
         await new Promise((r) => setTimeout(r, stepDelayMs));
       }
       const elapsedSec = Math.max(0.1, (Date.now() - tStart) / 1000);
@@ -316,6 +333,7 @@ export default function App() {
       setBufferedCount(burst.length);
       setLiveStatus('جاري فحص تسلسل الحركة...');
       const res = await runFramesAnalysis(burst);
+      setAnalysisCount(count => count + 1);
       setLiveResult(res);
       const anyDumping = res.event_detected ?? res.actions?.some((a) => a.prediction === 1);
       const boxCount = res.yolo_live?.total_detections || 0;
@@ -336,9 +354,12 @@ export default function App() {
       setLiveStatus('يرجى الانتظار حتى تصبح الكاميرا جاهزة.');
       return;
     }
+    if (liveTimerRef.current) clearInterval(liveTimerRef.current);
     frameBufferRef.current = [];
+    setCapturedCount(0);
+    setAnalysisCount(0);
+    setBufferedCount(0);
     fpsCounterRef.current = { count: 0, lastTs: Date.now() };
-    detectionHoldUntilRef.current = 0;
     setLiveMonitoring(true);
     setLiveStatus(
       '🔴 المراقبة نشطة. يجري فحص مسار الحركة؛ ظهور غرض أو تحريكه وحده لا يكفي لإعلان الرمي.'
@@ -355,7 +376,9 @@ export default function App() {
         // Capture snapshot JPEG every 2nd frame to keep 17 FPS ultra-smooth while still having mid-air snapshots
         const withSnap = tick % 2 === 0;
         const frame = await captureSingleFastFrame(withSnap);
+        if (!frame) throw new Error('لم تصل صورة من الكاميرا. أعد تشغيلها.');
         if (frame) {
+          setCapturedCount(count => count + 1);
           frameBufferRef.current = [...frameBufferRef.current, frame].slice(-24);
           setBufferedCount(frameBufferRef.current.length);
 
@@ -370,26 +393,25 @@ export default function App() {
           // Check the latest motion window every four captured frames.
           if (tick % 4 === 0 && frameBufferRef.current.length >= 4) {
             const recentWindow = frameBufferRef.current.slice(-16);
-            const res = await runFramesAnalysis(recentWindow);
+            const res = await runFramesAnalysis(recentWindow, false);
+            setAnalysisCount(count => count + 1);
+            setLiveResult(res);
             const isDump = res.event_detected ?? res.actions?.some((a) => a.prediction === 1);
 
             if (isDump) {
-              // Hold the detected drop on screen for 3.5 seconds so the user clearly sees the box & snapshot!
-              detectionHoldUntilRef.current = Date.now() + 3500;
-              setLiveResult(res);
               setLiveStatus(
                 res.mode === 'edge_browser' ? '⚠️ اشتباه سقوط غرض — راجع اللقطة ومسار الحركة قبل الحكم.' : '⚠️ رصد النموذج احتمال رمي. راجع النتيجة.'
               );
-            } else if (Date.now() > detectionHoldUntilRef.current) {
-              setLiveResult(res);
+            } else {
               setLiveStatus(
                 '🟢 المراقبة نشطة. لم يرصد التحليل دليلًا كافيًا على الرمي في الإطارات الحالية.'
               );
             }
           }
         }
-      } catch (_e) {
-        // Ignore transient frame errors during live stream
+      } catch (error) {
+        stopLiveMonitoring();
+        setLiveStatus(`توقف التحليل: ${error.message}`);
       } finally {
         busyLockRef.current = false;
       }
@@ -668,19 +690,26 @@ export default function App() {
             </View>
             <View style={styles.gtBadge}>
               <Text style={styles.gtBadgeText}>
-                {liveFps > 0 ? `⚡ ${liveFps} FPS • ` : ''}الإطارات: {bufferedCount}/24
+                {liveFps > 0 ? `⚡ ${liveFps} FPS • ` : ''}التقطنا: {capturedCount} • تحليلات: {analysisCount} • الذاكرة: {bufferedCount}/24
               </Text>
             </View>
           </View>
 
+          {Platform.OS === 'web' && React.createElement('style', null,
+            '[data-testid="live-camera-frame"] video { object-fit: contain !important; }')}
+          <Text style={styles.helperText}>الصورة كاملة بدون قص • الأصفر: منطقة حركة • الأحمر: اشتباه سقوط</Text>
           <View style={styles.cameraSplitRow}>
             {/* Live Camera Preview with Real-Time Red Bounding Box Overlay */}
-            <View style={styles.cameraContainer}>
+            <View testID="live-camera-frame" style={[styles.cameraContainer, { aspectRatio: cameraAspect }]}>
               <CameraView
                 ref={cameraRef}
                 style={styles.cameraView}
                 facing={cameraFacing}
                 onCameraReady={() => setCameraReady(true)}
+                onMountError={error => {
+                  setCameraReady(false);
+                  setLiveStatus(`تعذر تشغيل الكاميرا: ${error.message}`);
+                }}
               />
               {/* Direct Live Bounding Boxes Overlaid on Camera */}
               {liveResult &&
@@ -688,25 +717,28 @@ export default function App() {
                 Array.isArray(liveResult.yolo_live.detections) &&
                 liveResult.yolo_live.detections.map((det, idx) => {
                   const [nx1, ny1, nx2, ny2] = det.norm_box || [0.25, 0.25, 0.75, 0.75];
+                  const isFall = liveResult.mode !== 'edge_browser' || det.class_name === 'possible_fall';
+                  const boxColor = isFall ? '#EF4444' : '#F59E0B';
+                  const left = Platform.OS === 'web' && cameraFacing === 'front' ? 1 - nx2 : nx1;
                   return (
                     <View
                       key={idx}
                       pointerEvents="none"
                       style={{
                         position: 'absolute',
-                        left: `${nx1 * 100}%`,
+                        left: `${left * 100}%`,
                         top: `${ny1 * 100}%`,
-                        width: `${Math.max(8, (nx2 - nx1) * 100)}%`,
-                        height: `${Math.max(8, (ny2 - ny1) * 100)}%`,
+                        width: `${Math.max(0.5, (nx2 - nx1) * 100)}%`,
+                        height: `${Math.max(0.5, (ny2 - ny1) * 100)}%`,
                         borderWidth: 3,
-                        borderColor: '#EF4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.18)',
+                        borderColor: boxColor,
+                        backgroundColor: isFall ? 'rgba(239, 68, 68, 0.18)' : 'rgba(245, 158, 11, 0.12)',
                         borderRadius: 6,
                       }}
                     >
                       <View
                         style={{
-                          backgroundColor: '#EF4444',
+                          backgroundColor: boxColor,
                           alignSelf: 'flex-start',
                           paddingHorizontal: 6,
                           paddingVertical: 2,
@@ -714,7 +746,7 @@ export default function App() {
                         }}
                       >
                         <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '800' }}>
-                          {liveResult.mode === 'edge_browser' ? 'اشتباه سقوط' : `littering ${(Number(det.confidence) * 100).toFixed(0)}%`}
+                          {liveResult.mode === 'edge_browser' ? (isFall ? 'اشتباه سقوط' : 'حركة') : `littering ${(Number(det.confidence) * 100).toFixed(0)}%`}
                         </Text>
                       </View>
                     </View>
@@ -754,11 +786,11 @@ export default function App() {
 
             {/* Annotated YOLOv8n / Live Snapshot Box */}
             {liveResult && liveResult.yolo_live && liveResult.yolo_live.annotated_data_uri && (
-              <View style={styles.liveSnapshotContainer}>
+              <View style={[styles.liveSnapshotContainer, { aspectRatio: cameraAspect }]}>
                 <Image
                   source={{ uri: liveResult.yolo_live.annotated_data_uri }}
                   style={styles.cameraView}
-                  resizeMode="cover"
+                  resizeMode="contain"
                 />
                 <View style={styles.cameraOverlayBar}>
                   <Text style={styles.liveIndicatorText}>
@@ -1375,15 +1407,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   cameraSplitRow: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     flexWrap: 'wrap',
     gap: 14,
     marginTop: 12,
   },
   cameraContainer: {
-    flex: 1,
-    minWidth: 280,
-    height: 310,
+    width: '100%',
     borderRadius: 14,
     overflow: 'hidden',
     backgroundColor: '#0F172A',
@@ -1392,9 +1422,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   liveSnapshotContainer: {
-    flex: 1,
-    minWidth: 280,
-    height: 310,
+    width: '100%',
     borderRadius: 14,
     overflow: 'hidden',
     backgroundColor: '#0F172A',

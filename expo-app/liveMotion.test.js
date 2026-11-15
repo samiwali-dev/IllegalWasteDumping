@@ -71,9 +71,9 @@ test('an accelerating falling object remains detectable and is labeled as a poss
   const result = await analyze(clip(fall), ['yolov8n']);
   assert.equal(result.event_detected, true);
   assert.equal(result.actions[0].verdict, 'POSSIBLE_FALL');
-  assert.equal(result.yolo_live.detections[0].class_name, 'possible_fall');
+  assert.equal(result.yolo_live.strongest_detection.class_name, 'possible_fall');
   assert.equal(result.yolo_live.detector, 'temporal_motion');
-  assert.ok(result.yolo_live.detections[0].trail.length >= 3);
+  assert.ok(result.yolo_live.strongest_detection.trail.length >= 3);
 });
 
 test('a fall separated from a stationary hand can still be detected', () => {
@@ -121,4 +121,48 @@ test('horizontal or upward movement alone does not trigger a drop', () => {
     return image;
   });
   assert.equal(detectDropMotion(horizontal).boxes.length, 0);
+});
+
+
+test('a moving item gets a box immediately without claiming a fall', async () => {
+  const result = await analyze(clip([20, 32]), ['yolov8n'], { annotate: false });
+  assert.equal(result.event_detected, false);
+  assert.ok(result.yolo_live.detections.length > 0);
+  assert.ok(result.yolo_live.detections.every(box => box.class_name === 'motion'));
+  assert.equal(result.actions[0].prediction, 0);
+});
+
+test('a brief movement between analysis ticks still produces a visible box', async () => {
+  const result = await analyze(clip([20, 32, 32, 32, 32]), [], { annotate: false });
+  assert.equal(result.event_detected, false);
+  assert.ok(result.yolo_live.detections.length > 0);
+});
+
+test('unrelated movement elsewhere does not hide a falling item', () => {
+  const frames = clip([10, 24, 38, 52]);
+  frames.forEach((image, i) => {
+    for (let y = 90; y < 100; y++) {
+      for (let x = 2 + i * 2; x < 22 + i * 2; x++) image.rgb.fill(0, (y * 112 + x) * 3, (y * 112 + x) * 3 + 3);
+    }
+  });
+  const result = detectDropMotion(frames);
+  assert.ok(result.motionBoxes.length >= 2);
+  assert.equal(result.boxes.length, 1);
+});
+
+test('the web capture preserves a widescreen camera aspect ratio', () => {
+  const video = { readyState: 4, videoWidth: 1280, videoHeight: 720 };
+  const document = {
+    querySelectorAll: () => [video],
+    createElement: () => ({
+      getContext: () => ({ drawImage() {}, getImageData: () => ({ data: new Uint8ClampedArray(112 * 112 * 4) }) }),
+      toDataURL: () => 'data:image/jpeg;base64,snapshot',
+    }),
+  };
+  const camera = new Function('Platform', 'nnWeights', 'detectDropMotion', 'document',
+    `${edgeSource}\nreturn { grabWebVideoFrameFast, getWebCameraAspectRatio };`)({ OS: 'web' }, {}, detectDropMotion, document);
+  assert.equal(camera.getWebCameraAspectRatio(), 16 / 9);
+  const captured = camera.grabWebVideoFrameFast(true);
+  assert.equal(captured.width, 320);
+  assert.equal(captured.height, 180);
 });

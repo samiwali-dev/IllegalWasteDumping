@@ -34,6 +34,11 @@ function findActiveVideoElement() {
   return null;
 }
 
+export function getWebCameraAspectRatio() {
+  const video = findActiveVideoElement();
+  return video ? video.videoWidth / video.videoHeight : null;
+}
+
 /**
  * Ultra-fast synchronous frame grabber for Web/Vercel (runs in <0.4ms at 16-20 FPS).
  * Extracts 112x112 RGB & Grayscale Float32Arrays directly without async Image decoding.
@@ -65,7 +70,7 @@ export function grabWebVideoFrameFast(includeSnapshotUri = true) {
 
     let uri = null;
     const targetW = 320;
-    const targetH = Math.max(200, Math.round((activeVideo.videoHeight / activeVideo.videoWidth) * targetW));
+    const targetH = Math.max(1, Math.round((activeVideo.videoHeight / activeVideo.videoWidth) * targetW));
     if (includeSnapshotUri) {
       if (!_snapCanvas) {
         _snapCanvas = document.createElement('canvas');
@@ -261,17 +266,21 @@ async function drawDetectionsOnFrame(dataUri, detections) {
  * Browser fallback screens temporal motion only. Trained Python models are not
  * emulated here; a possible fall needs human review and is not proof of dumping.
  */
-export async function analyzeLiveFramesOnEdge(rawFrames, _selectedModels, _explicitBaselineInput = null) {
+export async function analyzeLiveFramesOnEdge(rawFrames, _selectedModels, options = {}) {
   const started = Date.now();
   const decoded = [];
   for (const frame of rawFrames) {
     if (frame) decoded.push(await decodeFrameTo112(frame));
   }
   if (!decoded.length) throw new Error('No valid frames captured');
-  const { boxes, peakFrameIdx } = detectDropMotion(decoded);
+  const { boxes, motionBoxes, peakFrameIdx } = detectDropMotion(decoded);
   const detected = boxes.length > 0;
   const snapshot = decoded[peakFrameIdx]?.uri;
-  const annotated = detected ? await drawDetectionsOnFrame(snapshot, boxes) : null;
+  const annotated = detected && options?.annotate !== false ? await drawDetectionsOnFrame(snapshot, boxes) : null;
+  const visibleBoxes = motionBoxes.length ? motionBoxes.map(region => {
+    const falling = boxes.some(box => box.norm_box.every((value, i) => Math.abs(value - region.norm_box[i]) < 0.08));
+    return falling ? { ...region, class_name: 'possible_fall' } : region;
+  }) : boxes;
   return {
     video_name: `Live Camera Stream (${decoded.length} frames)`,
     mode: 'edge_browser',
@@ -288,8 +297,8 @@ export async function analyzeLiveFramesOnEdge(rawFrames, _selectedModels, _expli
     }],
     yolo_live: {
       detector: 'temporal_motion',
-      total_detections: boxes.length,
-      detections: boxes,
+      total_detections: visibleBoxes.length,
+      detections: visibleBoxes,
       strongest_detection: boxes[0] || null,
       annotated_data_uri: annotated,
       frames_buffered: decoded.length,
