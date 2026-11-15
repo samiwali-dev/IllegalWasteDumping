@@ -164,6 +164,7 @@ export default function App() {
   const [bufferedCount, setBufferedCount] = useState(0);
 
   const cameraRef = useRef(null);
+  const baselineFrameRef = useRef(null);
   const frameBufferRef = useRef([]);
   const liveTimerRef = useRef(null);
   const busyLockRef = useRef(false);
@@ -236,15 +237,19 @@ export default function App() {
 
   const runFramesAnalysis = async (framesToAnalyze) => {
     const modelsParam = getSelectedModelsList();
+    const anchoredFrames = baselineFrameRef.current
+      ? [baselineFrameRef.current, ...framesToAnalyze]
+      : framesToAnalyze;
+
     // Try Python Backend first if reachable; otherwise run Edge/Browser AI (for Vercel & Offline Mobile)
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          frames: framesToAnalyze,
+          frames: anchoredFrames,
           models: modelsParam,
         }),
         signal: controller.signal,
@@ -258,34 +263,52 @@ export default function App() {
     } catch (_err) {
       setApiConnected(false);
     }
-    // Fallback to Edge AI (uses exported PyTorch Neural Network weights directly in JS)
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam);
+    // Fallback to Edge AI (uses exported PyTorch Neural Network weights + calibrated motion & scene change)
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, baselineFrameRef.current);
+  };
+
+  const handleResetBaseline = async () => {
+    if (!cameraReady) return;
+    const base = await captureSingleBase64Frame();
+    if (base) {
+      baselineFrameRef.current = base;
+      frameBufferRef.current = [base];
+      setBufferedCount(1);
+      setLiveResult(null);
+      setLiveStatus('✅ تم حفظ خلفية المشهد النظيفة! الآن ارمِ أو ضع أي غرض أمام الكاميرا ليتم كشفه.');
+    }
   };
 
   const handleCaptureBurstAndAnalyze = async () => {
     if (!cameraReady || liveAnalyzing) return;
     setLiveAnalyzing(true);
-    setLiveStatus('جاري التقاط تسلسل إطارات من الكاميرا المباشرة...');
     try {
+      if (!baselineFrameRef.current) {
+        const initialBase = await captureSingleBase64Frame();
+        if (initialBase) baselineFrameRef.current = initialBase;
+      }
       const burst = [];
-      for (let i = 0; i < 6; i++) {
+      const totalSteps = 8;
+      for (let i = 1; i <= totalSteps; i++) {
+        setLiveStatus(`📸 جاري رصد حركة الرمي (${i}/${totalSteps})... ارمِ أو حرّك الغرض أمام الكاميرا الآن!`);
         const frame = await captureSingleBase64Frame();
         if (frame) burst.push(frame);
-        await new Promise((r) => setTimeout(r, 140));
+        await new Promise((r) => setTimeout(r, 270));
       }
       if (burst.length === 0) {
         setLiveStatus('تعذر التقاط إطارات من الكاميرا. تأكد من السماح بصلاحية الكاميرا.');
         return;
       }
-      frameBufferRef.current = [...frameBufferRef.current, ...burst].slice(-12);
-      setBufferedCount(frameBufferRef.current.length);
-      setLiveStatus('جاري تحليل البث المباشر بالخوارزميات المختارة...');
-      const res = await runFramesAnalysis(frameBufferRef.current);
+      frameBufferRef.current = burst;
+      setBufferedCount(burst.length);
+      setLiveStatus('🧠 جاري تحليل الحركة وتغير المشهد بالخوارزميات الأربع...');
+      const res = await runFramesAnalysis(burst);
       setLiveResult(res);
+      const anyDumping = res.actions && res.actions.some((a) => a.prediction === 1);
       setLiveStatus(
-        res.mode === 'python_backend'
-          ? 'تم التحليل المباشر عبر خادم Python (النماذج الأربعة الكاملة).'
-          : 'تم التحليل المباشر داخل المتصفح/الجوال (Edge Neural Network AI — يعمل على Vercel بدون خادم).'
+        anyDumping
+          ? '⚠️ تم رصد عملية رمي (DUMPING DETECTED) وتحديد موقع الغرض في المشهد!'
+          : '✅ المشهد سليم (NO DUMPING) — اضغط "تثبيت خلفية المشهد" قبل الرمي لرصد الفارق بدقة.'
       );
     } catch (err) {
       setLiveStatus(`خطأ أثناء تحليل الكاميرا: ${err.message}`);
@@ -294,20 +317,24 @@ export default function App() {
     }
   };
 
-  const startLiveMonitoring = () => {
+  const startLiveMonitoring = async () => {
     if (!cameraReady) {
       setLiveStatus('يرجى الانتظار حتى تصبح الكاميرا جاهزة.');
       return;
     }
+    if (!baselineFrameRef.current) {
+      const base = await captureSingleBase64Frame();
+      if (base) baselineFrameRef.current = base;
+    }
     setLiveMonitoring(true);
-    setLiveStatus('🔴 المراقبة التلقائية المباشرة نشطة (يتم التحديث كل ثانيتين)...');
+    setLiveStatus('🔴 المراقبة المباشرة نشطة: أي غرض ترميه أو تتركه أمام الكاميرا سيُكشف فوراً...');
     liveTimerRef.current = setInterval(async () => {
       if (busyLockRef.current) return;
       busyLockRef.current = true;
       try {
         const frame = await captureSingleBase64Frame();
         if (frame) {
-          frameBufferRef.current = [...frameBufferRef.current, frame].slice(-8);
+          frameBufferRef.current = [...frameBufferRef.current, frame].slice(-7);
           setBufferedCount(frameBufferRef.current.length);
           if (frameBufferRef.current.length >= 2) {
             const res = await runFramesAnalysis(frameBufferRef.current);
@@ -319,7 +346,7 @@ export default function App() {
       } finally {
         busyLockRef.current = false;
       }
-    }, 1800);
+    }, 1400);
   };
 
   const stopLiveMonitoring = () => {
@@ -613,12 +640,23 @@ export default function App() {
                     {liveMonitoring ? 'LIVE AUTO-MONITORING' : cameraReady ? 'CAMERA READY' : 'INITIALIZING...'}
                   </Text>
                 </View>
-                <Pressable
-                  style={styles.flipCameraBtn}
-                  onPress={() => setCameraFacing((prev) => (prev === 'back' ? 'front' : 'back'))}
-                >
-                  <Text style={styles.flipCameraText}>🔄 قلب الكاميرا</Text>
-                </Pressable>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <Pressable
+                    style={styles.flipCameraBtn}
+                    onPress={handleResetBaseline}
+                  >
+                    <Text style={styles.flipCameraText}>🎯 تثبيت خلفية المشهد</Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.flipCameraBtn}
+                    onPress={() => {
+                      baselineFrameRef.current = null;
+                      setCameraFacing((prev) => (prev === 'back' ? 'front' : 'back'));
+                    }}
+                  >
+                    <Text style={styles.flipCameraText}>🔄 قلب الكاميرا</Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
 
