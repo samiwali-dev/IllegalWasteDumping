@@ -14,7 +14,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { analyzeLiveFramesOnEdge } from './liveEdgeAi';
+import { analyzeLiveFramesOnEdge, grabWebVideoFrameBase64 } from './liveEdgeAi';
 
 const FALLBACK_EVALUATION = {
   dataset: 'MIVIA-IWDD 500',
@@ -215,6 +215,11 @@ export default function App() {
       : [selectedChoice];
 
   const captureSingleBase64Frame = async () => {
+    // On Web (Vercel / Browser), grab directly from the HTML5 <video> element for 0ms lag and unlimited captures
+    if (Platform.OS === 'web') {
+      const webFrame = grabWebVideoFrameBase64();
+      if (webFrame) return webFrame;
+    }
     if (!cameraRef.current || !cameraReady) return null;
     try {
       const photo = await cameraRef.current.takePictureAsync({
@@ -237,6 +242,8 @@ export default function App() {
 
   const runFramesAnalysis = async (framesToAnalyze) => {
     const modelsParam = getSelectedModelsList();
+    // Use explicit baseline if manually locked, otherwise use the first frame of the current window so every throw works fresh
+    const refBaseline = baselineFrameRef.current || framesToAnalyze[0];
     const anchoredFrames = baselineFrameRef.current
       ? [baselineFrameRef.current, ...framesToAnalyze]
       : framesToAnalyze;
@@ -244,7 +251,7 @@ export default function App() {
     // Try Python Backend first if reachable; otherwise run Edge/Browser AI (for Vercel & Offline Mobile)
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
       const res = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -263,8 +270,8 @@ export default function App() {
     } catch (_err) {
       setApiConnected(false);
     }
-    // Fallback to Edge AI (uses exported PyTorch Neural Network weights + calibrated motion & scene change)
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, baselineFrameRef.current);
+    // Fallback to Edge AI (uses exported PyTorch Neural Network weights + 8x8 bounding-box localization)
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, refBaseline);
   };
 
   const handleResetBaseline = async () => {
@@ -275,7 +282,7 @@ export default function App() {
       frameBufferRef.current = [base];
       setBufferedCount(1);
       setLiveResult(null);
-      setLiveStatus('✅ تم حفظ خلفية المشهد النظيفة! الآن ارمِ أو ضع أي غرض أمام الكاميرا ليتم كشفه.');
+      setLiveStatus('✅ تم قفل الخلفية المرجعية! أي غرض يرمى أو يُترك في المشهد الآن سيُكشف ويُحاط بمربع أحمر.');
     }
   };
 
@@ -283,17 +290,13 @@ export default function App() {
     if (!cameraReady || liveAnalyzing) return;
     setLiveAnalyzing(true);
     try {
-      if (!baselineFrameRef.current) {
-        const initialBase = await captureSingleBase64Frame();
-        if (initialBase) baselineFrameRef.current = initialBase;
-      }
       const burst = [];
       const totalSteps = 8;
       for (let i = 1; i <= totalSteps; i++) {
         setLiveStatus(`📸 جاري رصد حركة الرمي (${i}/${totalSteps})... ارمِ أو حرّك الغرض أمام الكاميرا الآن!`);
         const frame = await captureSingleBase64Frame();
         if (frame) burst.push(frame);
-        await new Promise((r) => setTimeout(r, 270));
+        await new Promise((r) => setTimeout(r, 220));
       }
       if (burst.length === 0) {
         setLiveStatus('تعذر التقاط إطارات من الكاميرا. تأكد من السماح بصلاحية الكاميرا.');
@@ -301,14 +304,15 @@ export default function App() {
       }
       frameBufferRef.current = burst;
       setBufferedCount(burst.length);
-      setLiveStatus('🧠 جاري تحليل الحركة وتغير المشهد بالخوارزميات الأربع...');
+      setLiveStatus('🧠 جاري تحليل الحركة ورسم مربعات الكشف (Littering Boxes)...');
       const res = await runFramesAnalysis(burst);
       setLiveResult(res);
       const anyDumping = res.actions && res.actions.some((a) => a.prediction === 1);
+      const boxCount = res.yolo_live?.total_detections || 0;
       setLiveStatus(
         anyDumping
-          ? '⚠️ تم رصد عملية رمي (DUMPING DETECTED) وتحديد موقع الغرض في المشهد!'
-          : '✅ المشهد سليم (NO DUMPING) — اضغط "تثبيت خلفية المشهد" قبل الرمي لرصد الفارق بدقة.'
+          ? `⚠️ تم رصد عملية رمي (DUMPING DETECTED) ورسم ${boxCount} مربع littering حول الغرض!`
+          : '✅ المشهد سليم (NO DUMPING) — حرّك أو ارمِ الغرض أثناء العد ليتم رصده.'
       );
     } catch (err) {
       setLiveStatus(`خطأ أثناء تحليل الكاميرا: ${err.message}`);
@@ -322,19 +326,16 @@ export default function App() {
       setLiveStatus('يرجى الانتظار حتى تصبح الكاميرا جاهزة.');
       return;
     }
-    if (!baselineFrameRef.current) {
-      const base = await captureSingleBase64Frame();
-      if (base) baselineFrameRef.current = base;
-    }
+    frameBufferRef.current = [];
     setLiveMonitoring(true);
-    setLiveStatus('🔴 المراقبة المباشرة نشطة: أي غرض ترميه أو تتركه أمام الكاميرا سيُكشف فوراً...');
+    setLiveStatus('🔴 المراقبة المستمرة نشطة: ارمِ أي غرض في أي وقت وستظهر مربعات littering الحمراء مباشرة على الكاميرا!');
     liveTimerRef.current = setInterval(async () => {
       if (busyLockRef.current) return;
       busyLockRef.current = true;
       try {
         const frame = await captureSingleBase64Frame();
         if (frame) {
-          frameBufferRef.current = [...frameBufferRef.current, frame].slice(-7);
+          frameBufferRef.current = [...frameBufferRef.current, frame].slice(-6);
           setBufferedCount(frameBufferRef.current.length);
           if (frameBufferRef.current.length >= 2) {
             const res = await runFramesAnalysis(frameBufferRef.current);
@@ -346,7 +347,7 @@ export default function App() {
       } finally {
         busyLockRef.current = false;
       }
-    }, 1400);
+    }, 550);
   };
 
   const stopLiveMonitoring = () => {
@@ -620,7 +621,7 @@ export default function App() {
           </View>
 
           <View style={styles.cameraSplitRow}>
-            {/* Live Camera Preview */}
+            {/* Live Camera Preview with Real-Time Red Bounding Box Overlay */}
             <View style={styles.cameraContainer}>
               <CameraView
                 ref={cameraRef}
@@ -628,6 +629,44 @@ export default function App() {
                 facing={cameraFacing}
                 onCameraReady={() => setCameraReady(true)}
               />
+              {/* Direct Live Bounding Boxes Overlaid on Camera */}
+              {liveResult &&
+                liveResult.yolo_live &&
+                Array.isArray(liveResult.yolo_live.detections) &&
+                liveResult.yolo_live.detections.map((det, idx) => {
+                  const [nx1, ny1, nx2, ny2] = det.norm_box || [0.25, 0.25, 0.75, 0.75];
+                  return (
+                    <View
+                      key={idx}
+                      pointerEvents="none"
+                      style={{
+                        position: 'absolute',
+                        left: `${nx1 * 100}%`,
+                        top: `${ny1 * 100}%`,
+                        width: `${Math.max(8, (nx2 - nx1) * 100)}%`,
+                        height: `${Math.max(8, (ny2 - ny1) * 100)}%`,
+                        borderWidth: 3,
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.18)',
+                        borderRadius: 6,
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: '#EF4444',
+                          alignSelf: 'flex-start',
+                          paddingHorizontal: 6,
+                          paddingVertical: 2,
+                          borderBottomRightRadius: 6,
+                        }}
+                      >
+                        <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '800' }}>
+                          littering {(Number(det.confidence || 0.85) * 100).toFixed(0)}%
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })}
               <View style={styles.cameraOverlayBar}>
                 <View style={styles.liveIndicator}>
                   <View

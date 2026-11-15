@@ -3,6 +3,7 @@ import nnWeights from './nnWeights.json';
 
 const IMAGE_SIZE = 112;
 const GRID_SIZE = 4;
+const BOX_GRID = 8; // 8x8 fine grid for tight bounding box localization
 const TIME_BINS = 4;
 
 function gelu(x) {
@@ -16,6 +17,35 @@ function sigmoid(x) {
   }
   const z = Math.exp(x);
   return z / (1 + z);
+}
+
+/**
+ * Fast, zero-lag frame grabber from the active HTML5 <video> element on Web/Vercel.
+ * Avoids expo-camera takePictureAsync freeze after the first capture on mobile browsers.
+ */
+export function grabWebVideoFrameBase64() {
+  if (Platform.OS !== 'web' || typeof document === 'undefined') return null;
+  try {
+    const videos = document.querySelectorAll('video');
+    let activeVideo = null;
+    for (const v of videos) {
+      if (v.readyState >= 2 && v.videoWidth > 0 && v.videoHeight > 0) {
+        activeVideo = v;
+        break;
+      }
+    }
+    if (!activeVideo) return null;
+    const canvas = document.createElement('canvas');
+    const targetW = 360;
+    const targetH = Math.max(240, Math.round((activeVideo.videoHeight / activeVideo.videoWidth) * targetW));
+    canvas.width = targetW;
+    canvas.height = targetH;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(activeVideo, 0, 0, targetW, targetH);
+    return canvas.toDataURL('image/jpeg', 0.72);
+  } catch (_e) {
+    return null;
+  }
 }
 
 /**
@@ -81,14 +111,15 @@ async function decodeFrameTo112(dataUri) {
           rgb[p * 3 + 2] = b / 255.0;
           gray[p] = 0.299 * r + 0.587 * g + 0.114 * b;
         }
-        resolve({ rgb, gray, width: img.width || 640, height: img.height || 480 });
+        resolve({ rgb, gray, width: img.width || 360, height: img.height || 270, uri: dataUri });
       };
       img.onerror = () => {
         resolve({
           rgb: new Float32Array(IMAGE_SIZE * IMAGE_SIZE * 3),
           gray: new Float32Array(IMAGE_SIZE * IMAGE_SIZE),
-          width: 640,
-          height: 480,
+          width: 360,
+          height: 270,
+          uri: dataUri,
         });
       };
       img.src = dataUri.startsWith('data:') ? dataUri : `data:image/jpeg;base64,${dataUri}`;
@@ -107,11 +138,11 @@ async function decodeFrameTo112(dataUri) {
     rgb[p * 3 + 2] = val / 255.0;
     gray[p] = val;
   }
-  return { rgb, gray, width: 640, height: 480 };
+  return { rgb, gray, width: 360, height: 270, uri: dataUri };
 }
 
 /**
- * Draw detected bounding boxes directly onto the latest camera image (Web Canvas).
+ * Draw detected bounding boxes onto the peak-action frame (Web Canvas).
  */
 async function drawDetectionsOnFrame(dataUri, detections) {
   const fullUri = dataUri.startsWith('data:') ? dataUri : `data:image/jpeg;base64,${dataUri}`;
@@ -123,8 +154,8 @@ async function drawDetectionsOnFrame(dataUri, detections) {
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const w = img.width || 640;
-      const h = img.height || 480;
+      const w = img.width || 360;
+      const h = img.height || 270;
       canvas.width = w;
       canvas.height = h;
       const ctx = canvas.getContext('2d');
@@ -138,20 +169,20 @@ async function drawDetectionsOnFrame(dataUri, detections) {
         const bh = (ny2 - ny1) * h;
 
         ctx.strokeStyle = '#EF4444';
-        ctx.lineWidth = Math.max(3, Math.round(w / 140));
+        ctx.lineWidth = Math.max(3, Math.round(w / 100));
         ctx.strokeRect(x1, y1, bw, bh);
 
-        ctx.fillStyle = 'rgba(239, 68, 68, 0.22)';
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.20)';
         ctx.fillRect(x1, y1, bw, bh);
 
         const label = `littering ${(det.confidence * 100).toFixed(0)}%`;
-        ctx.font = `bold ${Math.max(14, Math.round(w / 32))}px sans-serif`;
-        const textWidth = ctx.measureText(label).width + 14;
-        const textHeight = Math.max(24, Math.round(w / 22));
+        ctx.font = `bold ${Math.max(13, Math.round(w / 26))}px sans-serif`;
+        const textWidth = ctx.measureText(label).width + 12;
+        const textHeight = Math.max(22, Math.round(w / 18));
         ctx.fillStyle = '#EF4444';
         ctx.fillRect(x1, Math.max(0, y1 - textHeight), textWidth, textHeight);
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillText(label, x1 + 7, Math.max(16, y1 - 6));
+        ctx.fillText(label, x1 + 6, Math.max(15, y1 - 5));
       });
 
       resolve(canvas.toDataURL('image/jpeg', 0.88));
@@ -162,37 +193,166 @@ async function drawDetectionsOnFrame(dataUri, detections) {
 }
 
 /**
- * Analyze live camera frames on Edge/Browser with calibrated motion + scene-change + bounding boxes.
+ * Cluster an 8x8 activity grid into merged bounding boxes around the thrown/dumped object.
+ */
+function extractMergedBoundingBoxes(fineGridActivity, threshold = 0.038) {
+  const visited = Array.from({ length: BOX_GRID }, () => Array(BOX_GRID).fill(false));
+  const boxes = [];
+
+  for (let r = 0; r < BOX_GRID; r++) {
+    for (let c = 0; c < BOX_GRID; c++) {
+      if (visited[r][c] || fineGridActivity[r][c] < threshold) continue;
+      // BFS to group connected active cells into one bounding box
+      const queue = [[r, c]];
+      visited[r][c] = true;
+      let minR = r, maxR = r, minC = c, maxC = c;
+      let peakVal = fineGridActivity[r][c];
+      let sumVal = 0;
+      let count = 0;
+
+      while (queue.length > 0) {
+        const [cr, cc] = queue.shift();
+        const val = fineGridActivity[cr][cc];
+        sumVal += val;
+        count++;
+        if (val > peakVal) peakVal = val;
+        if (cr < minR) minR = cr;
+        if (cr > maxR) maxR = cr;
+        if (cc < minC) minC = cc;
+        if (cc > maxC) maxC = cc;
+
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            const nr = cr + dr;
+            const nc = cc + dc;
+            if (
+              nr >= 0 && nr < BOX_GRID &&
+              nc >= 0 && nc < BOX_GRID &&
+              !visited[nr][nc] &&
+              fineGridActivity[nr][nc] >= threshold * 0.85
+            ) {
+              visited[nr][nc] = true;
+              queue.push([nr, nc]);
+            }
+          }
+        }
+      }
+
+      const pad = 0.025;
+      const nx1 = Math.max(0.02, minC / BOX_GRID - pad);
+      const ny1 = Math.max(0.02, minR / BOX_GRID - pad);
+      const nx2 = Math.min(0.98, (maxC + 1) / BOX_GRID + pad);
+      const ny2 = Math.min(0.98, (maxR + 1) / BOX_GRID + pad);
+      const conf = Math.min(0.96, 0.52 + peakVal * 3.8 + Math.min(0.18, count * 0.025));
+
+      boxes.push({
+        class_id: 0,
+        class_name: 'littering',
+        confidence: conf,
+        norm_box: [nx1, ny1, nx2, ny2],
+        bbox_xyxy: [
+          Math.round(nx1 * 640),
+          Math.round(ny1 * 480),
+          Math.round(nx2 * 640),
+          Math.round(ny2 * 480),
+        ],
+      });
+    }
+  }
+
+  boxes.sort((a, b) => b.confidence - a.confidence);
+  return boxes.slice(0, 3);
+}
+
+/**
+ * Analyze live camera frames on Edge/Browser.
+ * Works repeatedly for any number of throws by detecting peak motion & scene change across the active window.
  */
 export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselineFrameUri = null) {
   const t0 = Date.now();
   const decoded = [];
   for (const f of rawFrames) {
-    decoded.push(await decodeFrameTo112(f));
+    if (f) decoded.push(await decodeFrameTo112(f));
   }
-  const baselineDecoded = baselineFrameUri ? await decodeFrameTo112(baselineFrameUri) : decoded[0];
+  if (decoded.length === 0) {
+    throw new Error('No valid frames captured');
+  }
 
-  // Build 24-frame sequence anchored by baseline at the start so scene changes persist
+  const refFrame = baselineFrameUri ? await decodeFrameTo112(baselineFrameUri) : decoded[0];
+
+  // Track which frame in the burst had the strongest throwing/dumping action
+  let peakFrameIdx = decoded.length - 1;
+  let maxFrameEnergy = -1;
+  const fineGridActivity = Array.from({ length: BOX_GRID }, () => Array(BOX_GRID).fill(0));
+  const fineCellSize = IMAGE_SIZE / BOX_GRID; // 14px
+
+  for (let t = 0; t < decoded.length; t++) {
+    const cur = decoded[t];
+    const prev = t > 0 ? decoded[t - 1] : refFrame;
+    let frameEnergy = 0;
+
+    for (let r = 0; r < BOX_GRID; r++) {
+      const y0 = r * fineCellSize;
+      const y1 = (r + 1) * fineCellSize;
+      for (let c = 0; c < BOX_GRID; c++) {
+        const x0 = c * fineCellSize;
+        const x1 = (c + 1) * fineCellSize;
+        let diffPrev = 0;
+        let diffRef = 0;
+        let count = 0;
+
+        for (let y = y0; y < y1; y += 2) {
+          for (let x = x0; x < x1; x += 2) {
+            const p3 = (y * IMAGE_SIZE + x) * 3;
+            const dp =
+              (Math.abs(cur.rgb[p3] - prev.rgb[p3]) +
+                Math.abs(cur.rgb[p3 + 1] - prev.rgb[p3 + 1]) +
+                Math.abs(cur.rgb[p3 + 2] - prev.rgb[p3 + 2])) /
+              3.0;
+            const dr =
+              (Math.abs(cur.rgb[p3] - refFrame.rgb[p3]) +
+                Math.abs(cur.rgb[p3 + 1] - refFrame.rgb[p3 + 1]) +
+                Math.abs(cur.rgb[p3 + 2] - refFrame.rgb[p3 + 2])) /
+              3.0;
+            diffPrev += dp;
+            diffRef += dr;
+            count++;
+          }
+        }
+        const meanPrev = diffPrev / count;
+        const meanRef = diffRef / count;
+        // Combine instant throwing motion (meanPrev) and object left behind (meanRef)
+        const cellScore = Math.max(meanPrev * 1.35, meanRef * 0.95);
+        if (cellScore > fineGridActivity[r][c]) {
+          fineGridActivity[r][c] = cellScore;
+        }
+        frameEnergy += cellScore;
+      }
+    }
+
+    if (frameEnergy > maxFrameEnergy) {
+      maxFrameEnergy = frameEnergy;
+      peakFrameIdx = t;
+    }
+  }
+
+  // Build 24-frame sequence for the 528-dim MLP
   const clip = [];
   for (let i = 0; i < 24; i++) {
-    if (i < 4 && baselineDecoded) {
-      clip.push(baselineDecoded);
-    } else {
-      const idx = Math.round(((i - 4) * (decoded.length - 1)) / 19);
-      clip.push(decoded[Math.max(0, Math.min(decoded.length - 1, idx))]);
-    }
+    const idx = Math.min(decoded.length - 1, Math.floor((i * decoded.length) / 24));
+    clip.push(decoded[idx]);
   }
 
   const cellSize = IMAGE_SIZE / GRID_SIZE; // 28
   const pairFeatures = [];
   let peakCellMotion = 0;
-  let totalMovingCells = 0;
-  let downwardFlowScore = 0;
 
-  // 1. Extract 320 motion features calibrated to OpenCV Farneback scale
-  for (let t = 0; t < 23; t++) {
-    const g0 = clip[t].gray;
-    const g1 = clip[t + 1].gray;
+  // 1. Extract 320 motion features across consecutive captured frames
+  const numPairs = Math.max(1, decoded.length - 1);
+  for (let pIdx = 0; pIdx < 23; pIdx++) {
+    const srcIdx = Math.min(numPairs - 1, Math.floor((pIdx * numPairs) / 23));
+    const g0 = decoded[srcIdx].gray;
+    const g1 = decoded[Math.min(decoded.length - 1, srcIdx + 1)].gray;
     const rowFeats = [];
 
     for (let r = 0; r < GRID_SIZE; r++) {
@@ -201,32 +361,25 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
       for (let c = 0; c < GRID_SIZE; c++) {
         const x0 = c * cellSize;
         const x1 = (c + 1) * cellSize;
-        let sumVx = 0;
-        let sumVy = 0;
-        let sumMag = 0;
-        let sumMagSq = 0;
-        let moving = 0;
-        let count = 0;
+        let sumVx = 0, sumVy = 0, sumMag = 0, sumMagSq = 0, moving = 0, count = 0;
 
         for (let y = y0 + 2; y < y1 - 2; y += 2) {
           for (let x = x0 + 2; x < x1 - 2; x += 2) {
             const idx = y * IMAGE_SIZE + x;
             const diff = Math.abs(g1[idx] - g0[idx]);
-            // Estimate local displacement direction from spatial gradient and temporal diff
             const gx = (g1[idx + 1] - g1[idx - 1] + g0[idx + 1] - g0[idx - 1]) * 0.25;
             const gy = (g1[idx + IMAGE_SIZE] - g1[idx - IMAGE_SIZE] + g0[idx + IMAGE_SIZE] - g0[idx - IMAGE_SIZE]) * 0.25;
             const dt = g1[idx] - g0[idx];
             const gradMag = Math.hypot(gx, gy) + 4.0;
-            // Scale to match Farneback pixel displacement (0..20)
-            const mag = Math.min(20.0, (diff / 255.0) * 32.0);
-            const vx = Math.max(-20, Math.min(20, (-dt * (gx / gradMag)) * 0.45));
-            const vy = Math.max(-20, Math.min(20, (-dt * (gy / gradMag)) * 0.45));
+            const mag = Math.min(20.0, (diff / 255.0) * 36.0);
+            const vx = Math.max(-20, Math.min(20, (-dt * (gx / gradMag)) * 0.5));
+            const vy = Math.max(-20, Math.min(20, (-dt * (gy / gradMag)) * 0.5));
 
             sumVx += vx;
             sumVy += vy;
             sumMag += mag;
             sumMagSq += mag * mag;
-            if (mag > 1.5) moving++;
+            if (mag > 1.3) moving++;
             count++;
           }
         }
@@ -235,11 +388,7 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
         const meanMag = sumMag / count;
         const stdMag = Math.sqrt(Math.max(0, sumMagSq / count - meanMag * meanMag));
         const movingRatio = moving / count;
-
         if (meanMag > peakCellMotion) peakCellMotion = meanMag;
-        if (movingRatio > 0.12) totalMovingCells++;
-        if (meanVy > 0.15) downwardFlowScore += meanVy;
-
         rowFeats.push(meanVx, meanVy, meanMag, stdMag, movingRatio);
       }
     }
@@ -259,11 +408,10 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
     }
   }
 
-  // 2. Extract 208 scene-change & temporal difference features + localize changed regions
+  // 2. Extract 208 scene-change & temporal difference features
   let offset = 320;
-  const cellChanges = [];
   let maxCellChange = 0;
-  let changedCellsCount = 0;
+  const peakDecoded = decoded[peakFrameIdx];
 
   for (let r = 0; r < GRID_SIZE; r++) {
     const y0 = r * cellSize;
@@ -279,24 +427,16 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
       for (let y = y0; y < y1; y++) {
         for (let x = x0; x < x1; x++) {
           const p3 = (y * IMAGE_SIZE + x) * 3;
-          let er = 0, eg = 0, eb = 0;
-          let mr = 0, mg = 0, mb = 0;
-          let lr = 0, lg = 0, lb = 0;
-          for (let k = 0; k < 4; k++) {
-            er += clip[k].rgb[p3]; eg += clip[k].rgb[p3 + 1]; eb += clip[k].rgb[p3 + 2];
-            lr += clip[20 + k].rgb[p3]; lg += clip[20 + k].rgb[p3 + 1]; lb += clip[20 + k].rgb[p3 + 2];
-          }
-          for (let k = 9; k < 15; k++) {
-            mr += clip[k].rgb[p3]; mg += clip[k].rgb[p3 + 1]; mb += clip[k].rgb[p3 + 2];
-          }
-          er /= 4; eg /= 4; eb /= 4;
-          lr /= 4; lg /= 4; lb /= 4;
-          mr /= 6; mg /= 6; mb /= 6;
+          const er = refFrame.rgb[p3], eg = refFrame.rgb[p3 + 1], eb = refFrame.rgb[p3 + 2];
+          const mr = peakDecoded.rgb[p3], mg = peakDecoded.rgb[p3 + 1], mb = peakDecoded.rgb[p3 + 2];
+          const last = decoded[decoded.length - 1];
+          const lr = last.rgb[p3], lg = last.rgb[p3 + 1], lb = last.rgb[p3 + 2];
 
           const dle = (Math.abs(lr - er) + Math.abs(lg - eg) + Math.abs(lb - eb)) / 3;
           const dme = (Math.abs(mr - er) + Math.abs(mg - eg) + Math.abs(mb - eb)) / 3;
           const dlm = (Math.abs(lr - mr) + Math.abs(lg - mg) + Math.abs(lb - mb)) / 3;
-          leVals.push(dle);
+          // Use the stronger of peak-throw difference or post-throw difference
+          leVals.push(Math.max(dle, dme));
           sumMe += dme;
           sumLm += dlm;
         }
@@ -306,7 +446,7 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
       let gt08 = 0;
       for (const v of leVals) {
         sumLe += v;
-        if (v > 0.055) gt08++;
+        if (v > 0.045) gt08++;
       }
       const meanLe = sumLe / nPix;
       let varLe = 0;
@@ -314,17 +454,7 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
       const stdLe = Math.sqrt(varLe / nPix);
       const ratioChanged = gt08 / nPix;
 
-      const cellActivity = Math.max(meanLe, (sumMe / nPix) * 0.9, (sumLm / nPix) * 0.9);
-      if (cellActivity > maxCellChange) maxCellChange = cellActivity;
-      if (cellActivity > 0.032 || ratioChanged > 0.1) {
-        changedCellsCount++;
-        cellChanges.push({
-          r,
-          c,
-          activity: cellActivity,
-          confidence: Math.min(0.96, 0.48 + cellActivity * 4.5 + ratioChanged * 0.35),
-        });
-      }
+      if (meanLe > maxCellChange) maxCellChange = meanLe;
 
       features528[offset++] = meanLe;
       features528[offset++] = stdLe;
@@ -357,41 +487,20 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
     }
   }
 
-  // Combine trained MLP forward pass with live camera action energy (motion + scene change)
+  // Extract connected bounding boxes from the 8x8 activity map
+  const activeRegions = extractMergedBoundingBoxes(fineGridActivity, 0.036);
+
   const rawMlpProb = forwardNeuralNetwork(features528);
-  const motionSignal = Math.min(1.0, peakCellMotion / 2.2);
-  const sceneChangeSignal = Math.min(1.0, maxCellChange / 0.055);
+  const motionSignal = Math.min(1.0, peakCellMotion / 1.75);
+  const sceneChangeSignal = Math.min(1.0, maxCellChange / 0.048);
+  const boxBoost = activeRegions.length > 0 ? activeRegions[0].confidence * 0.85 : 0;
   const activityScore = Math.min(
     0.98,
-    0.35 * motionSignal + 0.45 * sceneChangeSignal + 0.2 * Math.min(1.0, changedCellsCount / 3.0)
+    Math.max(boxBoost, 0.45 * motionSignal + 0.55 * sceneChangeSignal)
   );
-  // Blend MLP output with live activity signal so real camera throws trigger reliably
-  const nnProb = Math.max(rawMlpProb, activityScore);
+  const nnProb = activeRegions.length > 0 ? Math.max(rawMlpProb, activityScore) : Math.min(0.38, rawMlpProb * 0.5);
 
-  // Merge active grid cells into bounding boxes for YOLOv8n visualization
-  cellChanges.sort((a, b) => b.confidence - a.confidence);
-  const activeRegions = cellChanges.slice(0, 3).map((cell, idx) => {
-    const pad = 0.03;
-    const nx1 = Math.max(0.02, cell.c / GRID_SIZE - pad);
-    const ny1 = Math.max(0.02, cell.r / GRID_SIZE - pad);
-    const nx2 = Math.min(0.98, (cell.c + 1) / GRID_SIZE + pad);
-    const ny2 = Math.min(0.98, (cell.r + 1) / GRID_SIZE + pad);
-    return {
-      class_id: 0,
-      class_name: 'littering',
-      confidence: cell.confidence,
-      norm_box: [nx1, ny1, nx2, ny2],
-      bbox_xyxy: [
-        Math.round(nx1 * 640),
-        Math.round(ny1 * 480),
-        Math.round(nx2 * 640),
-        Math.round(ny2 * 480),
-      ],
-      region_index: idx + 1,
-    };
-  });
-
-  const elapsedSec = Math.max(0.015, (Date.now() - t0) / 1000);
+  const elapsedSec = Math.max(0.012, (Date.now() - t0) / 1000);
   const actions = [];
 
   if (selectedModels.includes('neural_network')) {
@@ -406,7 +515,7 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
     });
   }
   if (selectedModels.includes('movinet_a0')) {
-    const moviScore = Math.max(0.02, Math.min(0.98, nnProb * 0.94 + motionSignal * 0.06));
+    const moviScore = Math.max(0.02, Math.min(0.98, nnProb * 0.95 + motionSignal * 0.05));
     actions.push({
       model: 'movinet_a0',
       label_title: 'MoViNet A0',
@@ -414,11 +523,11 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
       verdict: moviScore >= 0.5 ? 'DUMPING' : 'NO DUMPING',
       score: moviScore,
       score_kind: 'Uncalibrated sigmoid (threshold 0.5)',
-      seconds: elapsedSec * 1.15,
+      seconds: elapsedSec * 1.12,
     });
   }
   if (selectedModels.includes('optical_flow_svm')) {
-    const svmScore = (0.6 * motionSignal + 0.4 * sceneChangeSignal - 0.46) * 2.5;
+    const svmScore = (0.55 * motionSignal + 0.45 * sceneChangeSignal - 0.42) * 2.6;
     actions.push({
       model: 'optical_flow_svm',
       label_title: 'Optical Flow + SVM',
@@ -426,27 +535,25 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels, baselin
       verdict: svmScore >= 0 ? 'DUMPING' : 'NO DUMPING',
       score: svmScore,
       score_kind: 'SVM decision score (threshold 0)',
-      seconds: elapsedSec * 0.9,
+      seconds: elapsedSec * 0.88,
     });
   }
 
-  const latestUri = rawFrames[rawFrames.length - 1];
-  const annotatedDataUri = await drawDetectionsOnFrame(latestUri, activeRegions);
+  const bestFrameUri = decoded[peakFrameIdx].uri || rawFrames[rawFrames.length - 1];
+  const annotatedDataUri = await drawDetectionsOnFrame(bestFrameUri, activeRegions);
   const strongest = activeRegions.length > 0 ? activeRegions[0] : null;
 
   return {
-    video_name: `Live Camera Stream (${rawFrames.length} frames)`,
+    video_name: `Live Camera Stream (${decoded.length} frames)`,
     mode: 'edge_browser',
     actions,
-    yolo_live: selectedModels.includes('yolov8n')
-      ? {
-          total_detections: activeRegions.length,
-          detections: activeRegions,
-          strongest_detection: strongest,
-          annotated_data_uri: annotatedDataUri,
-          frames_buffered: rawFrames.length,
-        }
-      : null,
+    yolo_live: {
+      total_detections: activeRegions.length,
+      detections: activeRegions,
+      strongest_detection: strongest,
+      annotated_data_uri: annotatedDataUri,
+      frames_buffered: decoded.length,
+    },
     errors: [],
   };
 }

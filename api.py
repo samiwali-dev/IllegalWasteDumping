@@ -209,10 +209,22 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str]) 
             YOLO = _get_yolo()
             dev = resolve_device("auto")
             latest_bgr = decoded_bgr[-1]
+            ih, iw = latest_bgr.shape[:2]
             res = YOLO(str(YOLO_MODEL)).predict(
                 source=latest_bgr, conf=0.25, device=dev, verbose=False, save=False
             )[0]
-            detections = _extract_detections(res)
+            detections = [
+                {
+                    **d,
+                    "norm_box": [
+                        d["bbox_xyxy"][0] / max(1, iw),
+                        d["bbox_xyxy"][1] / max(1, ih),
+                        d["bbox_xyxy"][2] / max(1, iw),
+                        d["bbox_xyxy"][3] / max(1, ih),
+                    ],
+                }
+                for d in _extract_detections(res)
+            ]
             plotted = res.plot()
             ok, buf = cv2.imencode(".jpg", plotted, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
             annotated_b64 = (
