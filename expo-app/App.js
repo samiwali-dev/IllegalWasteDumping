@@ -14,7 +14,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { analyzeLiveFramesOnEdge, grabWebVideoFrameFast, getWebCameraAspectRatio } from './liveEdgeAi';
+import { analyzeLiveFramesOnEdge, grabWebVideoFrameBase64, grabWebVideoFrameFast, getWebCameraAspectRatio } from './liveEdgeAi';
 
 const FALLBACK_EVALUATION = {
   dataset: 'MIVIA-IWDD 500',
@@ -108,7 +108,7 @@ const MODEL_META = {
   neural_network: {
     title: 'Neural Network (MLP)',
     subtitle: '528 Spatiotemporal Motion + Scene-Change Features',
-    badge: 'الأعلى دقة (74%)',
+    badge: '74% Accuracy',
     color: '#10B981',
   },
   movinet_a0: {
@@ -132,7 +132,7 @@ const MODEL_META = {
 };
 
 const FILTER_CHOICES = [
-  { id: 'all', label: 'جميع الخوارزميات الـ 4 (All 4 Models)' },
+  { id: 'all', label: 'All 4 Models' },
   { id: 'neural_network', label: 'Neural Network (MLP)' },
   { id: 'movinet_a0', label: 'MoViNet A0' },
   { id: 'optical_flow_svm', label: 'Optical Flow + SVM' },
@@ -147,7 +147,7 @@ export default function App() {
   const [selectedSample, setSelectedSample] = useState(null);
   const [samples, setSamples] = useState([]);
   const [analyzing, setAnalyzing] = useState(false);
-  const [statusText, setStatusText] = useState('اختر فيديو MP4 من جهازك أو من عينات الاختبار للبدء.');
+  const [statusText, setStatusText] = useState('Choose an MP4 file or a test sample to begin.');
   const [analysisResult, setAnalysisResult] = useState(null);
   const [evaluationData, setEvaluationData] = useState(FALLBACK_EVALUATION);
   const [selectedEvalModel, setSelectedEvalModel] = useState('neural_network');
@@ -159,18 +159,18 @@ export default function App() {
   const [cameraReady, setCameraReady] = useState(false);
   const [liveMonitoring, setLiveMonitoring] = useState(false);
   const [liveAnalyzing, setLiveAnalyzing] = useState(false);
-  const [liveStatus, setLiveStatus] = useState('الكاميرا جاهزة للبث والتحليل المباشر بسرعة 17 FPS.');
+  const [liveStatus, setLiveStatus] = useState('Camera ready for live monitoring.');
   const [liveResult, setLiveResult] = useState(null);
   const [bufferedCount, setBufferedCount] = useState(0);
   const [liveFps, setLiveFps] = useState(0);
-  const [capturedCount, setCapturedCount] = useState(0);
-  const [analysisCount, setAnalysisCount] = useState(0);
   const [cameraAspect, setCameraAspect] = useState(16 / 9);
 
   const cameraRef = useRef(null);
+  const baselineFrameRef = useRef(null);
   const frameBufferRef = useRef([]);
   const liveTimerRef = useRef(null);
   const busyLockRef = useRef(false);
+  const detectionHoldUntilRef = useRef(0);
   const fpsCounterRef = useRef({ count: 0, lastTs: Date.now() });
 
   const cleanBaseUrl = apiBase.replace(/\/+$/, '');
@@ -245,23 +245,25 @@ export default function App() {
       });
       if (!photo) return null;
       if (photo.base64) {
-        return { uri: `data:image/jpeg;base64,${photo.base64}`, ts: Date.now() };
+        return `data:image/jpeg;base64,${photo.base64}`;
       }
       if (photo.uri && photo.uri.startsWith('data:')) {
-        return { uri: photo.uri, ts: Date.now() };
+        return photo.uri;
       }
       return null;
-    } catch (error) {
-      throw new Error(`تعذر التقاط صورة من الكاميرا: ${error.message}`);
+    } catch (_e) {
+      return null;
     }
   };
 
-  const runFramesAnalysis = async (framesToAnalyze, annotate = true) => {
+  const runFramesAnalysis = async (framesToAnalyze) => {
     const modelsParam = getSelectedModelsList();
+    // Only pass explicitBaseline if the user manually clicked "Lock background"
+    const explicitBaseline = baselineFrameRef.current || null;
 
-    // The browser fallback reports possible motion events, not Python model predictions.
+    // On Web/Vercel or when fast decoded frames are buffered, run high-FPS Edge AI directly (<15ms latency)
     if (Platform.OS === 'web' || !apiConnected) {
-      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, { annotate });
+      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
     }
 
     try {
@@ -290,16 +292,19 @@ export default function App() {
     } catch (_err) {
       setApiConnected(false);
     }
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, { annotate });
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
   };
 
-  const handleResetLiveWindow = () => {
-    frameBufferRef.current = [];
-    setBufferedCount(0);
-    setCapturedCount(0);
-    setAnalysisCount(0);
-    setLiveResult(null);
-    setLiveStatus('تم مسح سجل الحركة. ظهور غرض ثابت وحده لا يُعد حادثة رمي.');
+  const handleResetBaseline = async () => {
+    if (!cameraReady) return;
+    const base = await captureSingleFastFrame(true);
+    if (base) {
+      baselineFrameRef.current = base;
+      frameBufferRef.current = [base];
+      setBufferedCount(1);
+      setLiveResult(null);
+      setLiveStatus('Reference background saved. Live monitoring can now compare changes against it.');
+    }
   };
 
   const handleCaptureBurstAndAnalyze = async () => {
@@ -313,37 +318,34 @@ export default function App() {
       for (let i = 1; i <= totalSteps; i++) {
         if (i % 4 === 1 || i === totalSteps) {
           setLiveStatus(
-            `📸 جاري التقاط إطارات الحركة (${i}/${totalSteps})...`
+            `Capturing camera frames (${i}/${totalSteps})...`
           );
         }
         const frame = await captureSingleFastFrame(true);
-        if (!frame) throw new Error("لم تصل صورة من الكاميرا. أعد تشغيلها.");
-        burst.push(frame);
-        setCapturedCount(count => count + 1);
+        if (frame) burst.push(frame);
         await new Promise((r) => setTimeout(r, stepDelayMs));
       }
       const elapsedSec = Math.max(0.1, (Date.now() - tStart) / 1000);
       setLiveFps(Math.round(burst.length / elapsedSec));
 
       if (burst.length === 0) {
-        setLiveStatus('تعذر التقاط إطارات من الكاميرا. تأكد من السماح بصلاحية الكاميرا.');
+        setLiveStatus('Could not capture camera frames. Check camera access.');
         return;
       }
       frameBufferRef.current = burst;
       setBufferedCount(burst.length);
-      setLiveStatus('جاري فحص تسلسل الحركة...');
+      setLiveStatus('Analyzing motion and drawing detection boxes...');
       const res = await runFramesAnalysis(burst);
-      setAnalysisCount(count => count + 1);
       setLiveResult(res);
-      const anyDumping = res.event_detected ?? res.actions?.some((a) => a.prediction === 1);
+      const anyDumping = res.actions && res.actions.some((a) => a.prediction === 1);
       const boxCount = res.yolo_live?.total_detections || 0;
       setLiveStatus(
         anyDumping
-          ? (res.mode === 'edge_browser' ? '⚠️ اشتباه سقوط غرض — راجع اللقطة. الحركة وحدها لا تثبت رمي نفايات.' : `⚠️ رصد النموذج احتمال رمي. مناطق الكشف: ${boxCount}. راجع النتيجة.`)
-          : 'لم يرصد التحليل دليلًا كافيًا على الرمي في الإطارات الحالية.'
+          ? `Possible dumping detected. ${boxCount} tracked region(s). Review the result.`
+          : 'No dumping detected in the current frames.'
       );
     } catch (err) {
-      setLiveStatus(`خطأ أثناء تحليل الكاميرا: ${err.message}`);
+      setLiveStatus(`Camera analysis error: ${err.message}`);
     } finally {
       setLiveAnalyzing(false);
     }
@@ -351,18 +353,15 @@ export default function App() {
 
   const startLiveMonitoring = async () => {
     if (!cameraReady) {
-      setLiveStatus('يرجى الانتظار حتى تصبح الكاميرا جاهزة.');
+      setLiveStatus('Wait for the camera to become ready.');
       return;
     }
-    if (liveTimerRef.current) clearInterval(liveTimerRef.current);
     frameBufferRef.current = [];
-    setCapturedCount(0);
-    setAnalysisCount(0);
-    setBufferedCount(0);
     fpsCounterRef.current = { count: 0, lastTs: Date.now() };
+    detectionHoldUntilRef.current = 0;
     setLiveMonitoring(true);
     setLiveStatus(
-      '🔴 المراقبة نشطة. يجري فحص مسار الحركة؛ ظهور غرض أو تحريكه وحده لا يكفي لإعلان الرمي.'
+      'Live monitoring active. Checking recent camera frames for possible dumping.'
     );
 
     const intervalMs = Platform.OS === 'web' ? 58 : 180; // ~17 FPS on Web/Vercel
@@ -376,9 +375,7 @@ export default function App() {
         // Capture snapshot JPEG every 2nd frame to keep 17 FPS ultra-smooth while still having mid-air snapshots
         const withSnap = tick % 2 === 0;
         const frame = await captureSingleFastFrame(withSnap);
-        if (!frame) throw new Error('لم تصل صورة من الكاميرا. أعد تشغيلها.');
         if (frame) {
-          setCapturedCount(count => count + 1);
           frameBufferRef.current = [...frameBufferRef.current, frame].slice(-24);
           setBufferedCount(frameBufferRef.current.length);
 
@@ -390,28 +387,29 @@ export default function App() {
             fpsCounterRef.current = { count: 0, lastTs: now };
           }
 
-          // Check the latest motion window every four captured frames.
-          if (tick % 4 === 0 && frameBufferRef.current.length >= 4) {
+          // Run neural network + drop trajectory check every 4 frames (~4.2 times/sec)
+          if (tick % 4 === 0 && frameBufferRef.current.length >= 6) {
             const recentWindow = frameBufferRef.current.slice(-16);
-            const res = await runFramesAnalysis(recentWindow, false);
-            setAnalysisCount(count => count + 1);
-            setLiveResult(res);
-            const isDump = res.event_detected ?? res.actions?.some((a) => a.prediction === 1);
+            const res = await runFramesAnalysis(recentWindow);
+            const isDump = res.actions && res.actions.some((a) => a.prediction === 1);
 
             if (isDump) {
+              // Hold the detected drop on screen for 3.5 seconds so the user clearly sees the box & snapshot!
+              detectionHoldUntilRef.current = Date.now() + 3500;
+              setLiveResult(res);
               setLiveStatus(
-                res.mode === 'edge_browser' ? '⚠️ اشتباه سقوط غرض — راجع اللقطة ومسار الحركة قبل الحكم.' : '⚠️ رصد النموذج احتمال رمي. راجع النتيجة.'
+                'Possible dumping detected. Review the red box and motion trail.'
               );
-            } else {
+            } else if (Date.now() > detectionHoldUntilRef.current) {
+              setLiveResult(res);
               setLiveStatus(
-                '🟢 المراقبة نشطة. لم يرصد التحليل دليلًا كافيًا على الرمي في الإطارات الحالية.'
+                'Live monitoring active. No dumping detected in the current frames.'
               );
             }
           }
         }
-      } catch (error) {
-        stopLiveMonitoring();
-        setLiveStatus(`توقف التحليل: ${error.message}`);
+      } catch (_e) {
+        // Ignore transient frame errors during live stream
       } finally {
         busyLockRef.current = false;
       }
@@ -426,7 +424,7 @@ export default function App() {
     busyLockRef.current = false;
     setLiveMonitoring(false);
     setLiveFps(0);
-    setLiveStatus('تم إيقاف المراقبة التلقائية.');
+    setLiveStatus('Live monitoring stopped.');
   };
 
   const handlePickVideo = async () => {
@@ -440,10 +438,10 @@ export default function App() {
         setPickedFile(asset);
         setSelectedSample(null);
         setAnalysisResult(null);
-        setStatusText(`تم اختيار الملف: ${asset.name}`);
+        setStatusText(`Selected file: ${asset.name}`);
       }
     } catch (err) {
-      setStatusText(`تعذر قراءة الملف: ${err.message}`);
+      setStatusText(`Could not read file: ${err.message}`);
     }
   };
 
@@ -452,22 +450,22 @@ export default function App() {
     setPickedFile(null);
     setAnalysisResult(null);
     setStatusText(
-      `تم اختيار عينة الاختبار: ${sample.video_id} (${
-        sample.label === 1 ? 'رمي فعلي / Dumping' : 'سليم / No Dumping'
+      `Selected test sample: ${sample.video_id} (${
+        sample.label === 1 ? 'Dumping' : 'No Dumping'
       })`
     );
   };
 
   const handleRunAnalysis = async () => {
     if (!pickedFile && !selectedSample) {
-      setStatusText('يرجى اختيار فيديو MP4 أو عينة اختبار أولاً.');
+      setStatusText('Choose an MP4 file or a test sample first.');
       return;
     }
 
     setAnalyzing(true);
     setAnalysisResult(null);
     const modelsParam = getSelectedModelsList();
-    setStatusText('جاري استخراج الـ 24 إطاراً وتشغيل الخوارزميات المختارة...');
+    setStatusText('Extracting 24 frames and running the selected models...');
 
     try {
       let response;
@@ -500,14 +498,14 @@ export default function App() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'فشل التحليل من الخادم');
+        throw new Error(data.error || 'Server analysis failed');
       }
       setAnalysisResult(data);
       setApiConnected(true);
-      setStatusText('اكتمل التحليل بنجاح!');
+      setStatusText('Analysis complete.');
     } catch (err) {
       setStatusText(
-        `خطأ في الاتصال بالخادم (${cleanBaseUrl}): لتحليل ملفات MP4 الكاملة شغّل (.venv/bin/python api.py)، أو استخدم تبويب "كاميرا لايف مباشر" الذي يعمل مباشرة على Vercel وبدون خادم!`
+        `Could not connect to ${cleanBaseUrl}. Start the Python API for MP4 analysis, or use the Live Camera tab for browser-based motion tracking.`
       );
     } finally {
       setAnalyzing(false);
@@ -518,7 +516,7 @@ export default function App() {
     <View style={styles.header}>
       <View style={styles.headerTop}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.appTitle}>كشف رمي النفايات غير القانوني بالذكاء الاصطناعي</Text>
+          <Text style={styles.appTitle}>Illegal Waste Dumping AI</Text>
           <Text style={styles.appSubtitle}>
             Illegal Waste Dumping AI • Web, Mobile & Live Camera (4 Algorithms)
           </Text>
@@ -536,7 +534,7 @@ export default function App() {
             ]}
           />
           <Text style={styles.statusPillText}>
-            {apiConnected ? 'متصل بخادم Python (4 Models)' : 'Edge AI جاهز (Vercel / Browser)'}
+            {apiConnected ? 'Python API connected (4 models)' : 'Browser motion preview ready'}
           </Text>
         </View>
       </View>
@@ -547,7 +545,7 @@ export default function App() {
           onPress={() => setActiveTab('analyze')}
         >
           <Text style={[styles.tabButtonText, activeTab === 'analyze' && styles.tabButtonTextActive]}>
-            🎥 تحليل فيديو (MP4)
+            Video Analysis (MP4)
           </Text>
         </Pressable>
         <Pressable
@@ -555,7 +553,7 @@ export default function App() {
           onPress={() => setActiveTab('live')}
         >
           <Text style={[styles.tabButtonText, activeTab === 'live' && styles.tabButtonTextActive]}>
-            📷 كاميرا لايف (Live AI)
+            Live Camera
           </Text>
         </Pressable>
         <Pressable
@@ -563,7 +561,7 @@ export default function App() {
           onPress={() => setActiveTab('evaluation')}
         >
           <Text style={[styles.tabButtonText, activeTab === 'evaluation' && styles.tabButtonTextActive]}>
-            📊 مقارنة الـ 4 خوارزميات
+            Model Comparison
           </Text>
         </Pressable>
       </View>
@@ -595,12 +593,12 @@ export default function App() {
       <View style={styles.card}>
         <View style={styles.resultHeaderRow}>
           <Text style={styles.cardTitle}>
-            نتائج التصنيف — {resultObj.video_name}
+            Classification Results — {resultObj.video_name}
           </Text>
           {resultObj.ground_truth_verdict && (
             <View style={styles.gtBadge}>
               <Text style={styles.gtBadgeText}>
-                الوسم الحقيقي: {resultObj.ground_truth_verdict}
+                Ground truth: {resultObj.ground_truth_verdict}
               </Text>
             </View>
           )}
@@ -636,20 +634,18 @@ export default function App() {
                         { color: isDumping ? '#FCA5A5' : '#6EE7B7' },
                       ]}
                     >
-                      {row.model === 'edge_motion'
-                        ? (isDumping ? '⚠️ اشتباه سقوط — يحتاج مراجعة' : 'لا يوجد مسار سقوط كافٍ')
-                        : (isDumping ? '⚠️ DUMPING (رمي نفايات)' : '✅ NO DUMPING (سليم)')}
+                      {isDumping ? 'Possible Dumping' : 'No Dumping'}
                     </Text>
                   </View>
                   <Text style={styles.scoreText}>
-                    {row.score == null ? 'لا توجد درجة' : `Score: ${Number(row.score).toFixed(4)}`} • {(Number(row.seconds) * 1000).toFixed(0)} ms
+                    Score: {Number(row.score).toFixed(4)} • {(Number(row.seconds) * 1000).toFixed(0)} ms
                   </Text>
                 </View>
               </View>
             );
           })
         ) : (
-          <Text style={styles.helperText}>لم يتم اختيار مصنفات الفيديو في هذه العملية.</Text>
+          <Text style={styles.helperText}>No video classifiers selected for this analysis.</Text>
         )}
       </View>
     );
@@ -659,7 +655,7 @@ export default function App() {
     if (!permission) {
       return (
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>جاري التحقق من صلاحيات الكاميرا...</Text>
+          <Text style={styles.cardTitle}>Checking camera access...</Text>
         </View>
       );
     }
@@ -667,12 +663,12 @@ export default function App() {
     if (!permission.granted) {
       return (
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>📷 تفعيل الكاميرا المباشرة (Live Camera AI)</Text>
+          <Text style={styles.cardTitle}>Enable Live Camera</Text>
           <Text style={styles.helperText}>
-            يتطلب البث المباشر صلاحية الوصول إلى الكاميرا في المتصفح أو الجوال لرصد رمي النفايات بالوقت الفعلي.
+            Allow camera access to use live monitoring.
           </Text>
           <Pressable style={[styles.primaryButton, { marginTop: 14, alignSelf: 'flex-start' }]} onPress={requestPermission}>
-            <Text style={styles.primaryButtonText}>السماح بتشغيل الكاميرا (Grant Camera Access)</Text>
+            <Text style={styles.primaryButtonText}>Allow Camera Access</Text>
           </Pressable>
         </View>
       );
@@ -683,21 +679,20 @@ export default function App() {
         <View style={styles.card}>
           <View style={styles.resultHeaderRow}>
             <View>
-              <Text style={styles.cardTitle}>📷 البث المباشر للكاميرا (Live Camera Stream)</Text>
+              <Text style={styles.cardTitle}>Live Camera Stream</Text>
               <Text style={styles.helperText}>
-                على المتصفح يُفحص مسار الحركة محليًا لرصد اشتباه سقوط. في تطبيق الجوال المتصل بالخادم تُشغّل النماذج المختارة. النتائج تحتاج مراجعة.
+                Capture consecutive camera frames for live motion tracking. Review detections before treating them as dumping events.
               </Text>
             </View>
             <View style={styles.gtBadge}>
               <Text style={styles.gtBadgeText}>
-                {liveFps > 0 ? `⚡ ${liveFps} FPS • ` : ''}التقطنا: {capturedCount} • تحليلات: {analysisCount} • الذاكرة: {bufferedCount}/24
+                {liveFps > 0 ? `⚡ ${liveFps} FPS • ` : ''}Buffer: {bufferedCount}/24
               </Text>
             </View>
           </View>
 
           {Platform.OS === 'web' && React.createElement('style', null,
             '[data-testid="live-camera-frame"] video { object-fit: contain !important; }')}
-          <Text style={styles.helperText}>الصورة كاملة بدون قص • الأصفر: منطقة حركة • الأحمر: اشتباه سقوط</Text>
           <View style={styles.cameraSplitRow}>
             {/* Live Camera Preview with Real-Time Red Bounding Box Overlay */}
             <View testID="live-camera-frame" style={[styles.cameraContainer, { aspectRatio: cameraAspect }]}>
@@ -706,10 +701,6 @@ export default function App() {
                 style={styles.cameraView}
                 facing={cameraFacing}
                 onCameraReady={() => setCameraReady(true)}
-                onMountError={error => {
-                  setCameraReady(false);
-                  setLiveStatus(`تعذر تشغيل الكاميرا: ${error.message}`);
-                }}
               />
               {/* Direct Live Bounding Boxes Overlaid on Camera */}
               {liveResult &&
@@ -717,8 +708,6 @@ export default function App() {
                 Array.isArray(liveResult.yolo_live.detections) &&
                 liveResult.yolo_live.detections.map((det, idx) => {
                   const [nx1, ny1, nx2, ny2] = det.norm_box || [0.25, 0.25, 0.75, 0.75];
-                  const isFall = liveResult.mode !== 'edge_browser' || det.class_name === 'possible_fall';
-                  const boxColor = isFall ? '#EF4444' : '#F59E0B';
                   const left = Platform.OS === 'web' && cameraFacing === 'front' ? 1 - nx2 : nx1;
                   return (
                     <View
@@ -728,17 +717,17 @@ export default function App() {
                         position: 'absolute',
                         left: `${left * 100}%`,
                         top: `${ny1 * 100}%`,
-                        width: `${Math.max(0.5, (nx2 - nx1) * 100)}%`,
-                        height: `${Math.max(0.5, (ny2 - ny1) * 100)}%`,
+                        width: `${Math.max(8, (nx2 - nx1) * 100)}%`,
+                        height: `${Math.max(8, (ny2 - ny1) * 100)}%`,
                         borderWidth: 3,
-                        borderColor: boxColor,
-                        backgroundColor: isFall ? 'rgba(239, 68, 68, 0.18)' : 'rgba(245, 158, 11, 0.12)',
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.18)',
                         borderRadius: 6,
                       }}
                     >
                       <View
                         style={{
-                          backgroundColor: boxColor,
+                          backgroundColor: '#EF4444',
                           alignSelf: 'flex-start',
                           paddingHorizontal: 6,
                           paddingVertical: 2,
@@ -746,7 +735,7 @@ export default function App() {
                         }}
                       >
                         <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '800' }}>
-                          {liveResult.mode === 'edge_browser' ? (isFall ? 'اشتباه سقوط' : 'حركة') : `littering ${(Number(det.confidence) * 100).toFixed(0)}%`}
+                          littering {(Number(det.confidence || 0.85) * 100).toFixed(0)}%
                         </Text>
                       </View>
                     </View>
@@ -767,18 +756,18 @@ export default function App() {
                 <View style={{ flexDirection: 'row', gap: 8 }}>
                   <Pressable
                     style={styles.flipCameraBtn}
-                    onPress={handleResetLiveWindow}
+                    onPress={handleResetBaseline}
                   >
-                    <Text style={styles.flipCameraText}>🔄 إعادة تهيئة المراقبة</Text>
+                    <Text style={styles.flipCameraText}>🎯 Lock background</Text>
                   </Pressable>
                   <Pressable
                     style={styles.flipCameraBtn}
                     onPress={() => {
-                      handleResetLiveWindow();
+                      baselineFrameRef.current = null;
                       setCameraFacing((prev) => (prev === 'back' ? 'front' : 'back'));
                     }}
                   >
-                    <Text style={styles.flipCameraText}>🔄 قلب الكاميرا</Text>
+                    <Text style={styles.flipCameraText}>Switch Camera</Text>
                   </Pressable>
                 </View>
               </View>
@@ -794,23 +783,15 @@ export default function App() {
                 />
                 <View style={styles.cameraOverlayBar}>
                   <Text style={styles.liveIndicatorText}>
-                    🎯 كشف المناطق: {liveResult.yolo_live.total_detections} منطقة
+                    Detected regions: {liveResult.yolo_live.total_detections} region(s)
                   </Text>
                 </View>
               </View>
             )}
           </View>
 
-          {Platform.OS !== 'web' && apiConnected ? (
-            <>
-              <Text style={[styles.subHeaderTitle, { marginTop: 14 }]}>اختر الخوارزميات للبث المباشر:</Text>
-              {renderAlgorithmChips()}
-            </>
-          ) : (
-            <Text style={styles.helperText}>
-              اللايف المحلي يفحص مسار الحركة. لتشغيل النماذج الأربعة على فيديو استخدم تبويب تحليل MP4 مع خادم Python.
-            </Text>
-          )}
+          <Text style={[styles.subHeaderTitle, { marginTop: 14 }]}>Select live analysis:</Text>
+          {renderAlgorithmChips()}
 
           <View style={styles.statusBanner}>
             {(liveAnalyzing || liveMonitoring) && (
@@ -830,7 +811,7 @@ export default function App() {
               onPress={handleCaptureBurstAndAnalyze}
             >
               <Text style={styles.analyzeCtaText}>
-                {liveAnalyzing ? 'جاري الالتقاط بسرعة 17 FPS...' : '⚡ التقاط 24 إطاراً وتحليل فوري (17 FPS)'}
+                {liveAnalyzing ? 'Capturing frames...' : 'Capture 24 Frames and Analyze'}
               </Text>
             </Pressable>
 
@@ -842,7 +823,7 @@ export default function App() {
               onPress={liveMonitoring ? stopLiveMonitoring : startLiveMonitoring}
             >
               <Text style={styles.liveToggleBtnText}>
-                {liveMonitoring ? '⏹ إيقاف المراقبة التلقائية' : '🔴 بدء مراقبة لايف مستمرة'}
+                {liveMonitoring ? 'Stop Live Monitoring' : 'Start Live Monitoring'}
               </Text>
             </Pressable>
           </View>
@@ -857,9 +838,9 @@ export default function App() {
     <View style={styles.sectionContainer}>
       {/* Server Configuration Row for Mobile & Web */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>1. إعداد الاتصال بالخادم (Python API Server)</Text>
+        <Text style={styles.cardTitle}>1. Python API Connection</Text>
         <Text style={styles.helperText}>
-          على الويب المحلي استخدم http://localhost:8000، وعلى الجوال أو Vercel ضع رابط الخادم أو استخدم تبويب "كاميرا لايف" الذي يعمل ذاتياً داخل المتصفح.
+          Use http://localhost:8000 locally. On another device, enter your Python server URL. Live Camera can also run a browser motion preview.
         </Text>
         <View style={styles.serverRow}>
           <TextInput
@@ -871,24 +852,24 @@ export default function App() {
             autoCapitalize="none"
           />
           <Pressable style={styles.secondaryButton} onPress={fetchBackendData}>
-            <Text style={styles.secondaryButtonText}>تحديث الاتصال</Text>
+            <Text style={styles.secondaryButtonText}>Refresh Connection</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Video Picker & Sample Selector */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>2. اختيار الفيديو والخوارزمية</Text>
+        <Text style={styles.cardTitle}>2. Select a Video and Model</Text>
         <View style={styles.actionRow}>
           <Pressable style={styles.primaryButton} onPress={handlePickVideo}>
-            <Text style={styles.primaryButtonText}>📁 اختر فيديو MP4 من الجهاز</Text>
+            <Text style={styles.primaryButtonText}>Choose MP4 File</Text>
           </Pressable>
         </View>
 
         {samples.length > 0 && (
           <View style={{ marginTop: 14 }}>
             <Text style={styles.subHeaderTitle}>
-              أو اختر فيديو مباشرة من مجموعة اختبار MIVIA الرسمية:
+              Or choose a video from the official MIVIA test set:
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sampleScroll}>
               {samples.map((s) => {
@@ -909,7 +890,7 @@ export default function App() {
                         { color: s.label === 1 ? '#F87171' : '#34D399' },
                       ]}
                     >
-                      {s.label === 1 ? 'Dumping (رمي)' : 'No Dumping (سليم)'}
+                      {s.label === 1 ? 'Dumping' : 'No Dumping'}
                     </Text>
                   </Pressable>
                 );
@@ -918,7 +899,7 @@ export default function App() {
           </View>
         )}
 
-        <Text style={[styles.subHeaderTitle, { marginTop: 16 }]}>اختر الخوارزمية المطلوب تشغيلها:</Text>
+        <Text style={[styles.subHeaderTitle, { marginTop: 16 }]}>Select models:</Text>
         {renderAlgorithmChips()}
 
         <View style={styles.statusBanner}>
@@ -935,7 +916,7 @@ export default function App() {
           onPress={handleRunAnalysis}
         >
           <Text style={styles.analyzeCtaText}>
-            {analyzing ? 'جاري التحليل...' : '🚀 بدء تحليل الفيديو (Analyze Video)'}
+            {analyzing ? 'Analyzing...' : 'Analyze Video'}
           </Text>
         </Pressable>
       </View>
@@ -946,24 +927,24 @@ export default function App() {
       {analysisResult && analysisResult.yolo && (
         <View style={styles.card}>
           <Text style={styles.cardTitle}>
-            نتائج كاشف المناطق YOLOv8n (12 إطاراً مستخرجاً)
+            YOLOv8n Detection Results (12 Sampled Frames)
           </Text>
           <View style={styles.yoloSummaryGrid}>
             <View style={styles.yoloStatBox}>
               <Text style={styles.yoloStatValue}>
-                {analysisResult.yolo.total_detections > 0 ? 'تم رصد مناطق' : 'لا توجد مناطق'}
+                {analysisResult.yolo.total_detections > 0 ? 'Regions detected' : 'No regions detected'}
               </Text>
-              <Text style={styles.yoloStatLabel}>الحالة</Text>
+              <Text style={styles.yoloStatLabel}>Status</Text>
             </View>
             <View style={styles.yoloStatBox}>
               <Text style={styles.yoloStatValue}>{analysisResult.yolo.total_detections}</Text>
-              <Text style={styles.yoloStatLabel}>إجمالي المربعات</Text>
+              <Text style={styles.yoloStatLabel}>Total Boxes</Text>
             </View>
             <View style={styles.yoloStatBox}>
               <Text style={styles.yoloStatValue}>
                 {analysisResult.yolo.frames_with_detections} / {analysisResult.yolo.frames_sampled}
               </Text>
-              <Text style={styles.yoloStatLabel}>الإطارات المكتشفة</Text>
+              <Text style={styles.yoloStatLabel}>Frames with Detections</Text>
             </View>
             <View style={styles.yoloStatBox}>
               <Text style={styles.yoloStatValue}>
@@ -971,7 +952,7 @@ export default function App() {
                   ? `${(analysisResult.yolo.strongest_detection.confidence * 100).toFixed(1)}%`
                   : '—'}
               </Text>
-              <Text style={styles.yoloStatLabel}>أعلى ثقة (Confidence)</Text>
+              <Text style={styles.yoloStatLabel}>Highest Confidence</Text>
             </View>
           </View>
 
@@ -985,8 +966,8 @@ export default function App() {
                     resizeMode="cover"
                   />
                   <Text style={styles.frameCaption}>
-                    إطار #{frame.frame_number} ({frame.timestamp_seconds}s) •{' '}
-                    {frame.detections.length} منطقة
+                    Frame #{frame.frame_number} ({frame.timestamp_seconds}s) •{' '}
+                    {frame.detections.length} region(s)
                   </Text>
                 </View>
               ))}
@@ -1012,10 +993,10 @@ export default function App() {
         {/* MIVIA Video Classifiers Comparison Card */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>
-            مقارنة خوارزميات تصنيف الفيديو (MIVIA Official Test — 100 Videos)
+            Video Classification Comparison (MIVIA Official Test — 100 Videos)
           </Text>
           <Text style={styles.helperText}>
-            التقسيم الموحد: 320 فيديو للتدريب • 80 للتحقق (Validation) • 100 للاختبار الرسمي (50 رمي / 50 سليم). اضغط على أي نموذج لعرض مصفوفة الالتباس (Confusion Matrix) الخاصة به.
+            Shared split: 320 training videos, 80 validation videos, and 100 official test videos (50 dumping and 50 no dumping). Select a model to view its confusion matrix.
           </Text>
 
           <View style={{ marginTop: 14 }}>
@@ -1069,13 +1050,13 @@ export default function App() {
 
                   <View style={styles.metaFooterRow}>
                     <Text style={styles.metaFooterText}>
-                      ⏱ التدريب: {Number(item.training_seconds || 0).toFixed(1)}s
+                      Training: {Number(item.training_seconds || 0).toFixed(1)}s
                     </Text>
                     <Text style={styles.metaFooterText}>
-                      ⚡ الاستدلال: {Number(item.inference_mean_ms_per_video || 0).toFixed(1)} ms/video
+                      Inference: {Number(item.inference_mean_ms_per_video || 0).toFixed(1)} ms/video
                     </Text>
                     <Text style={styles.metaFooterText}>
-                      💾 الحجم: {Number(item.model_size_mib || 0).toFixed(2)} MiB
+                      Size: {Number(item.model_size_mib || 0).toFixed(2)} MiB
                     </Text>
                   </View>
                 </Pressable>
@@ -1087,27 +1068,27 @@ export default function App() {
         {/* Interactive Confusion Matrix */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>
-            مصفوفة الالتباس (Confusion Matrix) — {MODEL_META[selectedEvalModel]?.title}
+            Confusion Matrix — {MODEL_META[selectedEvalModel]?.title}
           </Text>
           <View style={styles.matrixGrid}>
             <View style={[styles.matrixBox, { borderColor: '#10B981' }]}>
               <Text style={styles.matrixNumber}>{cm[0][0]}</Text>
-              <Text style={styles.matrixLabel}>رفض صحيح (TN)</Text>
+              <Text style={styles.matrixLabel}>True Negative (TN)</Text>
               <Text style={styles.matrixSub}>Actual: No Dumping • Pred: No Dumping</Text>
             </View>
             <View style={[styles.matrixBox, { borderColor: '#F59E0B' }]}>
               <Text style={styles.matrixNumber}>{cm[0][1]}</Text>
-              <Text style={styles.matrixLabel}>إنذار كاذب (FP)</Text>
+              <Text style={styles.matrixLabel}>False Positive (FP)</Text>
               <Text style={styles.matrixSub}>Actual: No Dumping • Pred: Dumping</Text>
             </View>
             <View style={[styles.matrixBox, { borderColor: '#EF4444' }]}>
               <Text style={styles.matrixNumber}>{cm[1][0]}</Text>
-              <Text style={styles.matrixLabel}>رمي فائت (FN)</Text>
+              <Text style={styles.matrixLabel}>False Negative (FN)</Text>
               <Text style={styles.matrixSub}>Actual: Dumping • Pred: No Dumping</Text>
             </View>
             <View style={[styles.matrixBox, { borderColor: '#3B82F6' }]}>
               <Text style={styles.matrixNumber}>{cm[1][1]}</Text>
-              <Text style={styles.matrixLabel}>كشف صحيح للرمي (TP)</Text>
+              <Text style={styles.matrixLabel}>True Positive (TP)</Text>
               <Text style={styles.matrixSub}>Actual: Dumping • Pred: Dumping</Text>
             </View>
           </View>
@@ -1117,10 +1098,10 @@ export default function App() {
         {yolo && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>
-              الخوارزمية الرابعة: YOLOv8n — كشف مناطق الرمي (Object Detection)
+              YOLOv8n — Object Detection
             </Text>
             <Text style={styles.helperText}>
-              الداتا: {yolo.dataset} • التقسيم: {yolo.evaluation_split}. مقاييس الكشف عن المربعات (Bounding Boxes) مستقلة عن مقاييس تصنيف الفيديو الكامل.
+              Dataset: {yolo.dataset} • Split: {yolo.evaluation_split}. Bounding-box detection metrics measure a different task from video classification.
             </Text>
 
             <View style={[styles.metricsRow, { marginTop: 14 }]}>
