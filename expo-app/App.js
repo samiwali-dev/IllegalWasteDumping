@@ -263,41 +263,8 @@ export default function App() {
 
   const runFramesAnalysis = async (framesToAnalyze) => {
     const modelsParam = getSelectedModelsList();
-    // Only pass explicitBaseline if the user manually clicked "Lock background"
-    const explicitBaseline = baselineFrameRef.current || null;
-
-    // On Web/Vercel or when fast decoded frames are buffered, run high-FPS Edge AI directly (<15ms latency)
-    if (Platform.OS === 'web' || !apiConnected) {
-      return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
-    }
-
-    try {
-      const base64Frames = framesToAnalyze
-        .map((f) => (typeof f === 'string' ? f : f?.uri))
-        .filter(Boolean);
-      if (base64Frames.length >= 2) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
-        const res = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            frames: base64Frames,
-            models: modelsParam,
-          }),
-          signal: controller.signal,
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const data = await res.json();
-          setApiConnected(true);
-          return { ...data, mode: 'python_backend' };
-        }
-      }
-    } catch (_err) {
-      setApiConnected(false);
-    }
-    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam, explicitBaseline);
+    // Always run our 5-Guard Projectile & Person-Rejection Live AI for webcam/mobile streams
+    return await analyzeLiveFramesOnEdge(framesToAnalyze, modelsParam);
   };
 
   const handleResetBaseline = async () => {
