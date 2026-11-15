@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import nnWeights from './nnWeights.json';
+import { motionTrailGeometry } from './motionGeometry';
 
 const IMAGE_SIZE = 112;
 const GRID_SIZE = 4;
@@ -246,7 +247,7 @@ function isSkinPixel(r01, g01, b01) {
 /**
  * Draw detected bounding boxes and drop trajectory onto the action frame (Web Canvas).
  */
-async function drawDetectionsOnFrame(dataUri, detections) {
+export async function drawDetectionsOnFrame(dataUri, detections) {
   if (!dataUri) return null;
   const fullUri = dataUri.startsWith('data:') ? dataUri : `data:image/jpeg;base64,${dataUri}`;
   if (Platform.OS !== 'web' || typeof document === 'undefined' || !detections || detections.length === 0) {
@@ -265,17 +266,23 @@ async function drawDetectionsOnFrame(dataUri, detections) {
       ctx.drawImage(img, 0, 0, w, h);
 
       detections.forEach((det) => {
-        if (Array.isArray(det.trail) && det.trail.length >= 2) {
+        const { points, arrow } = motionTrailGeometry(det.trail, w, h);
+        if (points.length >= 2) {
           ctx.save();
           ctx.strokeStyle = '#F59E0B';
           ctx.lineWidth = 3;
           ctx.setLineDash([5, 3]);
           ctx.beginPath();
-          det.trail.forEach((pt, idx) => {
-            const px = pt.cx * w;
-            const py = pt.cy * h;
-            if (idx === 0) ctx.moveTo(px, py);
-            else ctx.lineTo(px, py);
+          points.forEach((pt, idx) => {
+            if (idx === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          arrow.forEach((pt, idx) => {
+            if (idx === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
           });
           ctx.stroke();
           ctx.restore();

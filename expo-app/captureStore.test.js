@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const { frameUri, captureFromResult, retainCaptures } = require('./captureStore');
+const { frameUri, captureFromResult, retainCaptures, shouldCaptureModelResult } = require('./captureStore');
 
 const alert = {
   mode: 'edge_browser', actions: [{ prediction: 1 }],
@@ -41,4 +41,11 @@ test('history keeps the latest six unique captures', () => {
   captures = retainCaptures(captures, { id: '5', uri: 'updated-photo' });
   assert.equal(captures[0].uri, 'updated-photo');
   assert.equal(captures.length, 6);
+});
+
+test('classification alone cannot replace a fall photo with an unmarked frame', () => {
+  const classification = { actions: [{ prediction: 1 }], yolo_live: { total_detections: 0 } };
+  assert.equal(shouldCaptureModelResult(classification, 0, 10000), false);
+  assert.equal(shouldCaptureModelResult(alert, 9500, 10000), false);
+  assert.equal(shouldCaptureModelResult(alert, 5000, 10000), true);
 });

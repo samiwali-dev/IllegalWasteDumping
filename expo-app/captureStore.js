@@ -21,4 +21,9 @@ function retainCaptures(previous, capture) {
   return [capture, ...previous.filter(item => item.id !== capture.id)].slice(0, 6);
 }
 
-module.exports = { frameUri, captureFromResult, retainCaptures };
+function shouldCaptureModelResult(result, lastMotionAt, now = Date.now()) {
+  return (result?.yolo_live?.total_detections || 0) > 0 &&
+    (!lastMotionAt || now - lastMotionAt > 3500);
+}
+
+module.exports = { frameUri, captureFromResult, retainCaptures, shouldCaptureModelResult };

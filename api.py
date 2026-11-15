@@ -230,7 +230,18 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str]) 
                 }
                 for d in _extract_detections(res)
             ]
-            plotted = res.plot()
+            plotted = latest_bgr.copy()
+            color = (250, 165, 96)  # Same blue used by the live YOLO overlay (BGR).
+            for detection in detections:
+                x1, y1, x2, y2 = [int(v) for v in detection["bbox_xyxy"]]
+                text = f"YOLO {detection['class_name']} {detection['confidence']:.0%}"
+                scale = max(0.45, iw / 1200)
+                (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, scale, 1)
+                label_x = max(0, min(x1, iw - tw - 8))
+                label_y = max(th + 8, y1)
+                cv2.rectangle(plotted, (x1, y1), (x2, y2), color, 2)
+                cv2.rectangle(plotted, (label_x, label_y - th - 8), (label_x + tw + 8, label_y), color, -1)
+                cv2.putText(plotted, text, (label_x + 4, label_y - 4), cv2.FONT_HERSHEY_SIMPLEX, scale, (63, 36, 16), 1, cv2.LINE_AA)
             ok, buf = cv2.imencode(".jpg", plotted, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
             annotated_b64 = (
                 "data:image/jpeg;base64," + base64.b64encode(buf.tobytes()).decode("ascii")

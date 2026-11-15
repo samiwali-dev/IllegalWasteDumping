@@ -3,11 +3,12 @@ const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const { createHash } = require('node:crypto');
 const test = require('node:test');
+const { motionTrailGeometry, yoloDetectionLabel } = require('./motionGeometry');
 const source = readFileSync(join(__dirname, 'liveEdgeAi.js'), 'utf8')
   .replace(/^import .*;\s*$/gm, '').replace(/^export /gm, '');
 const weights = JSON.parse(readFileSync(join(__dirname, 'nnWeights.json'), 'utf8'));
-const api = new Function('Platform', 'nnWeights', `${source}\nreturn { analyzeLiveFramesOnEdge, detectDumpedObjectsOnly };`)
-  ({ OS: 'test' }, weights);
+const api = new Function('Platform', 'nnWeights', 'motionTrailGeometry', `${source}\nreturn { analyzeLiveFramesOnEdge, detectDumpedObjectsOnly };`)
+  ({ OS: 'test' }, weights, motionTrailGeometry);
 
 function clip(positions, largePerson = false) {
   return positions.map((position, i) => {
@@ -54,6 +55,32 @@ test('a falling object with an initial empty background produces a box', async (
   const result = await api.analyzeLiveFramesOnEdge(clip([null, 0, 7, 14, 21, 28, 35, 42, 49, 56]), ['neural_network']);
   assert.ok(result.yolo_live.total_detections > 0);
   assert.equal(result.actions[0].prediction, 1);
+  const geometry = motionTrailGeometry(result.yolo_live.detections[0].trail, 640, 480);
+  assert.ok(geometry.points.length >= 3);
+  assert.deepEqual(geometry.arrow[1], geometry.points.at(-1));
+  assert.ok(geometry.arrow[0].y < geometry.arrow[1].y);
+  assert.ok(geometry.arrow[2].y < geometry.arrow[1].y);
+});
+
+test('the fall path and arrow mirror horizontally with the camera', () => {
+  const trail = [{ cx: 0.2, cy: 0.1 }, { cx: 0.3, cy: 0.6 }];
+  const normal = motionTrailGeometry(trail, 640, 480);
+  const mirrored = motionTrailGeometry(trail, 640, 480, true);
+  normal.points.forEach((point, i) => {
+    assert.equal(mirrored.points[i].x, 640 - point.x);
+    assert.equal(mirrored.points[i].y, point.y);
+  });
+  normal.arrow.forEach(point => assert.ok(mirrored.arrow.some(other => Math.abs(other.x - (640 - point.x)) < 0.001 && Math.abs(other.y - point.y) < 0.001)));
+});
+
+test('a missing or stationary trajectory never invents a direction arrow', () => {
+  assert.equal(motionTrailGeometry(undefined, 640, 480).arrow.length, 0);
+  assert.equal(motionTrailGeometry([{ cx: 0.2, cy: 0.3 }, { cx: 0.2, cy: 0.3 }], 640, 480).arrow.length, 0);
+});
+
+test('only an actual YOLO confidence value produces a percentage label', () => {
+  assert.equal(yoloDetectionLabel({ class_name: 'littering', confidence: 0.864 }), 'YOLO · littering 86%');
+  assert.equal(yoloDetectionLabel({ class_name: 'littering' }), 'YOLO · littering');
 });
 
 test('overlay mirroring follows the actual video, including a mirrored desktop camera', () => {

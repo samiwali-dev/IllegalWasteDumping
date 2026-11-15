@@ -15,7 +15,9 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { frameUri, captureFromResult, retainCaptures } from './captureStore';
+import { frameUri, captureFromResult, retainCaptures, shouldCaptureModelResult } from './captureStore';
+import MotionTrail from './MotionTrail';
+import { yoloDetectionLabel } from './motionGeometry';
 import {
   analyzeLiveFramesOnEdge,
   grabWebVideoFrameFast,
@@ -202,6 +204,7 @@ export default function App() {
   const [captureBusy, setCaptureBusy] = useState(false);
   const [frameTotal, setFrameTotal] = useState(0);
   const lastAutoCaptureRef = useRef(0);
+  const lastModelCaptureRef = useRef(0);
 
   const [apiBase, setApiBase] = useState('http://localhost:8000');
   const [selectedChoice, setSelectedChoice] = useState('all');
@@ -364,10 +367,10 @@ export default function App() {
         if (!active) return;
         setApiLiveResult({ ...result, mode: 'python_api', receivedAt: Date.now() });
         setApiLiveError(result.errors?.join(' · ') || '');
-        const capture = captureFromResult({ ...result, mode: 'python_api' }, frames);
-        if (capture && Date.now() - lastAutoCaptureRef.current > 3000) {
-          lastAutoCaptureRef.current = Date.now();
-          addCapture(capture);
+        const now = Date.now();
+        if (shouldCaptureModelResult(result, lastAutoCaptureRef.current, now) && now - lastModelCaptureRef.current > 3000) {
+          lastModelCaptureRef.current = now;
+          addCapture(captureFromResult({ ...result, mode: 'python_api' }, frames, now));
         }
       } catch (error) {
         if (active) setApiLiveError(`Live models: ${error.message}`);
@@ -376,7 +379,7 @@ export default function App() {
         if (active) setApiLiveBusy(false);
       }
     };
-    const timer = setInterval(analyzeModels, 3000);
+    const timer = setInterval(analyzeModels, 1000);
     return () => { active = false; controller.abort(); clearInterval(timer); setApiLiveBusy(false); };
   }, [liveMonitoring, apiConnected, cleanBaseUrl]);
 
@@ -629,6 +632,8 @@ export default function App() {
     : { height: '100%', width: `${100 * cameraAspect / stageAspect}%` };
   const selectedCapture = captures.find(item => item.id === selectedCaptureId) || captures[0];
   const liveAlert = (liveResult?.yolo_live?.total_detections || 0) > 0;
+  const yoloDetections = liveMonitoring && Date.now() - (apiLiveResult?.receivedAt || 0) < 1200
+    ? apiLiveResult?.yolo_live?.detections || [] : [];
   const clock = value => new Date(value).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
   const videoUrl = pickedFile?.uri || (selectedSample ? `${cleanBaseUrl}/api/sample-video/${selectedSample.video_id}` : null);
@@ -754,8 +759,18 @@ export default function App() {
                   {liveResult?.yolo_live?.detections?.map((detection, i) => {
                     const [x1, y1, x2, y2] = detection.norm_box || [0, 0, 0, 0];
                     const left = Platform.OS === 'web' && cameraMirrored ? 1 - x2 : x1;
-                    return <View key={i} pointerEvents="none" style={[styles.detectionBox, { left: `${left * 100}%`, top: `${y1 * 100}%`, width: `${(x2 - x1) * 100}%`, height: `${(y2 - y1) * 100}%` }]}>
-                      <Text style={styles.detectionLabel}>Motion candidate</Text>
+                    return <React.Fragment key={i}>
+                      <MotionTrail trail={detection.trail} mirrored={Platform.OS === 'web' && cameraMirrored} />
+                      <View pointerEvents="none" style={[styles.detectionBox, { left: `${left * 100}%`, top: `${y1 * 100}%`, width: `${(x2 - x1) * 100}%`, height: `${(y2 - y1) * 100}%` }]}>
+                        <Text style={styles.detectionLabel}>Motion candidate</Text>
+                      </View>
+                    </React.Fragment>;
+                  })}
+                  {yoloDetections.map((detection, i) => {
+                    const [x1, y1, x2, y2] = detection.norm_box || [0, 0, 0, 0];
+                    const left = Platform.OS === 'web' && cameraMirrored ? 1 - x2 : x1;
+                    return <View key={`yolo-${i}`} testID="yolo-detection-box" pointerEvents="none" style={[styles.detectionBox, styles.yoloBox, { left: `${left * 100}%`, top: `${y1 * 100}%`, width: `${(x2 - x1) * 100}%`, height: `${(y2 - y1) * 100}%` }]}>
+                      <Text style={[styles.detectionLabel, styles.yoloLabel]}>{yoloDetectionLabel(detection)}</Text>
                     </View>;
                   })}
                   <View pointerEvents="none" style={styles.cameraCorner}><Text style={styles.cameraCornerText}>CAM 01</Text></View>
@@ -799,7 +814,7 @@ export default function App() {
               <Button small disabled={!cameraReady || liveAnalyzing} onPress={handleCaptureBurstAndAnalyze}>{liveAnalyzing ? 'Analyzing sequence…' : 'Analyze 24-frame burst'}</Button>
             </View>
           </View>
-          <Text style={styles.footnote}>Browser alerts use motion tracking and need review. The four trained models run live when the Python API is connected.</Text>
+          <Text style={styles.footnote}>Amber: motion path and fall direction. Blue: YOLO object detection and its confidence score. YOLO confidence is not the probability of throwing.</Text>
         </View>
         {capturePanel()}
       </View>
@@ -963,6 +978,8 @@ const styles = StyleSheet.create({
   permissionCopy: { color: '#8EA2B8', fontSize: 12, textAlign: 'center', lineHeight: 20, maxWidth: 320, marginBottom: 5 },
   detectionBox: { position: 'absolute', borderWidth: 2, borderColor: '#F2AE4E', backgroundColor: 'rgba(242,174,78,0.08)' },
   detectionLabel: { position: 'absolute', top: -22, left: -2, backgroundColor: '#F2AE4E', color: '#302414', paddingHorizontal: 6, paddingVertical: 3, fontSize: 9, fontWeight: '700' },
+  yoloBox: { borderColor: '#60A5FA', backgroundColor: 'rgba(96,165,250,0.08)' },
+  yoloLabel: { backgroundColor: '#60A5FA', color: '#10243F' },
   feedControls: { paddingHorizontal: 18, paddingVertical: 17, gap: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' },
   controlGroup: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, alignItems: 'center' },
   button: { minHeight: 39, paddingHorizontal: 14, paddingVertical: 11, borderWidth: 1, borderColor: '#DAE2E9', borderRadius: 7, flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF' },
