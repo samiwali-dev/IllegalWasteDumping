@@ -208,6 +208,8 @@ export default function App() {
   const [pickedFile, setPickedFile] = useState(null);
   const [selectedSample, setSelectedSample] = useState(null);
   const [samples, setSamples] = useState([]);
+  const [sampleQuery, setSampleQuery] = useState('');
+  const [sampleLabel, setSampleLabel] = useState('all');
   const [analyzing, setAnalyzing] = useState(false);
   const [statusText, setStatusText] = useState('Select an MP4 file or an official MIVIA test sample.');
   const [analysisResult, setAnalysisResult] = useState(null);
@@ -233,6 +235,7 @@ export default function App() {
   const [cameraMirrored, setCameraMirrored] = useState(false);
 
   const cameraRef = useRef(null);
+  const scrollRef = useRef(null);
   const frameBufferRef = useRef([]);
   const liveTimerRef = useRef(null);
   const busyLockRef = useRef(false);
@@ -552,6 +555,7 @@ export default function App() {
     setSelectedFramePreview(null);
     setStageMode('analyze');
     setPage('analysis');
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
     setStatusText(
       `Selected MIVIA sample: ${sample.video_id} (${
         sample.label === 1 ? 'Ground Truth: Dumping' : 'Ground Truth: No Dumping'
@@ -628,6 +632,9 @@ export default function App() {
   const clock = value => new Date(value).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
   const videoUrl = pickedFile?.uri || (selectedSample ? `${cleanBaseUrl}/api/sample-video/${selectedSample.video_id}` : null);
+  const visibleSamples = samples.filter(sample =>
+    sample.video_id.toLowerCase().includes(sampleQuery.trim().toLowerCase()) &&
+    (sampleLabel === 'all' || String(sample.label) === sampleLabel));
 
   const downloadCapture = () => {
     if (!selectedCapture || Platform.OS !== 'web') return;
@@ -818,8 +825,15 @@ export default function App() {
           <View style={styles.noteCard}><Text style={styles.smallTitle}>Models to run</Text><View style={styles.modelChoices}>
             {[{ id: 'all', title: 'All four models' }, ...Object.entries(MODEL_META).map(([id, item]) => ({ id, title: item.title }))].map(item => <Pressable accessibilityRole="button" key={item.id} onPress={() => setSelectedChoice(item.id)} style={[styles.choice, selectedChoice === item.id && styles.choiceActive]}><Text style={[styles.choiceText, selectedChoice === item.id && styles.choiceTextActive]}>{item.title}</Text></Pressable>)}
           </View></View>
-          <View style={styles.card}><View style={styles.cardHeading}><Text style={styles.smallTitle}>Official MIVIA samples</Text><Text style={styles.mutedSmall}>{samples.length} available</Text></View>
-            {samples.length ? <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sampleStrip}>{samples.map(sample => <Pressable accessibilityRole="button" key={sample.video_id} onPress={() => handleSelectSample(sample)} style={[styles.sample, selectedSample?.video_id === sample.video_id && styles.sampleSelected]}><Text style={styles.captureKind}>{sample.video_id}</Text><Text style={styles.mutedSmall}>{sample.label === 1 ? 'Dumping' : 'No dumping'}</Text></Pressable>)}</ScrollView> : <View style={styles.inner}><Text style={styles.mutedSmall}>Connect the Python API to browse the official test videos.</Text><Button small onPress={() => navigate('settings')}>Open connection settings</Button></View>}
+          <View style={styles.card}><View style={styles.cardHeading}><Text style={styles.smallTitle}>Official MIVIA samples</Text><Text style={styles.mutedSmall}>{visibleSamples.length} of {samples.length} videos</Text></View>
+            {samples.length ? <>
+              <View style={styles.sampleFilters}>
+                <TextInput value={sampleQuery} onChangeText={setSampleQuery} placeholder="Search by video name…" accessibilityLabel="Search sample videos" autoCapitalize="none" autoCorrect={false} style={[styles.input, { flexGrow: 1, minWidth: 180 }]} />
+                <View style={styles.modelChoices}>{[{ id: 'all', title: 'All' }, { id: '1', title: 'Dumping' }, { id: '0', title: 'No dumping' }].map(filter => <Pressable key={filter.id} accessibilityRole="button" onPress={() => setSampleLabel(filter.id)} style={[styles.choice, sampleLabel === filter.id && styles.choiceActive]}><Text style={[styles.choiceText, sampleLabel === filter.id && styles.choiceTextActive]}>{filter.title}</Text></Pressable>)}</View>
+              </View>
+              <View style={styles.sampleGrid}>{visibleSamples.map(sample => <Pressable accessibilityRole="button" key={sample.video_id} onPress={() => handleSelectSample(sample)} style={[styles.sample, { width: isCompact ? '47%' : 150 }, selectedSample?.video_id === sample.video_id && styles.sampleSelected]}><Icon name="video" size={17} color={sample.label === 1 ? '#B4803E' : '#58977F'} /><Text style={styles.captureKind}>{sample.video_id}</Text><Text style={styles.mutedSmall}>{sample.label === 1 ? 'Dumping' : 'No dumping'}</Text></Pressable>)}</View>
+              {!visibleSamples.length && <Text style={[styles.mutedSmall, { padding: 20 }]}>No videos match your search.</Text>}
+            </> : <View style={styles.inner}><Text style={styles.mutedSmall}>Connect the Python API to browse the official test videos.</Text><Button small onPress={() => navigate('settings')}>Open connection settings</Button></View>}
           </View>
         </View>
         <View style={[styles.evidenceColumn, isDesktop && { width: 348 }]}>
@@ -875,7 +889,7 @@ export default function App() {
       <StatusBar style="dark" />
       {Platform.OS === 'web' && React.createElement('style', null,
         'html,body,#root{margin:0;min-height:100%;background:#F5F7FA}*{box-sizing:border-box}button,a,input{font:inherit}::selection{background:#D2EEE4}button:focus-visible,[role=button]:focus-visible{outline:3px solid #82CDB7;outline-offset:3px}')}
-      <ScrollView contentContainerStyle={styles.outerScroll}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.outerScroll}>
         <View style={[styles.header, isCompact && { paddingHorizontal: 18 }]}>
           <View style={styles.brand}><View style={styles.brandIcon}><Icon name="camera" size={21} color="#0A8063" /></View><View><Text style={styles.brandName}>wastewatch<Text style={styles.brandDot}>.</Text></Text><Text style={styles.brandSubtitle}>MONITORING WORKSPACE</Text></View></View>
           <View style={[styles.navigation, !isDesktop && { width: '100%' }]}>
@@ -998,6 +1012,8 @@ const styles = StyleSheet.create({
   choiceTextActive: { color: '#167958' },
   inner: { paddingHorizontal: 20, paddingBottom: 20, gap: 14 },
   sampleStrip: { paddingHorizontal: 18, paddingBottom: 18, gap: 9 },
+  sampleFilters: { paddingHorizontal: 18, paddingBottom: 18, gap: 12, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' },
+  sampleGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, paddingHorizontal: 18, paddingBottom: 18 },
   sample: { borderWidth: 1, borderColor: '#E4E9EF', padding: 13, borderRadius: 8, width: 130, gap: 6 },
   sampleSelected: { borderColor: '#93C6B2', backgroundColor: '#F1F8F4' },
   resultRow: { paddingBottom: 14, gap: 6, borderBottomWidth: 1, borderBottomColor: '#EBF0F5' },

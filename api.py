@@ -61,13 +61,11 @@ def _resolve_record_video_path(rec: dict) -> Path:
 
 
 def get_sample_videos() -> list[dict]:
-    """Return a balanced list of official MIVIA test videos for quick testing."""
+    """Return every available official MIVIA test video."""
     try:
         _, _, test_records = split_records(load_manifest())
-        dumping = [r for r in test_records if int(r["label"]) == 1][:6]
-        no_dumping = [r for r in test_records if int(r["label"]) == 0][:6]
         samples = []
-        for rec in dumping + no_dumping:
+        for rec in sorted(test_records, key=lambda record: record["video_id"]):
             vpath = _resolve_record_video_path(rec)
             if vpath.is_file():
                 samples.append({
