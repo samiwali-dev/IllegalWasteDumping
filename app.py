@@ -19,11 +19,13 @@ from common import CHECKPOINT_PATHS, PROJECT_ROOT, analyze_video
 
 
 CLASSIFIERS = {
+    "neural_network": "Neural Network (MLP)",
     "movinet_a0": "MoViNet A0",
+    "optical_flow_svm": "Optical Flow + SVM",
 }
 YOLO_SLUG = "yolov8n"
 YOLO_MODEL = PROJECT_ROOT / "src" / "yolo" / "model.pt"
-BOTH_MODELS = "Both models"
+BOTH_MODELS = "All 4 models"
 MODEL_CHOICES = {
     BOTH_MODELS: (*CLASSIFIERS, YOLO_SLUG),
     **{label: (slug,) for slug, label in CLASSIFIERS.items()},

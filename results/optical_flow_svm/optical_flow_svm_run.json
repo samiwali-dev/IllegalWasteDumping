@@ -1,6 +1,5 @@
 {
   "method": "optical_flow_svm",
-  "protocol_version": "macro_f1_v2_exploratory",
   "dataset": "MIVIA-IWDD 500",
   "seed": 42,
   "split_counts": {
@@ -8,39 +7,32 @@
     "validation": 80,
     "test": 100
   },
-  "label_mapping": {
-    "0": "no_dumping",
-    "1": "dumping"
-  },
   "frame_count": 24,
   "image_size": 112,
-  "feature_extractor": "farneback_spatiotemporal_v1",
   "feature_dimension": 320,
-  "feature_specification": {
-    "spatial_grid": [
-      4,
-      4
-    ],
-    "temporal_bins": 4,
-    "cell_statistics": [
-      "mean_dx",
-      "mean_dy",
-      "mean_magnitude",
-      "std_magnitude",
-      "moving_fraction"
-    ],
-    "flow_clip_pixels": 20.0,
-    "moving_threshold_pixels": 1.5,
-    "farneback": {
-      "pyr_scale": 0.5,
-      "levels": 2,
-      "winsize": 15,
-      "iterations": 3,
-      "poly_n": 5,
-      "poly_sigma": 1.2
-    }
+  "hyperparameters": {
+    "kernel": "rbf",
+    "C": 10.0,
+    "gamma": "scale"
   },
-  "selection_metric": "validation_macro_f1_then_dumping_precision_then_dumping_f1_then_fewer_false_positives",
+  "validation_metrics": {
+    "accuracy": 0.6625,
+    "balanced_accuracy": 0.6625,
+    "macro_f1": 0.6533461723639865,
+    "positive_f1": 0.7096774193548387,
+    "positive_precision": 0.6226415094339622,
+    "false_positives": 20,
+    "confusion_matrix_labels_0_1": [
+      [
+        20,
+        20
+      ],
+      [
+        7,
+        33
+      ]
+    ]
+  },
   "candidate_results": [
     {
       "hyperparameters": {
@@ -178,35 +170,10 @@
       ]
     }
   ],
-  "hyperparameters": {
-    "kernel": "rbf",
-    "C": 10.0,
-    "gamma": "scale"
-  },
-  "validation_metrics": {
-    "accuracy": 0.6625,
-    "balanced_accuracy": 0.6625,
-    "macro_f1": 0.6533461723639865,
-    "positive_f1": 0.7096774193548387,
-    "positive_precision": 0.6226415094339622,
-    "false_positives": 20,
-    "confusion_matrix_labels_0_1": [
-      [
-        20,
-        20
-      ],
-      [
-        7,
-        33
-      ]
-    ]
-  },
-  "training_seconds": 119.169351,
-  "test_inference_seconds": 27.270885,
-  "mean_test_inference_seconds_per_video": 0.272709,
-  "inference_implementation": "one_decision_function_call_per_video",
-  "model_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/src/optical_flow_svm/model.joblib",
+  "training_seconds": 109.497055,
+  "test_inference_seconds": 26.010537,
+  "model_path": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/src/optical_flow_svm/model.joblib",
   "model_size_bytes": 399657,
-  "validation_predictions_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/optical_flow_svm/optical_flow_svm_validation_predictions.csv",
-  "test_predictions_path": "/Users/pc/Documents/مقدمة ذكاء اصطناعي/IllegalWasteDumping/results/optical_flow_svm/optical_flow_svm_test_predictions.csv"
+  "validation_predictions_path": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/optical_flow_svm/optical_flow_svm_validation_predictions.csv",
+  "test_predictions_path": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/optical_flow_svm/optical_flow_svm_test_predictions.csv"
 }

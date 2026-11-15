@@ -53,6 +53,13 @@ CLASSIFIER_LABELS = {
 ALL_MODELS = ("neural_network", "movinet_a0", "optical_flow_svm", "yolov8n")
 
 
+def _resolve_record_video_path(rec: dict) -> Path:
+    """Resolve the MP4 video path for a MIVIA manifest record."""
+    if "video_path" in rec:
+        return Path(rec["video_path"])
+    return PROJECT_ROOT / "datasets" / "MIVIA-IWDD 500" / rec["split"] / "videos" / rec["video_id"]
+
+
 def get_sample_videos() -> list[dict]:
     """Return a balanced list of official MIVIA test videos for quick testing."""
     try:
@@ -61,7 +68,7 @@ def get_sample_videos() -> list[dict]:
         no_dumping = [r for r in test_records if int(r["label"]) == 0][:6]
         samples = []
         for rec in dumping + no_dumping:
-            vpath = Path(rec["video_path"])
+            vpath = _resolve_record_video_path(rec)
             if vpath.is_file():
                 samples.append({
                     "video_id": rec["video_id"],
@@ -292,6 +299,20 @@ class ApiHandler(BaseHTTPRequestHandler):
             self._send_json({"samples": get_sample_videos()})
             return
 
+        if route.startswith("/api/sample-video/"):
+            vid_id = Path(route[len("/api/sample-video/"):]).name
+            _, _, test_records = split_records(load_manifest())
+            match = next((r for r in test_records if r["video_id"] == vid_id), None)
+            if match:
+                vpath = _resolve_record_video_path(match)
+                if vpath.is_file():
+                    data = vpath.read_bytes()
+                    self._set_cors(200, "video/mp4")
+                    self.wfile.write(data)
+                    return
+            self._send_json({"error": "Sample video not found"}, status=404)
+            return
+
         if route.startswith("/api/annotated/"):
             rel = route[len("/api/annotated/"):]
             parts = [p for p in Path(rel).parts if p not in ("", ".", "..")]
@@ -413,7 +434,7 @@ class ApiHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": f"Unknown sample_video_id: {sample_id}"}, status=404)
                 return
 
-            video_path = Path(match["video_path"])
+            video_path = _resolve_record_video_path(match)
             result = run_analysis(video_path, selected_models, host_url)
             result["ground_truth_label"] = int(match["label"])
             result["ground_truth_verdict"] = "DUMPING" if int(match["label"]) == 1 else "NO DUMPING"
