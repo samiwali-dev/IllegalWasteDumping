@@ -1,3 +1,4 @@
+"""MoViNet inference; use retrain.py for the train/validation comparison."""
 from __future__ import annotations
 
 import argparse
@@ -12,9 +13,6 @@ MODEL_PATH = ALGORITHM_DIR / "model.pt"
 SLUG = "movinet_a0"
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
-
-from common import make_parser, run_experiment
-
 
 ARCHITECTURE = {
     "name": "MoViNet A0",
@@ -75,23 +73,13 @@ def predict_clip(clip, checkpoint=None, device="auto"):
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    training = commands.add_parser(
-        "train", parents=[make_parser("Train MoViNet A0")], add_help=False,
-        help="Train from scratch using the shared MIVIA protocol",
-    )
-    training.set_defaults(models_dir=ALGORITHM_DIR)
     prediction = commands.add_parser("predict", help="Classify an MP4 video")
     prediction.add_argument("video", type=Path)
     prediction.add_argument("--device", choices=("auto", "mps", "cpu"), default="auto")
     args = parser.parse_args()
-    if args.command == "train":
-        if args.checkpoint is None:
-            args.checkpoint = args.models_dir / "model.pt"
-        run_experiment(args, slug=SLUG, model_factory=build_model, architecture=ARCHITECTURE)
-    else:
-        from common import analyze_video
+    from common import analyze_video
 
-        print(json.dumps(analyze_video(args.video, [SLUG], device=args.device), indent=2))
+    print(json.dumps(analyze_video(args.video, [SLUG], device=args.device), indent=2))
     return 0
 
 

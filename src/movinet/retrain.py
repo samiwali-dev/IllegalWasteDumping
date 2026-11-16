@@ -28,19 +28,9 @@ RESULTS = ROOT/'results/retraining_v2/movinet'
 
 
 def build_model(initialization, source=None):
-    from movinets import MoViNet
-    from movinets.config import _C
+    from src.movinet.main import build_model as build_runtime_model
 
-    class ActionModel(nn.Module):
-        def __init__(self):
-            super().__init__()
-            self.network = MoViNet(_C.MODEL.MoViNetA0, causal=False, pretrained=False,
-                                   num_classes=1, conv_type='3d', tf_like=True)
-
-        def forward(self, clips):
-            return self.network(clips.permute(0, 2, 1, 3, 4).contiguous()).reshape(-1)
-
-    model = ActionModel()
+    model = build_runtime_model(tf_like=True)
     if initialization == 'transfer':
         state = torch.load(source, map_location='cpu', weights_only=True)
         target = model.network.state_dict()

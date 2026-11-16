@@ -1,0 +1,20 @@
+{
+  "removed_files": [
+    "app.py",
+    "src/yolo/train_objects.py",
+    "src/yolo/calibrate_objects.py",
+    "src/yolo/mine_object_backgrounds.py",
+    "src/yolo/item_tracking.py",
+    "test_item_tracking.py"
+  ],
+  "removed_embedded_code": [
+    "Historical generic MoViNet trainer in common.py",
+    "Actor-region YOLO training command in src/yolo/main.py",
+    "Desktop GUI tests in test_project.py",
+    "Experimental tracker dispatch and unused placed-item capture branch"
+  ],
+  "retained_shared_helpers": "src/yolo/metrics.py",
+  "historical_source_commit": "a740cd469ec16bfddcd7f44adfcd95e30e48d52b",
+  "python_tests_passed": 43,
+  "web_tests_passed": 17
+}

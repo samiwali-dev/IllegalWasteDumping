@@ -9,7 +9,7 @@ from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from src.yolo.calibrate_objects import counts
+from src.yolo.metrics import counts
 from src.yolo.train_clean import validate_data
 
 

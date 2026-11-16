@@ -1,3 +1,10 @@
+> Historical experiment. Its superseded runners and desktop GUI were removed
+> during cleanup. The recipe below describes the old experiment, not current
+> commands. Original code is available at Git commit
+> `a740cd469ec16bfddcd7f44adfcd95e30e48d52b`.
+> Current training: `src/yolo/train_clean.py`; current comparison:
+> [retraining_v2](../../retraining_v2/README.md).
+
 # Litter-object detector experiment
 
 The active experimental YOLOv8n now localizes the litter object itself, using

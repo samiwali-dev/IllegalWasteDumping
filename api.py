@@ -47,9 +47,7 @@ EVALUATION_PATH = PROJECT_ROOT / "results" / "comparison" / "model_comparison.js
 YOLO_EVALUATION_PATH = PROJECT_ROOT / "results" / "yolo" / "yolov8n_run.json"
 YOLO_MODEL = PROJECT_ROOT / "src" / "yolo" / "model.pt"
 YOLO_VIDEO_OUTPUT = PROJECT_ROOT / "results" / "yolo" / "video_predictions"
-YOLO_METADATA = json.loads(YOLO_EVALUATION_PATH.read_text())
-YOLO_CONFIDENCE = float(YOLO_METADATA.get("confidence_threshold", 0.25))
-YOLO_TRACKING_ALGORITHM = YOLO_METADATA.get('tracking_algorithm', 'release_v1')
+YOLO_CONFIDENCE = float(json.loads(YOLO_EVALUATION_PATH.read_text()).get("confidence_threshold", 0.25))
 if not 0 < YOLO_CONFIDENCE < 1:
     raise ValueError("YOLO confidence_threshold must be between 0 and 1")
 
@@ -218,7 +216,7 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
     if include_yolo and YOLO_MODEL.is_file():
         try:
             from src.yolo.main import resolve_device
-            from src.yolo.release_pipeline import make_detector
+            from src.yolo.release_pipeline import ReleaseDetector
             from src.yolo.temporal import draw_candidates
 
             if frame_timestamps is not None:
@@ -235,7 +233,7 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
                                                                       YOLO_MODEL, YOLO_CONFIDENCE, resolve_device("auto"))
                 shown = [d for d in detections if d['source_frame_offset'] == peak_index]
             else:
-                detector = make_detector(YOLO_MODEL, YOLO_CONFIDENCE, resolve_device("auto"))
+                detector = ReleaseDetector(YOLO_MODEL, YOLO_CONFIDENCE, resolve_device("auto"))
                 detections = []
                 for index, (frame, seconds) in enumerate(zip(decoded_bgr, times)):
                     detections.extend(detector.update(frame, seconds, index))
@@ -250,8 +248,8 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
                              annotated_data_uri=annotated_b64, frames_buffered=len(decoded_bgr),
                              source_frame_offset=peak_index, confidence_threshold=YOLO_CONFIDENCE,
                              camera_moving=moving,
-                             task="temporal_release_candidates", algorithm_version=YOLO_TRACKING_ALGORITHM,
-                             note="Tracked candidates require source separation and scene change; static object presence is not an event.")
+                             task="temporal_release_candidates", algorithm_version="release_v1",
+                             note="Release candidates require motion, source separation and settling; static object presence is not an event.")
 
         except Exception as exc:
             errors.append(f"YOLOv8n Live: {exc}")

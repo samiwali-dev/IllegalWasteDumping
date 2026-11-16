@@ -76,7 +76,7 @@ when a box points to an unrelated object, and is not localization accuracy.
 Visual review already found background association errors in the experimental
 tracker, including static-pile matches and false candidates in a litter-picking
 scene. Successful synthetic tests did not establish real-video reliability.
-The experimental tracker is **not enabled in the active model metadata**.
+The rejected experimental tracker was **removed from the current code**, together with its runtime dispatch and synthetic tests. Its source and exact experiment runtime are retained in Git commit `a740cd469ec16bfddcd7f44adfcd95e30e48d52b`; reports also record source hashes. The development evaluator now runs only the active legacy tracker.
 
 The completed 80-video check found legacy candidates in 1/40 positive videos
 and 5/40 negative videos. The experimental variant produced candidates in 6/40
@@ -119,3 +119,14 @@ configurations and reports are retained for review.
 Do not run `prepare_clean.py` while a training job is using its frozen dataset.
 The MoViNet final-test evaluator refuses to overwrite its report; it is not a
 tool for choosing weights or repeated tuning against official test results.
+
+## Code cleanup
+
+The old desktop GUI, superseded object training/calibration/background-mining
+runners, rejected item tracker and its dedicated tests were removed. Historical
+MoViNet training was removed from `common.py`, which now contains inference only.
+The old actor-region YOLO training entry point was removed from `main.py`.
+Current training lives in `movinet/retrain.py` and `yolo/train_clean.py`.
+The two required object-matching helpers live in `yolo/metrics.py`.
+Historical reports and active model weights are preserved; old code is available
+in Git history rather than as duplicate runnable files.

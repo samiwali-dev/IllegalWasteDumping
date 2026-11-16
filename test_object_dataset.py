@@ -2,7 +2,7 @@
 import unittest
 
 from src.yolo.prepare_objects import assign_splits, object_labels
-from src.yolo.train_objects import iou
+from src.yolo.metrics import iou
 
 
 class ObjectDatasetTests(unittest.TestCase):

@@ -80,6 +80,24 @@ def main():
         role = 'fit' if row['role'] == 'train' else 'validation'
         require_development_video(row['source_video'], role)
         path = source/'hard_negative_review'/f"{row['id']}.jpg"
+        if not path.exists():
+            video = ROOT / row['source_relative_video']
+            expected = negatives['source_video_sha256'][row['source_relative_video']]
+            if hashlib.sha256(video.read_bytes()).hexdigest() != expected:
+                raise ValueError('Reviewed background source video changed')
+            capture = cv2.VideoCapture(str(video))
+            capture.set(cv2.CAP_PROP_POS_FRAMES, row['frame_index'])
+            ok, frame = capture.read()
+            capture.release()
+            if not ok:
+                raise ValueError(f'Could not decode reviewed background: {video}')
+            if row['scale'] < 1:
+                h, w = frame.shape[:2]
+                frame = cv2.resize(frame, (round(w*row['scale']), round(h*row['scale'])))
+            x1, y1, x2, y2 = row['crop_xyxy']
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if not cv2.imwrite(str(path), frame[y1:y2, x1:x2]):
+                raise OSError(path)
         if hashlib.sha256(path.read_bytes()).hexdigest() != row['sha256']:
             raise ValueError('Reviewed background content changed')
         export(f"background_{row['id']}", role, path, '',

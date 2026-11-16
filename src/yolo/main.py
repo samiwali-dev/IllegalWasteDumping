@@ -1,15 +1,9 @@
-"""YOLO inference and the historical actor-region training recipe.
-
-For the active litter-object experiment use train_objects.py instead of `train`.
-"""
+"""YOLO item inference. Training is implemented in train_clean.py."""
 from __future__ import annotations
 
 import argparse
 import json
-import math
-import shutil
 import sys
-import time
 from pathlib import Path
 
 import cv2
@@ -22,38 +16,8 @@ DEFAULT_MODEL = Path(__file__).resolve().parent / "model.pt"
 DEFAULT_RESULTS = PROJECT_ROOT / "results" / "yolo"
 DEFAULT_VIDEO_OUTPUT = DEFAULT_RESULTS / "video_predictions"
 DEFAULT_IMAGE_OUTPUT = DEFAULT_RESULTS / "image_predictions"
-DEFAULT_DATA = PROJECT_ROOT / "datasets" / "Littering-YOLO-clean" / "data.yaml"
-DEFAULT_MODELS = DEFAULT_MODEL.parent
 _saved_report = DEFAULT_RESULTS / 'yolov8n_run.json'
 DEFAULT_CONFIDENCE = float(json.loads(_saved_report.read_text()).get('confidence_threshold', .25)) if _saved_report.is_file() else .25
-SEED = 42
-
-
-def make_train_parser(*, add_help: bool = True) -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description=__doc__, add_help=add_help)
-    p.add_argument("--data", type=Path, default=DEFAULT_DATA)
-    p.add_argument("--epochs", type=int, default=5)
-    p.add_argument("--imgsz", type=int, default=320)
-    p.add_argument("--batch", type=int, default=32)
-    p.add_argument("--patience", type=int, default=5)
-    p.add_argument("--workers", type=int, default=4)
-    p.add_argument("--device", choices=("auto", "cpu", "mps", "cuda"), default="auto")
-    p.add_argument("--results-dir", type=Path, default=DEFAULT_RESULTS,
-                   help="Exact base directory for the YOLO report, training, and validation folders")
-    p.add_argument("--models-dir", type=Path, default=DEFAULT_MODELS)
-    p.add_argument("--overwrite", action="store_true")
-    return p
-
-
-def parse_train_args(argv=None) -> argparse.Namespace:
-    p = make_train_parser()
-    args = p.parse_args(argv)
-    if any(v < 1 for v in (args.epochs, args.batch, args.patience)) or args.imgsz < 32:
-        p.error("epochs, imgsz, batch, and patience must be positive")
-    args.data = args.data.expanduser().resolve()
-    args.results_dir = args.results_dir.expanduser().resolve()
-    args.models_dir = args.models_dir.expanduser().resolve()
-    return args
 
 
 def resolve_device(request: str) -> str:
@@ -68,17 +32,6 @@ def resolve_device(request: str) -> str:
     except ImportError:
         pass
     return "cpu"
-
-
-def _metric(box, attr: str) -> float | None:
-    raw = getattr(box, attr, None)
-    if raw is None:
-        return None
-    try:
-        val = float(raw)
-        return val if math.isfinite(val) else None
-    except (TypeError, ValueError):
-        return None
 
 
 def _get_yolo():
@@ -107,95 +60,6 @@ def _extract_detections(result) -> list[dict]:
         }
         for box, conf, c in zip(coords, confs, clss)
     ]
-
-
-def train(argv=None) -> int:
-    args = parse_train_args(argv)
-    if not args.data.is_file():
-        raise FileNotFoundError(
-            f"YOLO data.yaml not found: {args.data}. Run clean.py --dataset littering first or pass --data."
-        )
-    YOLO = _get_yolo()
-
-    device = resolve_device(args.device)
-    args.results_dir.mkdir(parents=True, exist_ok=True)
-    args.models_dir.mkdir(parents=True, exist_ok=True)
-    run_dir = args.results_dir / "training" / "yolov8n_littering"
-    saved_model = args.models_dir / "model.pt"
-    metadata_path = args.results_dir / "yolov8n_run.json"
-
-    existing = [p for p in (run_dir, saved_model, metadata_path) if p.exists()]
-    if existing and not args.overwrite:
-        raise FileExistsError(
-            "YOLO output already exists: " + ", ".join(map(str, existing)) + ". Use --overwrite to replace it."
-        )
-    if args.overwrite:
-        if run_dir.is_dir():
-            shutil.rmtree(run_dir)
-        saved_model.unlink(missing_ok=True)
-        metadata_path.unlink(missing_ok=True)
-
-    started = time.perf_counter()
-    model = YOLO("yolov8n.yaml")
-    model.train(
-        data=str(args.data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
-        patience=args.patience, workers=args.workers, device=device,
-        project=str(args.results_dir / "training"), name="yolov8n_littering",
-        exist_ok=args.overwrite, pretrained=False, seed=SEED, deterministic=True,
-        plots=True, val=True, verbose=True,
-    )
-    training_seconds = time.perf_counter() - started
-
-    trainer = getattr(model, "trainer", None)
-    best_path = Path(getattr(trainer, "best", "")) if trainer else Path()
-    if not best_path.is_file():
-        candidate = run_dir / "weights" / "best.pt"
-        if candidate.is_file():
-            best_path = candidate
-        else:
-            raise FileNotFoundError("Training completed but best.pt could not be located")
-    shutil.copy2(best_path, saved_model)
-
-    val_start = time.perf_counter()
-    metrics = YOLO(str(saved_model)).val(
-        data=str(args.data), split="val", imgsz=args.imgsz, batch=args.batch,
-        device=device, project=str(args.results_dir / "validation"),
-        name="yolov8n_littering_val", exist_ok=True, plots=True, verbose=True,
-    )
-    box = getattr(metrics, "box", None)
-
-    report = {
-        "model": "YOLOv8n",
-        "task": "object_detection",
-        "dataset": "Roboflow Littering",
-        "data_yaml": str(args.data),
-        "pretrained": False,
-        "initialization": "random",
-        "architecture_source": "yolov8n.yaml",
-        "device": device,
-        "seed": SEED,
-        "hyperparameters": {
-            "epochs": args.epochs, "imgsz": args.imgsz, "batch": args.batch,
-            "patience": args.patience, "workers": args.workers,
-        },
-        "training_seconds": training_seconds,
-        "evaluation_split": "Roboflow validation (the supplied test images have no COCO labels)",
-        "validation_seconds": time.perf_counter() - val_start,
-        "metrics": {
-            "precision": _metric(box, "mp"),
-            "recall": _metric(box, "mr"),
-            "map50": _metric(box, "map50"),
-            "map50_95": _metric(box, "map"),
-        },
-        "model_path": str(saved_model),
-        "model_size_bytes": saved_model.stat().st_size if saved_model.is_file() else 0,
-        "training_run_dir": str(run_dir),
-        "validation_run_dir": str(args.results_dir / "validation" / "yolov8n_littering_val"),
-        "note": "YOLOv8n participates in the overall project evaluation. Its object-detection metrics use the labelled Littering validation images and are not equivalent to MIVIA video-classification metrics.",
-    }
-    metadata_path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(json.dumps(report, indent=2, ensure_ascii=False))
-    return 0
 
 
 def sample_video_frames(video: str | Path, frame_count: int) -> tuple[list[tuple[int, float, object]], float]:
@@ -234,25 +98,24 @@ def detect_video(
     conf: float = DEFAULT_CONFIDENCE,
     device: str = "auto",
     output_dir: str | Path = DEFAULT_VIDEO_OUTPUT,
-    tracking_strategy: str | None = None,
 ) -> dict:
     video, model_path = Path(video).expanduser().resolve(), Path(model_path).expanduser().resolve()
     output_dir = Path(output_dir).expanduser().resolve() / video.stem
     if not model_path.is_file():
         raise FileNotFoundError(
-            f"YOLOv8n model not found: {model_path}. Run src/yolo/main.py train to create it."
+            f"YOLOv8n model not found: {model_path}. Use src/yolo/train_clean.py for training."
         )
     if not 0.0 <= conf <= 1.0:
         raise ValueError("conf must be between 0 and 1")
 
-    from src.yolo.release_pipeline import make_detector
+    from src.yolo.release_pipeline import ReleaseDetector
     from src.yolo.temporal import draw_candidates
 
     if frames < 1:
         raise ValueError("frames must be at least 1")
     output_dir.mkdir(parents=True, exist_ok=True)
     dev = resolve_device(device)
-    detector = make_detector(model_path, conf, dev, tracking_strategy)
+    detector = ReleaseDetector(model_path, conf, dev)
     capture = cv2.VideoCapture(str(video))
     fps = float(capture.get(cv2.CAP_PROP_FPS))
     total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -274,7 +137,7 @@ def detect_video(
             found = detector.update(frame, index/fps, index)
             events.extend(found)
             if found and len(frame_reports) < frames:
-                annotated = output_dir / f"{detector.algorithm_version}_{index:06d}.jpg"
+                annotated = output_dir / f"release_v1_{index:06d}.jpg"
                 if not cv2.imwrite(str(annotated), draw_candidates(frame, found)):
                     raise OSError(f"Could not save {annotated}")
                 frame_reports.append(dict(frame_number=len(frame_reports)+1,
@@ -293,17 +156,14 @@ def detect_video(
                                       timestamp_seconds=round(seconds, 3), detections=[],
                                       annotated_frame=str(annotated)))
     return dict(video=str(video), model=str(model_path), device=dev,
-                task="temporal_release_candidates", algorithm_version=detector.algorithm_version,
-                confidence_threshold=conf, frames_sampled=len(frame_reports), frames_scanned=getattr(detector, 'frames_processed', scanned),
-                frames_decoded=scanned,
+                task="temporal_release_candidates", algorithm_version="release_v1",
+                confidence_threshold=conf, frames_sampled=len(frame_reports), frames_scanned=scanned,
                 source_fps=fps, scan_fps=fps/stride, events=events,
                 frames_with_detections=sum(bool(r["detections"]) for r in frame_reports),
                 total_detections=len(events),
                 strongest_detection=max(events, key=lambda e: e.get("confidence") or 0, default=None),
                 output_dir=str(output_dir), frame_results=frame_reports,
-                note=("Learned item localization + person/vehicle separation + persistence. Candidates require review; object scores are not throwing probabilities."
-                      if detector.algorithm_version == 'object_tracks_v2' else
-                      "Motion + person/vehicle separation + settling. Candidates require review; not a trained action verdict. Only object-confirmed boxes get YOLO scores."))
+                note="Motion + person/vehicle separation + settling. Candidates require review; not a trained action verdict. Only object-confirmed boxes get YOLO scores.")
 
 
 def detect_image(
@@ -321,7 +181,7 @@ def detect_image(
     if image.suffix.lower() not in {".jpg", ".jpeg", ".png", ".bmp", ".webp"}:
         raise ValueError("Select a JPG, JPEG, PNG, BMP, or WEBP image")
     if not model_path.is_file():
-        raise FileNotFoundError(f"YOLOv8n model not found: {model_path}. Run src/yolo/main.py train first.")
+        raise FileNotFoundError(f"YOLOv8n model not found: {model_path}. Use src/yolo/train_clean.py for training.")
     if not 0.0 <= conf <= 1.0:
         raise ValueError("conf must be between 0 and 1")
 
@@ -346,11 +206,10 @@ def detect_image(
 
 
 def main(argv=None) -> int:
-    """One entry point for YOLO training, video scanning, and image detection."""
+    """Run video scanning or image detection."""
     argv = list(sys.argv[1:] if argv is None else argv)
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command")
-    sub.add_parser("train", parents=[make_train_parser(add_help=False)], help="Train YOLOv8n")
 
     pred_base = argparse.ArgumentParser(add_help=False)
     pred_base.add_argument("--model", type=Path, default=DEFAULT_MODEL)
@@ -362,7 +221,7 @@ def main(argv=None) -> int:
     vid_p.add_argument("--frames", type=int, default=12)
     vid_p.add_argument("--output-dir", type=Path, default=DEFAULT_VIDEO_OUTPUT)
 
-    img_p = sub.add_parser("image", parents=[pred_base], help="Detect littering in one image")
+    img_p = sub.add_parser("image", parents=[pred_base], help="Detect litter-like items in one image")
     img_p.add_argument("image", type=Path)
     img_p.add_argument("--output-dir", type=Path, default=DEFAULT_IMAGE_OUTPUT)
 
@@ -370,8 +229,6 @@ def main(argv=None) -> int:
         parser.print_help()
         return 0
     args = parser.parse_args(argv)
-    if args.command == "train":
-        return train(argv[1:])
     if args.command == "predict":
         report = detect_video(args.video, model_path=args.model, frames=args.frames,
                               conf=args.conf, device=args.device, output_dir=args.output_dir)

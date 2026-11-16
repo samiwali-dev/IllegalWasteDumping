@@ -1,7 +1,7 @@
 {
-  "python_relevant_tests_passed": 27,
-  "web_tests_passed": 18,
-  "web_export": "passed",
+  "python_relevant_tests_passed": 43,
+  "web_tests_passed": 17,
+  "web_export": "passed after cleanup",
   "http_live_api": {
     "input": "First 24 consecutive frames of validation vid0007.mp4; integration check only, not an accuracy estimate",
     "actions": [
@@ -23,5 +23,6 @@
     ],
     "tracking_algorithm": "release_v1",
     "errors": []
-  }
+  },
+  "cleanup": "Desktop and rejected experimental code removed; full remaining Python suite passes"
 }
