@@ -1,7 +1,6 @@
 const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
-const { createHash } = require('node:crypto');
 const test = require('node:test');
 const { motionTrailGeometry, yoloDetectionLabel } = require('./motionGeometry');
 const source = readFileSync(join(__dirname, 'liveEdgeAi.js'), 'utf8')
@@ -32,29 +31,25 @@ test('all interface text is English', () => {
   }
 });
 
-test('the current five-guard detection calculations remain unchanged by the redesign', () => {
-  const normalized = api.detectDumpedObjectsOnly.toString()
-    .replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, '');
-  const checksum = createHash('sha256').update(normalized).digest('hex');
-  assert.equal(checksum, '91fc88b813ad884a391bf31a0c70890fd06fad712d68df549598a7709dd4cd92');
-});
-
 test('a stationary black object does not trigger dumping', async () => {
   const result = await api.analyzeLiveFramesOnEdge(clip(Array(8).fill(30)), ['neural_network']);
   assert.equal(result.yolo_live.total_detections, 0);
-  assert.equal(result.actions[0].prediction, 0);
+  assert.equal(result.event_detected, false);
 });
 
 test('a person crossing the image does not trigger dumping', async () => {
   const result = await api.analyzeLiveFramesOnEdge(clip([4, 9, 14, 19, 24, 29, 34], true), ['neural_network']);
   assert.equal(result.yolo_live.total_detections, 0);
-  assert.equal(result.actions[0].prediction, 0);
+  assert.equal(result.event_detected, false);
 });
 
 test('a falling object with an initial empty background produces a box', async () => {
   const result = await api.analyzeLiveFramesOnEdge(clip([null, 0, 7, 14, 21, 28, 35, 42, 49, 56]), ['neural_network']);
   assert.ok(result.yolo_live.total_detections > 0);
-  assert.equal(result.actions[0].prediction, 1);
+  assert.equal(result.event_detected, true);
+  assert.equal(result.yolo_live.detections[0].confidence, null);
+  const lastPoint = result.yolo_live.detections[0].trail.at(-1);
+  assert.equal(result.yolo_live.source_timestamp_ms, 1000 + lastPoint.t * 60);
   const geometry = motionTrailGeometry(result.yolo_live.detections[0].trail, 640, 480);
   assert.ok(geometry.points.length >= 3);
   assert.deepEqual(geometry.arrow[1], geometry.points.at(-1));
@@ -99,4 +94,29 @@ test('overlay mirroring follows the actual video, including a mirrored desktop c
   assert.equal(mirrored(), false);
   transform = 'matrix(1, 0, 0, 1, 0, 0)';
   assert.equal(mirrored(), false);
+});
+
+test('a model prediction alone is not a detected release', async () => {
+  const result = await api.analyzeLiveFramesOnEdge(clip(Array(8).fill(30)), ['neural_network', 'movinet_a0', 'optical_flow_svm']);
+  assert.deepEqual(result.actions.map(a => a.model), ['neural_network']);
+  assert.equal(result.event_detected, false);
+});
+
+test('a small light paper can fall while a separate person moves', async () => {
+  const frames = Array.from({ length: 14 }, (_, i) => {
+    const frame = clip([null])[0];
+    const paint = (left, top, width, height, color) => {
+      for (let y=top; y<Math.min(112,top+height); y++) for (let x=left; x<Math.min(112,left+width); x++) {
+        frame.rgb.set(color,(y*112+x)*3);
+        frame.gray[y*112+x]=(color[0]*.299+color[1]*.587+color[2]*.114)*255;
+      }
+    };
+    paint(2+i*2,20,25,70,[.65,.4,.28]);
+    if(i) paint(85,4+i*5,6,6,[.98,.98,.98]);
+    frame.ts=1000+i*60; return frame;
+  });
+  const result=await api.analyzeLiveFramesOnEdge(frames,['neural_network']);
+  assert.equal(result.event_detected,true);
+  assert.ok(result.yolo_live.detections[0].norm_box[0]>.6);
+  assert.ok(result.yolo_live.detections[0].trail.length>=4);
 });

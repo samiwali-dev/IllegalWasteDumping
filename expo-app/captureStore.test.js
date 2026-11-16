@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall } = require('./captureStore');
+const { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall, motionCandidateForFrames } = require('./captureStore');
 
 const alert = {
   mode: 'edge_browser', actions: [{ prediction: 1 }],
@@ -23,7 +23,7 @@ test('a clear result cannot erase the previous alert capture', () => {
 });
 
 test('an alert without annotation uses the latest available camera image', () => {
-  const result = { mode: 'edge_browser', actions: [{ prediction: 1 }] };
+  const result = { mode: 'edge_browser', yolo_live: { total_detections: 1 }, actions: [{ prediction: 1 }] };
   assert.equal(captureFromResult(result, ['first-frame', { uri: 'last-frame' }, { uri: null }]).uri, 'last-frame');
   assert.equal(captureFromResult(result, []), null);
 });
@@ -72,4 +72,40 @@ test('a backend release uses its own physical trajectory without inventing objec
   assert.equal(captureDetectionsForFall(result, null)[0].confidence, null);
   result.yolo_live.detections = [{ ...candidate, source_actor: null }];
   assert.deepEqual(captureDetectionsForFall(result, null), []);
+});
+
+test('a high classifier score without a tracked object cannot create evidence', () => {
+  assert.equal(captureFromResult({ actions: [{ prediction: 1, score: .998 }], yolo_live: { total_detections: 0 } }, ['frame']), null);
+});
+
+test('a backend verified four-point fall preserves its annotated source photo without an actor', () => {
+  const candidate = { reason: 'released_object', source: 'motion_tracker', confidence: null,
+    motion_verified: true, object_confirmed: false,
+    trail: [{ cx: .7, cy: .1 }, { cx: .7, cy: .2 }, { cx: .7, cy: .3 }, { cx: .7, cy: .4 }] };
+  const result = { mode: 'python_api', yolo_live: { task: 'temporal_release_candidates', total_detections: 1,
+    detections: [candidate], source_timestamp_ms: 1200, annotated_data_uri: 'data:image/jpeg;base64,backend-box-and-arrow' } };
+  assert.deepEqual(captureDetectionsForFall(result, null), [candidate]);
+  const capture = captureFromResult(result, [{ ts: 1200, uri: 'source' }, { ts: 1500, uri: 'later' }]);
+  assert.equal(capture.uri, result.yolo_live.annotated_data_uri);
+  assert.equal(capture.sourceTimestamp, 1200);
+  const retained = retainCaptures([], capture);
+  assert.equal(retainCaptures(retained, captureFromResult({ yolo_live: { total_detections: 0 } }, ['later'])), retained);
+  result.yolo_live.detections = [{ ...candidate, trail: candidate.trail.slice(0, 3) }];
+  assert.deepEqual(captureDetectionsForFall(result, null), []);
+});
+
+test('an unannotated event selects its timestamp source and never a later frame', () => {
+  const result = { yolo_live: { total_detections: 1, source_timestamp_ms: 1200 } };
+  assert.equal(captureFromResult(result, [{ ts: 1200, uri: 'event' }, { ts: 1500, uri: 'later' }]).uri, 'event');
+  assert.equal(captureFromResult(result, [{ ts: 1500, uri: 'later' }]), null);
+});
+
+test('only a recent physical candidate whose exact frame is buffered is submitted', () => {
+  const detection = { source: 'motion_tracker', reason: 'falling_object', confidence: null,
+    trail: [{ cx: .5, cy: .1 }, { cx: .5, cy: .2 }, { cx: .5, cy: .3 }, { cx: .5, cy: .4 }] };
+  const motion = { at: 1500, timestamp_ms: 1200, detections: [detection] };
+  assert.deepEqual(motionCandidateForFrames(motion, [1200, 1500], 2000), { timestamp_ms: 1200, detections: [detection] });
+  assert.equal(motionCandidateForFrames(motion, [1500], 2000), null);
+  assert.equal(motionCandidateForFrames(motion, [1200], 3000), null);
+  assert.equal(motionCandidateForFrames({ ...motion, detections: [{ ...detection, trail: [] }] }, [1200], 2000), null);
 });

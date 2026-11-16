@@ -15,7 +15,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall } from './captureStore';
+import { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall, motionCandidateForFrames } from './captureStore';
 import MotionTrail from './MotionTrail';
 import { yoloDetectionLabel } from './motionGeometry';
 import {
@@ -355,17 +355,19 @@ export default function App() {
     let active = true;
     let pending = false;
     const analyzeModels = async () => {
-      if (pending || frameBufferRef.current.length < 6) return;
+      if (pending || frameBufferRef.current.length < 24) return;
       pending = true;
       setApiLiveBusy(true);
-      const frames = frameBufferRef.current.slice(-24).map(frameUri).filter(Boolean);
-      const frameTimes = frameBufferRef.current.slice(-24).filter(frame => frameUri(frame)).map(frame => frame.ts);
+      const sourceFrames = frameBufferRef.current.slice(-24).filter(frame => frameUri(frame));
+      const frames = sourceFrames.map(frameUri);
+      const frameTimes = sourceFrames.map(frame => frame.ts);
       const motionAtCapture = lastTrackedFallRef.current;
       const capturedAt = Date.now();
+      const motionCandidate = motionCandidateForFrames(motionAtCapture, frameTimes, capturedAt);
       try {
         const response = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ frames, ...(frameTimes.every(Number.isFinite) ? { frame_timestamps: frameTimes, session_id: cameraSessionRef.current } : {}), models: Object.keys(MODEL_META) }),
+          body: JSON.stringify({ frames, ...(frameTimes.every(Number.isFinite) ? { frame_timestamps: frameTimes, session_id: cameraSessionRef.current } : {}), ...(motionCandidate ? { motion_candidate: motionCandidate } : {}), models: Object.keys(MODEL_META) }),
           signal: controller.signal,
         });
         const result = await response.json();
@@ -376,12 +378,14 @@ export default function App() {
         const now = Date.now();
         const associated = captureDetectionsForFall(result, motionAtCapture, capturedAt);
         if (associated.length && now - lastModelCaptureRef.current > 3000) {
-          const annotated = result.yolo_live?.task === 'temporal_release_candidates'
-            ? result.yolo_live.annotated_data_uri
-            : await drawDetectionsOnFrame(frames[frames.length - 1], associated);
+          const source = sourceFrames.find(frame => frame.ts === result.yolo_live?.source_timestamp_ms)
+            || sourceFrames[result.yolo_live?.source_frame_offset];
+          const annotated = result.yolo_live?.annotated_data_uri ||
+            (source ? await drawDetectionsOnFrame(frameUri(source), associated) : null);
+          if (!annotated) return;
           if (!active) return;
           lastModelCaptureRef.current = now;
-          const capture = captureFromResult({ ...result, mode: 'python_api', yolo_live: { ...result.yolo_live, detections: associated, total_detections: associated.length, annotated_data_uri: annotated } }, frames, capturedAt);
+          const capture = captureFromResult({ ...result, mode: 'python_api', yolo_live: { ...result.yolo_live, detections: associated, total_detections: associated.length, annotated_data_uri: annotated } }, sourceFrames, capturedAt);
           if (capture) addCapture({ ...capture, kind: 'Release candidate' });
         }
       } catch (error) {
@@ -391,14 +395,15 @@ export default function App() {
         if (active) setApiLiveBusy(false);
       }
     };
-    const timer = setInterval(analyzeModels, 1000);
+    const timer = setInterval(analyzeModels, 350);
     return () => { active = false; controller.abort(); clearInterval(timer); setApiLiveBusy(false); };
   }, [liveMonitoring, apiConnected, cleanBaseUrl]);
 
   const acceptLiveResult = (result, frames) => {
     setLiveResult(result);
     if (result?.yolo_live?.total_detections > 0) {
-      lastTrackedFallRef.current = { at: Date.now(), detections: result.yolo_live.detections };
+      lastTrackedFallRef.current = { at: Date.now(), timestamp_ms: result.yolo_live.source_timestamp_ms,
+        source: 'motion_tracker', detections: result.yolo_live.detections };
     }
     const capture = captureFromResult(result, frames);
     if (capture && Date.now() - lastAutoCaptureRef.current > 3000) {
@@ -458,7 +463,7 @@ export default function App() {
       setLiveStatus('Analyzing the captured sequence...');
       const res = await runFramesAnalysis(burst);
       acceptLiveResult(res, burst);
-      const anyDumping = res.actions && res.actions.some((a) => a.prediction === 1);
+      const anyDumping = (res.yolo_live?.total_detections || 0) > 0;
       const boxCount = res.yolo_live?.total_detections || 0;
       setLiveStatus(
         anyDumping
@@ -513,9 +518,9 @@ export default function App() {
           }
 
           if (tick % 4 === 0 && frameBufferRef.current.length >= 6) {
-            const recentWindow = frameBufferRef.current.slice(-16);
+            const recentWindow = frameBufferRef.current.slice(-24);
             const res = await runFramesAnalysis(recentWindow);
-            const isDump = res.actions && res.actions.some((a) => a.prediction === 1);
+            const isDump = (res.yolo_live?.total_detections || 0) > 0;
 
             if (isDump) {
               detectionHoldUntilRef.current = Date.now() + 3500;
@@ -673,7 +678,7 @@ export default function App() {
     <View style={[styles.evidenceColumn, isDesktop && { width: 348 }]}>
       <View style={styles.card}>
         <View style={styles.cardHeading}>
-          <View><Text style={styles.eyebrow}>LIVE INFERENCE</Text><Text style={styles.cardTitle}>Live algorithms</Text></View>
+          <View><Text style={styles.eyebrow}>MODEL COMPARISON</Text><Text style={styles.cardTitle}>Live algorithms</Text></View>
           {apiLiveBusy && <ActivityIndicator size="small" color="#0B8163" />}
         </View>
         <View style={styles.liveModelGrid}>
@@ -684,11 +689,11 @@ export default function App() {
             const yolo = id === 'yolov8n' ? apiLiveResult?.yolo_live : null;
             const hasResult = Boolean(action || yolo);
             const positive = action?.prediction === 1;
-            const status = yolo ? `${yolo.total_detections} CANDIDATES` : hasResult ? positive ? 'ALERT' : 'NO ALERT' : apiConnected || id === 'neural_network' ? liveMonitoring ? 'WAITING' : 'IDLE' : 'API REQUIRED';
+            const status = yolo ? `${yolo.total_detections} CANDIDATES` : hasResult ? positive ? 'PREDICTS DUMPING' : 'PREDICTS NO DUMPING' : apiConnected || id === 'neural_network' ? liveMonitoring ? 'WAITING' : 'IDLE' : 'API REQUIRED';
             return <View key={id} style={styles.liveModelCard}>
               <Text style={[styles.liveModelBadge, positive && styles.liveModelAlert]}>{status}</Text>
               <Text style={styles.liveModelTitle}>{id === 'neural_network' ? 'Neural Network (MLP)' : model.title}</Text>
-              <Text style={styles.liveModelSource}>{apiAction || yolo ? 'Python model' : id === 'neural_network' && !apiConnected ? 'Local MLP + motion' : 'Python API'}</Text>
+              <Text style={styles.liveModelSource}>{apiAction || yolo ? 'Python model' : id === 'neural_network' && !apiConnected ? 'Local MLP' : 'Python API'}</Text>
               <Text style={styles.liveModelScore}>{action ? `Score ${Number(action.score).toFixed(3)} · ${Math.round(action.seconds * 1000)} ms` : yolo ? `${yolo.total_detections} tracked release candidates` : 'Awaiting frames'}</Text>
             </View>;
           })}

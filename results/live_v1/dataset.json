@@ -1,0 +1,2581 @@
+{
+  "window_seconds": 1.4,
+  "frames": 24,
+  "records": {
+    "fit": {
+      "real_windows": 320,
+      "samples": [
+        {
+          "video": "vid0001.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0002.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0003.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0006.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0010.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0011.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0014.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0015.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0016.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0017.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0019.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0022.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0024.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0025.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0026.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0027.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0028.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0029.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0030.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0031.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0033.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0034.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0037.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0039.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0042.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0045.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0046.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0047.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0048.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0051.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0053.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0054.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0055.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0057.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0058.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0059.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0060.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0061.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0062.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0064.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0065.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0066.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0068.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0070.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0072.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0073.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0074.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0076.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0078.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0079.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0080.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0082.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0089.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0090.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0091.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0092.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0093.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0097.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0098.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0102.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0103.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0104.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0105.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0106.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0108.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0109.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0110.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0111.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0118.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0122.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0125.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0126.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0129.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0130.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0131.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0132.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0135.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0136.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0137.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0138.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0140.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0142.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0144.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0145.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0147.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0148.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0149.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0150.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0151.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0152.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0156.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0157.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0158.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0159.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0160.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0161.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0162.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0165.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0168.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0169.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0170.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0174.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0175.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0176.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0177.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0179.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0181.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0184.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0187.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0188.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0190.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0193.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0194.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0195.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0198.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0201.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0202.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0203.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0205.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0206.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0207.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0209.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0212.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0214.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0218.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0220.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0221.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0222.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0223.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0225.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0226.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0229.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0230.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0231.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0232.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0233.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0234.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0235.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0238.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0240.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0241.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0242.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0243.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0245.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0247.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0248.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0252.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0254.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0255.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0257.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0259.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0260.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0261.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0262.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0263.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0264.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0265.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0267.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0268.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0271.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0272.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0273.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0274.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0275.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0276.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0277.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0279.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0280.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0282.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0284.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0285.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0286.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0287.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0288.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0289.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0291.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0292.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0293.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0294.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0295.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0298.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0299.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0302.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0303.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0304.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0305.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0306.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0307.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0309.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0310.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0311.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0313.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0314.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0315.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0317.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0318.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0319.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0320.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0321.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0322.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0324.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0326.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0327.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0330.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0333.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0334.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0335.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0336.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0337.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0338.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0340.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0342.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0344.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0345.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0347.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0348.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0349.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0350.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0351.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0352.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0353.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0354.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0355.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0356.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0357.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0358.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0360.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0361.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0364.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0365.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0366.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0368.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0369.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0370.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0371.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0372.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0373.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0374.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0375.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0376.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0377.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0379.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0380.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0383.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0384.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0385.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0386.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0387.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0388.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0389.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0391.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0393.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0394.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0396.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0397.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0399.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0400.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0401.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0402.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0404.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0405.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0407.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0408.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0410.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0414.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0415.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0416.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0418.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0421.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0423.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0425.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0426.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0427.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0429.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0430.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0432.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0434.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0435.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0437.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0438.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0440.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0442.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0443.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0444.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0445.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0446.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0447.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0448.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0449.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0450.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0451.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0454.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0456.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0458.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0459.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0460.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0461.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0463.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0465.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0468.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0469.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0470.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0472.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0473.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0474.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0475.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0477.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0478.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0480.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0483.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0484.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0486.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0492.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0493.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0494.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0495.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0496.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0497.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0498.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0500.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0001.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0003.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0010.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0014.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0016.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0017.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0019.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0022.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0025.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0026.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0031.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0033.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0034.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0039.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0045.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0047.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0051.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0054.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0058.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0061.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0062.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0066.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0070.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0076.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0078.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0079.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0082.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0091.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0092.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0093.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0097.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0103.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0104.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0109.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0110.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0111.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0125.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0126.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0129.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0132.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0136.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0140.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0142.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0144.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0147.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0148.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0150.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0151.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0152.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0156.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0157.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0161.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0165.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0170.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0175.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0177.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0179.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0181.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0187.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0195.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0198.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0201.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0202.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0207.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0212.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0220.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0232.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0233.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0234.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0238.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0240.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0241.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0242.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0243.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0248.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0259.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0262.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0263.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0268.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0271.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0272.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0273.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0274.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0276.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0277.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0280.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0286.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0287.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0288.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0292.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0294.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0299.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0302.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0306.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0307.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0310.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0311.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0313.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0314.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0317.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0318.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0319.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0322.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0326.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0330.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0334.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0336.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0337.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0340.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0344.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0347.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0349.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0351.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0353.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0354.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0355.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0356.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0358.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0360.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0361.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0365.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0366.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0368.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0369.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0372.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0373.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0374.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0375.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0376.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0383.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0386.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0396.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0397.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0400.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0410.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0415.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0418.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0421.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0429.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0430.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0432.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0438.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0440.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0442.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0443.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0444.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0447.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0465.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0469.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0473.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0475.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0477.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0480.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0483.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0484.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0486.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0492.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0493.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0494.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0495.mp4",
+          "kind": "static_no_release"
+        }
+      ]
+    },
+    "validation": {
+      "real_windows": 78,
+      "samples": [
+        {
+          "video": "vid0004.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0007.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0008.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0009.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0013.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0020.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0032.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0035.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0036.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0041.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0056.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0071.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0077.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0081.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0083.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0087.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0095.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0096.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0099.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0100.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0107.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0113.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0116.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0119.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0120.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0123.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0128.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0133.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0139.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0146.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0164.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0172.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0178.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0182.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0183.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0186.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0191.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0196.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0200.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0210.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0217.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0237.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0239.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0246.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0250.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0281.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0290.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0300.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0301.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0312.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0316.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0323.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0325.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0329.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0331.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0339.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0343.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0346.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0362.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0363.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0367.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0378.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0381.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0382.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0392.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0403.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0409.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0411.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0419.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0428.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0436.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0441.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0452.mp4",
+          "kind": "event_window"
+        },
+        {
+          "video": "vid0464.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0467.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0489.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0490.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0491.mp4",
+          "kind": "no_dumping_window"
+        },
+        {
+          "video": "vid0004.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0007.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0008.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0009.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0013.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0020.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0032.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0035.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0036.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0041.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0056.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0071.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0077.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0081.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0083.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0087.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0095.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0096.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0099.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0100.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0107.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0113.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0116.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0119.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0120.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0123.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0128.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0133.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0139.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0146.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0164.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0172.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0178.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0182.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0183.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0185.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0186.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0191.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0196.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0200.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0210.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0217.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0237.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0239.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0246.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0250.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0281.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0290.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0300.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0301.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0312.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0316.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0323.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0325.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0329.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0331.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0339.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0343.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0346.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0362.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0363.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0367.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0378.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0381.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0382.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0392.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0403.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0409.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0411.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0419.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0428.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0436.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0441.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0452.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0464.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0467.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0481.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0489.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0490.mp4",
+          "kind": "static_no_release"
+        },
+        {
+          "video": "vid0491.mp4",
+          "kind": "static_no_release"
+        }
+      ]
+    }
+  },
+  "excluded": [
+    {
+      "video": "vid0185.mp4",
+      "reason": "Invalid event timestamp"
+    },
+    {
+      "video": "vid0481.mp4",
+      "reason": "Invalid event timestamp"
+    }
+  ],
+  "test_used": false,
+  "screenshot_used_for_training": false,
+  "note": "Positive windows centered on existing training annotation times; timing precision is limited. Static negatives are constructed without temporal release."
+}

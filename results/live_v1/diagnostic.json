@@ -1,0 +1,104 @@
+{
+  "created_at": "2026-11-16T06:59:18.932966+00:00",
+  "purpose": "Post-training diagnostic only; no model fitting or selection",
+  "input": {
+    "source": "User-supplied indoor camera screenshot, camera crop only",
+    "camera_crop_xyxy": [
+      551,
+      412,
+      2066,
+      1548
+    ],
+    "crop_shape": [
+      1136,
+      1515,
+      3
+    ],
+    "preprocessing": "BGR camera crop converted to RGB and aspect-preserving letterbox at 112x112; one frozen image repeated 24 times",
+    "clip_sha256": "0cee11b98634b4e50fe7e235652800ff9af0fcced28c31c166c080b8a291678f",
+    "expected_label": 0,
+    "temporal_motion_present": false
+  },
+  "test_used": false,
+  "screenshot_used_for_training": false,
+  "screenshot_used_for_checkpoint_selection": false,
+  "limitations": [
+    "One static image does not measure indoor camera accuracy or real motion performance.",
+    "Scores are raw decision values or uncalibrated sigmoid values, not calibrated confidence.",
+    "Whole-video baseline and short-window candidate metrics use separate evaluation protocols.",
+    "This result must not be used to claim indoor false positives are solved."
+  ],
+  "predictions": [
+    {
+      "model": "movinet_a0",
+      "checkpoint_role": "original_whole_video",
+      "checkpoint": "src/movinet/model.pt",
+      "checkpoint_sha256": "c5edc3f48972727db92427afe8a62f6a8ad07fe108a8abe2bdbcf46ed753b8cd",
+      "prediction": 0,
+      "score": 0.4702715575695038,
+      "score_kind": "uncalibrated_sigmoid",
+      "threshold": 0.5,
+      "seconds": 0.15298825001809746
+    },
+    {
+      "model": "movinet_a0",
+      "checkpoint_role": "candidate_live",
+      "checkpoint": "results/live_v1/movinet.pt",
+      "checkpoint_sha256": "d4ae45af038474c9f7e1c9d9df3226d2e71299bd519eac91f8e35d801d9c08e3",
+      "prediction": 0,
+      "score": 8.953785490817268e-10,
+      "score_kind": "uncalibrated_sigmoid",
+      "threshold": 0.5,
+      "seconds": 0.1098940409719944
+    },
+    {
+      "model": "optical_flow_svm",
+      "checkpoint_role": "original_whole_video",
+      "checkpoint": "src/optical_flow_svm/model.joblib",
+      "checkpoint_sha256": "6887039184c8440768aa93fd261642e76eb3774aca34e9207245f5761d12e1fe",
+      "prediction": 1,
+      "score": 1.0374338702508805,
+      "score_kind": "svm_decision_function",
+      "threshold": 0.0,
+      "seconds": 0.033259583986364305
+    },
+    {
+      "model": "optical_flow_svm",
+      "checkpoint_role": "candidate_live",
+      "checkpoint": "results/live_v1/svm.joblib",
+      "checkpoint_sha256": "d102a0ff4a923421c4776fbb1da4624a1c0abd8f684bc7f1cc2f38175813a41a",
+      "prediction": 0,
+      "score": -1.099701288036425,
+      "score_kind": "svm_decision_function",
+      "threshold": 0.0,
+      "seconds": 0.02902129094582051
+    },
+    {
+      "model": "neural_network",
+      "checkpoint_role": "original_whole_video",
+      "checkpoint": "src/neural_network/model.pt",
+      "checkpoint_sha256": "35fb4b857e90568dce7e6b31bea361effe071c20a2a69d8e8b37a4b142719e9d",
+      "prediction": 1,
+      "score": 0.6984426975250244,
+      "score_kind": "uncalibrated_sigmoid",
+      "threshold": 0.5,
+      "seconds": 0.031399125000461936
+    },
+    {
+      "model": "neural_network",
+      "checkpoint_role": "candidate_live",
+      "checkpoint": "results/live_v1/mlp.pt",
+      "checkpoint_sha256": "bfac48feeaf7d27a0cfeb64e1a60c92e3b699ecb1f682c99c5ab349403701ddd",
+      "prediction": 0,
+      "score": 0.24391205608844757,
+      "score_kind": "uncalibrated_sigmoid",
+      "threshold": 0.5,
+      "seconds": 0.03050674998667091
+    }
+  ],
+  "verification": {
+    "command": ".venv/bin/python -m unittest discover -v",
+    "tests_passed": 43,
+    "tests_failed": 0
+  }
+}

@@ -56,6 +56,11 @@ CLASSIFIER_LABELS = {
     "movinet_a0": "MoViNet A0",
     "optical_flow_svm": "Optical Flow + SVM",
 }
+LIVE_CHECKPOINT_PATHS = {
+    "neural_network": PROJECT_ROOT / "src/neural_network/live_model.pt",
+    "movinet_a0": PROJECT_ROOT / "src/movinet/live_model.pt",
+    "optical_flow_svm": PROJECT_ROOT / "src/optical_flow_svm/live_model.joblib",
+}
 ALL_MODELS = ("neural_network", "movinet_a0", "optical_flow_svm", "yolov8n")
 
 
@@ -157,7 +162,7 @@ def _letterbox_rgb(bgr_img: np.ndarray, size: int = IMAGE_SIZE) -> np.ndarray:
     return canvas
 
 
-def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], frame_timestamps=None, session_id=None) -> dict:
+def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], frame_timestamps=None, session_id=None, motion_candidate=None) -> dict:
     """Analyze base64 camera frames with the 3 video classifiers and/or YOLOv8n."""
     decoded_bgr: list[np.ndarray] = []
     for item in raw_frames:
@@ -179,14 +184,15 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
     yolo_live = None
     errors = []
 
-    if classifiers:
+    if classifiers and len(decoded_bgr) >= CLIP_LENGTH:
         indices = [
             round(i * (len(decoded_bgr) - 1) / max(1, CLIP_LENGTH - 1))
             for i in range(CLIP_LENGTH)
         ]
         clip = np.stack([_letterbox_rgb(decoded_bgr[idx], IMAGE_SIZE) for idx in indices], axis=0)
         for name in classifiers:
-            checkpoint = CHECKPOINT_PATHS[name]
+            live_checkpoint = LIVE_CHECKPOINT_PATHS[name]
+            checkpoint = live_checkpoint if live_checkpoint.is_file() else CHECKPOINT_PATHS[name]
             if not checkpoint.is_file():
                 errors.append(f"{CLASSIFIER_LABELS[name]}: model missing")
                 continue
@@ -213,10 +219,10 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
             except Exception as exc:
                 errors.append(f"{CLASSIFIER_LABELS[name]}: {exc}")
 
-    if include_yolo and YOLO_MODEL.is_file():
+    if include_yolo:
         try:
             from src.yolo.main import resolve_device
-            from src.yolo.release_pipeline import ReleaseDetector
+            from src.yolo.release_pipeline import ReleaseDetector, review_motion_candidate
             from src.yolo.temporal import draw_candidates
 
             if frame_timestamps is not None:
@@ -228,7 +234,13 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
                 times = [(t-frame_timestamps[0])/1000 for t in frame_timestamps]
             else:
                 times = [i/17 for i in range(len(decoded_bgr))]
-            if session_id and frame_timestamps is not None:
+            reviewed = review_motion_candidate(motion_candidate, decoded_bgr, frame_timestamps,
+                                                 YOLO_MODEL, YOLO_CONFIDENCE, resolve_device("auto"))
+            if reviewed is not None:
+                detections, peak_index = reviewed
+                shown = detections
+                moving = False
+            elif session_id and frame_timestamps is not None:
                 detections, peak_index, moving = LIVE_RELEASES.process(decoded_bgr, frame_timestamps, session_id,
                                                                       YOLO_MODEL, YOLO_CONFIDENCE, resolve_device("auto"))
                 shown = [d for d in detections if d['source_frame_offset'] == peak_index]
@@ -246,10 +258,12 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
             yolo_live = dict(total_detections=len(shown), detections=shown,
                              strongest_detection=max(shown, key=lambda d: d.get("confidence") or 0, default=None),
                              annotated_data_uri=annotated_b64, frames_buffered=len(decoded_bgr),
-                             source_frame_offset=peak_index, confidence_threshold=YOLO_CONFIDENCE,
+                             source_frame_offset=peak_index,
+                             source_timestamp_ms=frame_timestamps[peak_index] if frame_timestamps is not None else None,
+                             confidence_threshold=YOLO_CONFIDENCE,
                              camera_moving=moving,
-                             task="temporal_release_candidates", algorithm_version="release_v1",
-                             note="Release candidates require motion, source separation and settling; static object presence is not an event.")
+                             task="temporal_release_candidates", algorithm_version="release_v2",
+                             note="A measured release is a review candidate, not proof of illegal dumping; learned object confirmation is reported separately.")
 
         except Exception as exc:
             errors.append(f"YOLOv8n Live: {exc}")
@@ -259,6 +273,8 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], 
         "actions": actions,
         "yolo_live": yolo_live,
         "errors": errors,
+        "classification_ready": len(decoded_bgr) >= CLIP_LENGTH,
+        "frames_buffered": len(decoded_bgr),
     }
 
 
@@ -365,7 +381,7 @@ class ApiHandler(BaseHTTPRequestHandler):
                 frames = body.get("frames") or []
                 requested = body.get("models") or list(ALL_MODELS)
                 selected_models = [m for m in requested if m in ALL_MODELS] or list(ALL_MODELS)
-                result = run_live_frames_analysis(frames, selected_models, body.get("frame_timestamps"), body.get("session_id"))
+                result = run_live_frames_analysis(frames, selected_models, body.get("frame_timestamps"), body.get("session_id"), body.get("motion_candidate"))
                 self._send_json(result)
             except Exception as exc:
                 traceback.print_exc()

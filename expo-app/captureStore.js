@@ -4,15 +4,19 @@ function frameUri(frame) {
 }
 
 function captureFromResult(result, frames = [], now = Date.now()) {
-  const detected = (result?.yolo_live?.total_detections || 0) > 0 ||
-    result?.actions?.some(action => action.prediction === 1);
+  const detected = (result?.yolo_live?.total_detections || 0) > 0;
   if (!detected) return null;
-  const uri = result?.yolo_live?.annotated_data_uri || [...frames].reverse().map(frameUri).find(Boolean);
+  const sourceTimestamp = result?.yolo_live?.source_timestamp_ms;
+  const sourceFrame = Number.isFinite(sourceTimestamp)
+    ? frames.find(frame => frame?.ts === sourceTimestamp)
+    : frames[result?.yolo_live?.source_frame_offset] || [...frames].reverse().find(frameUri);
+  const uri = result?.yolo_live?.annotated_data_uri || frameUri(sourceFrame);
   if (!uri) return null;
   return {
     id: String(now), uri, capturedAt: now,
     kind: result.mode === 'edge_browser' ? 'Motion alert' : 'Model alert',
     regions: result?.yolo_live?.total_detections || 0,
+    sourceTimestamp: Number.isFinite(sourceTimestamp) ? sourceTimestamp : null,
   };
 }
 
@@ -24,7 +28,8 @@ function retainCaptures(previous, capture) {
 function captureDetectionsForFall(result, motion, now = Date.now()) {
   if (result?.yolo_live?.task === 'temporal_release_candidates') {
     return (result.yolo_live.detections || []).filter(d => d.reason === 'released_object' &&
-      d.trail?.length >= 3 && Number.isFinite(d.source_actor?.confidence));
+      ((d.motion_verified === true && d.trail?.length >= 4) ||
+        (d.trail?.length >= 3 && Number.isFinite(d.source_actor?.confidence))));
   }
   if (!motion?.at || now < motion.at || now - motion.at > 1500) return [];
   return (result?.yolo_live?.detections || []).flatMap(detection => {
@@ -41,4 +46,12 @@ function captureDetectionsForFall(result, motion, now = Date.now()) {
   });
 }
 
-module.exports = { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall };
+function motionCandidateForFrames(motion, frameTimes, now = Date.now()) {
+  if (!motion || now < motion.at || now - motion.at >= 1500 ||
+      !Number.isFinite(motion.timestamp_ms) || !frameTimes.includes(motion.timestamp_ms)) return null;
+  const detections = (motion.detections || []).filter(d => d.reason === 'falling_object' &&
+    d.source === 'motion_tracker' && d.trail?.length >= 4);
+  return detections.length ? { timestamp_ms: motion.timestamp_ms, detections } : null;
+}
+
+module.exports = { frameUri, captureFromResult, retainCaptures, captureDetectionsForFall, motionCandidateForFrames };

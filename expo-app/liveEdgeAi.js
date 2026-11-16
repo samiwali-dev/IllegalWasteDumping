@@ -349,21 +349,7 @@ function computeRegionMeanDiff(frameA, frameB, minR, maxR, minC, maxC) {
   return cnt > 0 ? sum / cnt : 0;
 }
 
-/**
- * 5-Guard High-FPS Falling-Object Detector with Complete Human Body / Person Rejection:
- *
- * Why moving your body, head, hair, glasses, or shirt will NEVER trigger DUMPING:
- * - Guard 1 (Global Body Motion Veto): If > 9 cells move or >= 2 skin cells move strongly, the person is moving.
- * - Guard 2 (Full Human Silhouette Mask — Hair + Face + Shoulders + Torso):
- *   Any skin cell AND its surrounding hair (above), ears/glasses (sides), and shoulders/collar/chest (below)
- *   are masked as part of the person whenever the person's head/skin has motion.
- * - Guard 3 (Compact Projectile Size): Only small 1..4 cell blobs (max 2x2 grid span) qualify as projectiles.
- * - Guard 4 (Strict Multi-Frame Vertical Gravity Trajectory): Must fall straight down (`dx <= 0.12` per step,
- *   `dy >= 0.03` per step) across >= 3 consecutive transitions (`totalDy >= 0.17` and `totalDy >= 1.8 * totalDx`).
- * - Guard 5 (Pass-Through Background Restoration Test): When a real object falls through cell (r0, c0) at t_start
- *   down to (r1, c1) at t_end, cell (r0, c0) MUST return to its pre-drop background color after the object leaves it!
- *   When a person leans or moves their body, their body stays in (r0, c0), failing this test 100% of the time!
- */
+// Motion tracking proposes a falling object; it is not a learned YOLO score.
 function detectDumpedObjectsOnly(decoded) {
   const fineCell = IMAGE_SIZE / BOX_GRID; // 14px
   const numFrames = decoded.length;
@@ -423,9 +409,8 @@ function detectDumpedObjectsOnly(decoded) {
       }
     }
 
-    // Guard 1: If the person's body or head is moving broadly (> 9 cells moving, or >= 3 skin cells moving),
-    // skip this frame completely so body/head movement is NEVER treated as a falling object.
-    if (totalMovingCells > 9 || movingSkinCells >= 3) {
+    // Reject broad scene changes. A moving person must not veto a separate falling item.
+    if (totalMovingCells > BOX_GRID * BOX_GRID * 0.65) {
       blobsPerFrame.push([]);
       continue;
     }
@@ -438,7 +423,7 @@ function detectDumpedObjectsOnly(decoded) {
           // If this skin cell is moving even slightly (e.g. head/hand micro-motion), mask its 1-cell neighborhood
           // (hair above forehead, glasses/ears on sides, collar/shoulders below chin)
           if (cellDiff[r][c] > 0.022) {
-            for (let dr = -1; dr <= 2; dr++) {
+            for (let dr = -1; dr <= 1; dr++) {
               for (let dc = -1; dc <= 1; dc++) {
                 const nr = r + dr;
                 const nc = c + dc;
@@ -458,7 +443,7 @@ function detectDumpedObjectsOnly(decoded) {
 
     for (let r = 0; r < BOX_GRID; r++) {
       for (let c = 0; c < BOX_GRID; c++) {
-        if (visited[r][c] || isHumanMask[r][c] || cellDiff[r][c] < 0.058) continue;
+        if (visited[r][c] || isHumanMask[r][c] || cellDiff[r][c] < 0.018) continue;
 
         const queue = [[r, c]];
         visited[r][c] = true;
@@ -487,7 +472,7 @@ function detectDumpedObjectsOnly(decoded) {
                 if (isHumanMask[nr][nc] && cellDiff[nr][nc] > 0.035) {
                   touchesHumanMask = true;
                 }
-                if (!visited[nr][nc] && !isHumanMask[nr][nc] && cellDiff[nr][nc] >= 0.05) {
+                if (!visited[nr][nc] && !isHumanMask[nr][nc] && cellDiff[nr][nc] >= 0.018) {
                   visited[nr][nc] = true;
                   queue.push([nr, nc]);
                 }
@@ -499,7 +484,7 @@ function detectDumpedObjectsOnly(decoded) {
         const spanW = maxC - minC + 1;
         const spanH = maxR - minR + 1;
         // Guard 3: Compact Projectile Geometry (1..4 cells, max 2x2 grid span)
-        if (count >= 1 && count <= 4 && spanW <= 2 && spanH <= 2 && sumW > 0) {
+        if (count >= 1 && count <= 9 && spanW <= 3 && spanH <= 3 && sumW > 0) {
           candidates.push({
             t,
             cx: sumX / sumW,
@@ -529,7 +514,7 @@ function detectDumpedObjectsOnly(decoded) {
       for (let nextFrameIdx = startFrameIdx + 1; nextFrameIdx < blobsPerFrame.length; nextFrameIdx++) {
         const prevBlob = chain[chain.length - 1];
         const frameGap = (nextFrameIdx + 1) - prevBlob.t;
-        if (frameGap > 2) break; // Must be consecutive or at most 1 skipped frame at 17 FPS
+        if (frameGap > 4) break; // Must be consecutive or at most 1 skipped frame at 17 FPS
 
         // Find the candidate in nextFrameIdx that continues straight downward from prevBlob
         let bestNext = null;
@@ -537,7 +522,7 @@ function detectDumpedObjectsOnly(decoded) {
           const dyStep = cand.cy - prevBlob.cy;
           const dxStep = Math.abs(cand.cx - prevBlob.cx);
           // Falling object moves strictly downward (dyStep >= 0.03) in the same vertical column (dxStep <= 0.13)
-          if (dyStep >= 0.03 && dyStep <= 0.35 && dxStep <= 0.13) {
+          if (dyStep >= 0.012 && dyStep <= 0.35 && dxStep <= 0.13) {
             if (!bestNext || dyStep > bestNext.cy - prevBlob.cy) {
               bestNext = cand;
             }
@@ -549,7 +534,7 @@ function detectDumpedObjectsOnly(decoded) {
       }
 
       // Require at least 3 consecutive downward transitions (e.g. t1 -> t2 -> t3)
-      if (chain.length >= 3) {
+      if (chain.length >= 4) {
         const first = chain[0];
         const last = chain[chain.length - 1];
         const totalDy = last.cy - first.cy;
@@ -557,7 +542,7 @@ function detectDumpedObjectsOnly(decoded) {
 
         // Must have fallen at least 17% of frame height, predominantly straight down,
         // and the final position must have detached from moving skin/hands
-        if (totalDy >= 0.17 && totalDy >= totalDx * 1.8 && !last.touchesHumanMask) {
+        if (totalDy >= Math.max(0.08, (first.maxR-first.minR+1)/BOX_GRID * .75) && totalDy >= totalDx * 1.8 && !last.touchesHumanMask) {
           // Guard 5: Pass-Through Background Restoration Test!
           // Check that the starting cell where the object was at `first.t` returned to the pre-drop background by `last.t`.
           const preFrame = decoded[Math.max(0, first.t - 1)];
@@ -606,11 +591,11 @@ function detectDumpedObjectsOnly(decoded) {
     const targetBlob = chain[chain.length - 1];
     peakFrameIdx = targetBlob.t;
 
-    const conf = Math.min(0.96, 0.70 + totalDy * 1.1 + chain.length * 0.03);
     verifiedBoxes.push({
       class_id: 0,
-      class_name: 'littering',
-      confidence: conf,
+      class_name: 'release_candidate',
+      source: 'motion_tracker',
+      confidence: null,
       norm_box: [
         Math.max(0.02, targetBlob.minC / BOX_GRID - 0.03),
         Math.max(0.02, targetBlob.minR / BOX_GRID - 0.03),
@@ -785,55 +770,15 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels) {
     }
   }
 
-  // Strictly gate classification by the 5-Guard verified falling projectile detector
   const rawMlpProb = forwardNeuralNetwork(features528);
   const hasVerifiedDump = activeRegions.length > 0;
-  const topBoxConf = hasVerifiedDump ? activeRegions[0].confidence : 0;
-
-  const nnProb = hasVerifiedDump
-    ? Math.max(0.68, Math.min(0.96, 0.40 * rawMlpProb + 0.60 * topBoxConf))
-    : Math.min(0.18, rawMlpProb * 0.22);
-
   const elapsedSec = Math.max(0.008, (Date.now() - t0) / 1000);
-  const actions = [];
-
-  if (selectedModels.includes('neural_network')) {
-    actions.push({
-      model: 'neural_network',
-      label_title: 'Neural Network (MLP)',
-      prediction: nnProb >= 0.5 ? 1 : 0,
-      verdict: nnProb >= 0.5 ? 'DUMPING' : 'NO DUMPING',
-      score: nnProb,
-      score_kind: 'Spatiotemporal MLP + 5-Guard Projectile Tracker (threshold 0.5)',
-      seconds: elapsedSec,
-    });
-  }
-  if (selectedModels.includes('movinet_a0')) {
-    const moviScore = hasVerifiedDump
-      ? Math.max(0.62, Math.min(0.94, nnProb * 0.94))
-      : Math.min(0.22, nnProb * 0.85);
-    actions.push({
-      model: 'movinet_a0',
-      label_title: 'MoViNet A0',
-      prediction: moviScore >= 0.5 ? 1 : 0,
-      verdict: moviScore >= 0.5 ? 'DUMPING' : 'NO DUMPING',
-      score: moviScore,
-      score_kind: 'Uncalibrated sigmoid (threshold 0.5)',
-      seconds: elapsedSec * 1.12,
-    });
-  }
-  if (selectedModels.includes('optical_flow_svm')) {
-    const svmScore = hasVerifiedDump ? (nnProb - 0.42) * 2.2 : (nnProb - 0.58) * 2.0;
-    actions.push({
-      model: 'optical_flow_svm',
-      label_title: 'Optical Flow + SVM',
-      prediction: svmScore >= 0 ? 1 : 0,
-      verdict: svmScore >= 0 ? 'DUMPING' : 'NO DUMPING',
-      score: svmScore,
-      score_kind: 'SVM decision score (threshold 0)',
-      seconds: elapsedSec * 0.88,
-    });
-  }
+  const actions = selectedModels.includes('neural_network') ? [{
+    model: 'neural_network', label_title: 'Neural Network (MLP)',
+    prediction: rawMlpProb >= 0.5 ? 1 : 0,
+    verdict: rawMlpProb >= 0.5 ? 'DUMPING' : 'NO DUMPING',
+    score: rawMlpProb, score_kind: 'Local MLP output; event detection is separate', seconds: elapsedSec,
+  }] : [];
 
   let bestFrameUri = decoded[peakFrameIdx]?.uri || decoded[decoded.length - 1]?.uri;
   if (!bestFrameUri && Platform.OS === 'web') {
@@ -845,8 +790,10 @@ export async function analyzeLiveFramesOnEdge(rawFrames, selectedModels) {
   return {
     video_name: `Live Camera Stream (${decoded.length} frames @ High-FPS)`,
     mode: 'edge_browser',
+    event_detected: hasVerifiedDump,
     actions,
     yolo_live: {
+      source_timestamp_ms: decoded[peakFrameIdx]?.ts,
       total_detections: activeRegions.length,
       detections: activeRegions,
       strongest_detection: strongest,

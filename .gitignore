@@ -78,3 +78,6 @@ expo-app/dist/
 /results/retraining_v2/yolo/*_validation_predictions.json
 /results/yolo/release_v2/**/frames/
 /results/yolo/release_v2/*.log
+
+/results/live_v1/*.pt
+/results/live_v1/*.joblib

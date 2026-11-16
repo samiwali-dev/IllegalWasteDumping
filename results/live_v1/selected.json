@@ -1,0 +1,85 @@
+{
+  "models": {
+    "neural_network": {
+      "checkpoint": "src/neural_network/live_model.pt",
+      "sha256": "bfac48feeaf7d27a0cfeb64e1a60c92e3b699ecb1f682c99c5ab349403701ddd",
+      "validation": {
+        "real_windows": {
+          "accuracy": 0.6282051282051282,
+          "macro_f1": 0.6266710678329757,
+          "precision": 0.6,
+          "recall": 0.7105263157894737,
+          "confusion_matrix": [
+            [
+              22,
+              18
+            ],
+            [
+              11,
+              27
+            ]
+          ]
+        },
+        "static_false_positive_rate": 0.0,
+        "selection_score": 0.6266710678329757,
+        "eligible": true
+      },
+      "window_seconds": 1.4
+    },
+    "movinet": {
+      "checkpoint": "src/movinet/live_model.pt",
+      "sha256": "d4ae45af038474c9f7e1c9d9df3226d2e71299bd519eac91f8e35d801d9c08e3",
+      "validation": {
+        "real_windows": {
+          "accuracy": 0.8076923076923077,
+          "macro_f1": 0.8068988281894702,
+          "precision": 0.7555555555555555,
+          "recall": 0.8947368421052632,
+          "confusion_matrix": [
+            [
+              29,
+              11
+            ],
+            [
+              4,
+              34
+            ]
+          ]
+        },
+        "static_false_positive_rate": 0.0125,
+        "selection_score": 0.7968125928371019,
+        "eligible": true
+      },
+      "window_seconds": 1.4
+    },
+    "optical_flow_svm": {
+      "checkpoint": "src/optical_flow_svm/live_model.joblib",
+      "sha256": "d102a0ff4a923421c4776fbb1da4624a1c0abd8f684bc7f1cc2f38175813a41a",
+      "validation": {
+        "real_windows": {
+          "accuracy": 0.46153846153846156,
+          "macro_f1": 0.46118421052631575,
+          "precision": 0.4523809523809524,
+          "recall": 0.5,
+          "confusion_matrix": [
+            [
+              17,
+              23
+            ],
+            [
+              19,
+              19
+            ]
+          ]
+        },
+        "static_false_positive_rate": 0.0,
+        "selection_score": 0.46118421052631575,
+        "eligible": true
+      },
+      "window_seconds": 1.4
+    }
+  },
+  "test_used_for_training": false,
+  "screenshot_used_for_training": false,
+  "note": "Live short-window models; whole-video model files and metrics are separate."
+}
