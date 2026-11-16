@@ -1,0 +1,2696 @@
+{
+  "scope": "Development evaluation only; official test videos excluded.",
+  "split": "validation",
+  "expected_videos": 80,
+  "strategy": "object_tracks_v2",
+  "confidence_threshold": 0.5,
+  "checkpoint": "results/retraining_v2/yolo/transfer/weights/best.pt",
+  "checkpoint_sha256": "c580dea8c7665f0d843ef780a048aea6b48a628d041ea239296beba686e52f96",
+  "code_sha256": {
+    "main.py": "3c5522d939e3682445bc5e312ab266d8bf6f41de2b2ff76b3f3baa6000099654",
+    "release_pipeline.py": "a52f1635a4ece3e3a04b1df4ad5a16c114b3f981c19c55835a5110374b3f959e",
+    "item_tracking.py": "79af09840c1beec738f988eddf6c12884564538202ca73c9d692953a64c77668",
+    "temporal.py": "f344489603c6105c9e30325f31e34d4d2fb8fddf49740f5f6bc86eb569f934e4"
+  },
+  "metric_note": "Candidate presence compared with video labels. This does not measure correct object localization, and is not an independent test or live-camera accuracy estimate.",
+  "test_used_for_selection": false,
+  "videos": [
+    {
+      "video": "vid0004.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 58,
+      "seconds": 11.46,
+      "events": []
+    },
+    {
+      "video": "vid0007.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 30,
+      "seconds": 4.46,
+      "events": []
+    },
+    {
+      "video": "vid0008.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 102,
+      "seconds": 6.35,
+      "events": []
+    },
+    {
+      "video": "vid0009.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 119,
+      "seconds": 6.1,
+      "events": []
+    },
+    {
+      "video": "vid0013.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 194,
+      "seconds": 13.04,
+      "events": []
+    },
+    {
+      "video": "vid0020.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 10,
+      "seconds": 1.08,
+      "events": []
+    },
+    {
+      "video": "vid0032.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 40,
+      "seconds": 3.64,
+      "events": []
+    },
+    {
+      "video": "vid0035.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 69,
+      "seconds": 3.5,
+      "events": []
+    },
+    {
+      "video": "vid0036.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 94,
+      "seconds": 5.72,
+      "events": []
+    },
+    {
+      "video": "vid0041.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 38,
+      "seconds": 3.14,
+      "events": []
+    },
+    {
+      "video": "vid0056.mp4",
+      "label": 1,
+      "count": 1,
+      "frames_scanned": 48,
+      "seconds": 2.38,
+      "events": [
+        {
+          "track_id": 2,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6170588731765747,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            277.3333333333333,
+            382.6666666666667,
+            437.3333333333333,
+            510.6666666666667
+          ],
+          "norm_box": [
+            0.21666666666666667,
+            0.5314814814814814,
+            0.3416666666666667,
+            0.7092592592592593
+          ],
+          "source_actor": {
+            "class_name": "truck",
+            "confidence": 0.6376325488090515
+          },
+          "persistent_observations": 4,
+          "trail": [
+            {
+              "cx": 0.15572916666666667,
+              "cy": 0.7157407407407408,
+              "t": 11.808842105263158
+            },
+            {
+              "cx": 0.27708333333333335,
+              "cy": 0.6231481481481481,
+              "t": 13.72378947368421
+            },
+            {
+              "cx": 0.2791666666666667,
+              "cy": 0.6185185185185185,
+              "t": 14.042947368421052
+            },
+            {
+              "cx": 0.278125,
+              "cy": 0.6222222222222222,
+              "t": 15.000421052631578
+            }
+          ],
+          "timestamp_seconds": 14.362105263157895,
+          "source_frame_index": 180
+        }
+      ]
+    },
+    {
+      "video": "vid0071.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 235,
+      "seconds": 12.85,
+      "events": []
+    },
+    {
+      "video": "vid0077.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 109,
+      "seconds": 6.82,
+      "events": []
+    },
+    {
+      "video": "vid0081.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 34,
+      "seconds": 3.08,
+      "events": []
+    },
+    {
+      "video": "vid0083.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 158,
+      "seconds": 12.49,
+      "events": []
+    },
+    {
+      "video": "vid0087.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 15,
+      "seconds": 1.7,
+      "events": []
+    },
+    {
+      "video": "vid0095.mp4",
+      "label": 1,
+      "count": 1,
+      "frames_scanned": 41,
+      "seconds": 2.34,
+      "events": [
+        {
+          "track_id": 1,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6226987838745117,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            610.6666666666666,
+            341.3333333333333,
+            749.3333333333334,
+            421.3333333333333
+          ],
+          "norm_box": [
+            0.47708333333333336,
+            0.4740740740740741,
+            0.5854166666666667,
+            0.5851851851851851
+          ],
+          "source_actor": {
+            "class_name": "car",
+            "confidence": 0.36788061261177063
+          },
+          "persistent_observations": 3,
+          "trail": [
+            {
+              "cx": 0.5927083333333333,
+              "cy": 0.48703703703703705,
+              "t": 1.0740495867768594
+            },
+            {
+              "cx": 0.5807291666666666,
+              "cy": 0.5055555555555555,
+              "t": 1.790082644628099
+            },
+            {
+              "cx": 0.53125,
+              "cy": 0.5296296296296297,
+              "t": 2.8641322314049584
+            },
+            {
+              "cx": 0.5104166666666666,
+              "cy": 0.5601851851851852,
+              "t": 3.938181818181818
+            }
+          ],
+          "timestamp_seconds": 2.8641322314049584,
+          "source_frame_index": 24
+        }
+      ]
+    },
+    {
+      "video": "vid0096.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 29,
+      "seconds": 2.2,
+      "events": []
+    },
+    {
+      "video": "vid0099.mp4",
+      "label": 0,
+      "count": 2,
+      "frames_scanned": 35,
+      "seconds": 3.35,
+      "events": [
+        {
+          "track_id": 4,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6288987398147583,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            2568.5333333333333,
+            1493.3333333333333,
+            2611.2,
+            1523.2
+          ],
+          "norm_box": [
+            0.6270833333333333,
+            0.691699604743083,
+            0.6375,
+            0.7055335968379447
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8626474142074585
+          },
+          "persistent_observations": 4,
+          "trail": [
+            {
+              "cx": 0.6270833333333333,
+              "cy": 0.7055335968379447,
+              "t": 0.0
+            },
+            {
+              "cx": 0.6239583333333333,
+              "cy": 0.7075098814229249,
+              "t": 0.64
+            },
+            {
+              "cx": 0.6286458333333333,
+              "cy": 0.6996047430830039,
+              "t": 1.28
+            },
+            {
+              "cx": 0.6322916666666667,
+              "cy": 0.6986166007905138,
+              "t": 1.6
+            },
+            {
+              "cx": 0.6359375,
+              "cy": 0.6976284584980237,
+              "t": 1.92
+            }
+          ],
+          "timestamp_seconds": 1.6,
+          "source_frame_index": 40
+        },
+        {
+          "track_id": 7,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6782705187797546,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1245.8666666666666,
+            1454.9333333333334,
+            1331.2,
+            1493.3333333333333
+          ],
+          "norm_box": [
+            0.30416666666666664,
+            0.6739130434782609,
+            0.325,
+            0.691699604743083
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8970704674720764
+          },
+          "persistent_observations": 6,
+          "trail": [
+            {
+              "cx": 0.303125,
+              "cy": 0.6620553359683794,
+              "t": 3.52
+            },
+            {
+              "cx": 0.2989583333333333,
+              "cy": 0.6610671936758893,
+              "t": 4.48
+            },
+            {
+              "cx": 0.29791666666666666,
+              "cy": 0.6571146245059288,
+              "t": 4.8
+            },
+            {
+              "cx": 0.29791666666666666,
+              "cy": 0.6719367588932806,
+              "t": 5.44
+            },
+            {
+              "cx": 0.30364583333333334,
+              "cy": 0.6847826086956522,
+              "t": 5.76
+            },
+            {
+              "cx": 0.3145833333333333,
+              "cy": 0.682806324110672,
+              "t": 6.08
+            },
+            {
+              "cx": 0.3171875,
+              "cy": 0.6808300395256917,
+              "t": 7.04
+            }
+          ],
+          "timestamp_seconds": 6.08,
+          "source_frame_index": 152
+        }
+      ]
+    },
+    {
+      "video": "vid0100.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 49,
+      "seconds": 2.47,
+      "events": []
+    },
+    {
+      "video": "vid0107.mp4",
+      "label": 1,
+      "count": 1,
+      "frames_scanned": 25,
+      "seconds": 1.38,
+      "events": [
+        {
+          "track_id": 8,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.8444576263427734,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            78.0,
+            766.0,
+            138.0,
+            822.0
+          ],
+          "norm_box": [
+            0.040625,
+            0.7092592592592593,
+            0.071875,
+            0.7611111111111111
+          ],
+          "source_actor": {
+            "class_name": "car",
+            "confidence": 0.7879878878593445
+          },
+          "persistent_observations": 5,
+          "trail": [],
+          "timestamp_seconds": 4.48,
+          "source_frame_index": 112
+        }
+      ]
+    },
+    {
+      "video": "vid0113.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 32,
+      "seconds": 2.22,
+      "events": []
+    },
+    {
+      "video": "vid0116.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 55,
+      "seconds": 3.83,
+      "events": []
+    },
+    {
+      "video": "vid0119.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 75,
+      "seconds": 6.01,
+      "events": []
+    },
+    {
+      "video": "vid0120.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 38,
+      "seconds": 3.35,
+      "events": []
+    },
+    {
+      "video": "vid0123.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 32,
+      "seconds": 2.62,
+      "events": []
+    },
+    {
+      "video": "vid0128.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 180,
+      "seconds": 11.6,
+      "events": []
+    },
+    {
+      "video": "vid0133.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 54,
+      "seconds": 3.89,
+      "events": []
+    },
+    {
+      "video": "vid0139.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 28,
+      "seconds": 2.36,
+      "events": []
+    },
+    {
+      "video": "vid0146.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 195,
+      "seconds": 8.89,
+      "events": []
+    },
+    {
+      "video": "vid0164.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 95,
+      "seconds": 5.43,
+      "events": []
+    },
+    {
+      "video": "vid0172.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 42,
+      "seconds": 3.39,
+      "events": []
+    },
+    {
+      "video": "vid0178.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 46,
+      "seconds": 3.59,
+      "events": []
+    },
+    {
+      "video": "vid0182.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 42,
+      "seconds": 2.28,
+      "events": []
+    },
+    {
+      "video": "vid0183.mp4",
+      "label": 1,
+      "count": 1,
+      "frames_scanned": 33,
+      "seconds": 1.46,
+      "events": [
+        {
+          "track_id": 2,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.541367769241333,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            290.6666666666667,
+            410.6666666666667,
+            305.3333333333333,
+            418.6666666666667
+          ],
+          "norm_box": [
+            0.22708333333333333,
+            0.5703703703703704,
+            0.23854166666666668,
+            0.5814814814814815
+          ],
+          "source_actor": {
+            "class_name": "car",
+            "confidence": 0.9022637605667114
+          },
+          "persistent_observations": 10,
+          "trail": [],
+          "timestamp_seconds": 6.0060060060060065,
+          "source_frame_index": 144
+        }
+      ]
+    },
+    {
+      "video": "vid0185.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 38,
+      "seconds": 2.82,
+      "events": []
+    },
+    {
+      "video": "vid0186.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 99,
+      "seconds": 5.51,
+      "events": []
+    },
+    {
+      "video": "vid0191.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 48,
+      "seconds": 3.66,
+      "events": []
+    },
+    {
+      "video": "vid0196.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 230,
+      "seconds": 15.1,
+      "events": []
+    },
+    {
+      "video": "vid0200.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 109,
+      "seconds": 7.15,
+      "events": []
+    },
+    {
+      "video": "vid0210.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 103,
+      "seconds": 5.27,
+      "events": []
+    },
+    {
+      "video": "vid0217.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 35,
+      "seconds": 1.87,
+      "events": []
+    },
+    {
+      "video": "vid0237.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 27,
+      "seconds": 2.3,
+      "events": []
+    },
+    {
+      "video": "vid0239.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 21,
+      "seconds": 2.07,
+      "events": []
+    },
+    {
+      "video": "vid0246.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 112,
+      "seconds": 6.31,
+      "events": []
+    },
+    {
+      "video": "vid0250.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 39,
+      "seconds": 3.06,
+      "events": []
+    },
+    {
+      "video": "vid0281.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 87,
+      "seconds": 4.13,
+      "events": []
+    },
+    {
+      "video": "vid0290.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 33,
+      "seconds": 2.72,
+      "events": []
+    },
+    {
+      "video": "vid0300.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 150,
+      "seconds": 7.91,
+      "events": []
+    },
+    {
+      "video": "vid0301.mp4",
+      "label": 0,
+      "count": 2,
+      "frames_scanned": 47,
+      "seconds": 2.89,
+      "events": [
+        {
+          "track_id": 10,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.7591269016265869,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            1794.0,
+            570.0,
+            1836.0,
+            588.0
+          ],
+          "norm_box": [
+            0.934375,
+            0.5277777777777778,
+            0.95625,
+            0.5444444444444444
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8711186647415161
+          },
+          "persistent_observations": 4,
+          "trail": [],
+          "timestamp_seconds": 2.9362696029362696,
+          "source_frame_index": 88
+        },
+        {
+          "track_id": 15,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.8781223297119141,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1836.0,
+            634.0,
+            1878.0,
+            662.0
+          ],
+          "norm_box": [
+            0.95625,
+            0.587037037037037,
+            0.978125,
+            0.6129629629629629
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9282057881355286
+          },
+          "persistent_observations": 9,
+          "trail": [
+            {
+              "cx": 0.9671875,
+              "cy": 0.5861111111111111,
+              "t": 7.207207207207207
+            },
+            {
+              "cx": 0.96875,
+              "cy": 0.5935185185185186,
+              "t": 8.274941608274942
+            },
+            {
+              "cx": 0.9671875,
+              "cy": 0.5972222222222222,
+              "t": 9.342676009342677
+            },
+            {
+              "cx": 0.9682291666666667,
+              "cy": 0.6018518518518519,
+              "t": 10.41041041041041
+            }
+          ],
+          "timestamp_seconds": 9.876543209876544,
+          "source_frame_index": 296
+        }
+      ]
+    },
+    {
+      "video": "vid0312.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 261,
+      "seconds": 17.97,
+      "events": []
+    },
+    {
+      "video": "vid0316.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 25,
+      "seconds": 2.2,
+      "events": []
+    },
+    {
+      "video": "vid0323.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 35,
+      "seconds": 3.39,
+      "events": []
+    },
+    {
+      "video": "vid0325.mp4",
+      "label": 1,
+      "count": 1,
+      "frames_scanned": 19,
+      "seconds": 1.52,
+      "events": [
+        {
+          "track_id": 10,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.635452926158905,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            910.0,
+            744.0,
+            934.0,
+            764.0
+          ],
+          "norm_box": [
+            0.4739583333333333,
+            0.6888888888888889,
+            0.4864583333333333,
+            0.7074074074074074
+          ],
+          "source_actor": {
+            "class_name": "car",
+            "confidence": 0.5629758238792419
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 2.24,
+          "source_frame_index": 56
+        }
+      ]
+    },
+    {
+      "video": "vid0329.mp4",
+      "label": 0,
+      "count": 24,
+      "frames_scanned": 209,
+      "seconds": 14.98,
+      "events": [
+        {
+          "track_id": 7,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6111034750938416,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            682.0,
+            942.0,
+            708.0,
+            964.0
+          ],
+          "norm_box": [
+            0.35520833333333335,
+            0.8722222222222222,
+            0.36875,
+            0.8925925925925926
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8187854886054993
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 0.8,
+          "source_frame_index": 24
+        },
+        {
+          "track_id": 15,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.8123440742492676,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            0.0,
+            618.0,
+            92.0,
+            768.0
+          ],
+          "norm_box": [
+            0.0,
+            0.5722222222222222,
+            0.04791666666666667,
+            0.7111111111111111
+          ],
+          "source_actor": {
+            "class_name": "car",
+            "confidence": 0.3582638204097748
+          },
+          "persistent_observations": 4,
+          "trail": [],
+          "timestamp_seconds": 2.4,
+          "source_frame_index": 72
+        },
+        {
+          "track_id": 21,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5188291668891907,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            842.0,
+            704.0,
+            914.0,
+            746.0
+          ],
+          "norm_box": [
+            0.43854166666666666,
+            0.6518518518518519,
+            0.47604166666666664,
+            0.6907407407407408
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.531906008720398
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 3.466666666666667,
+          "source_frame_index": 104
+        },
+        {
+          "track_id": 2,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.9147219657897949,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            716.0,
+            770.0,
+            770.0,
+            864.0
+          ],
+          "norm_box": [
+            0.3729166666666667,
+            0.7129629629629629,
+            0.4010416666666667,
+            0.8
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8187854886054993
+          },
+          "persistent_observations": 27,
+          "trail": [
+            {
+              "cx": 0.37135416666666665,
+              "cy": 0.8074074074074075,
+              "t": 0.0
+            },
+            {
+              "cx": 0.3734375,
+              "cy": 0.8009259259259259,
+              "t": 0.5333333333333333
+            },
+            {
+              "cx": 0.37447916666666664,
+              "cy": 0.7953703703703704,
+              "t": 0.8
+            },
+            {
+              "cx": 0.37604166666666666,
+              "cy": 0.7925925925925926,
+              "t": 1.0666666666666667
+            },
+            {
+              "cx": 0.3776041666666667,
+              "cy": 0.7888888888888889,
+              "t": 1.3333333333333333
+            },
+            {
+              "cx": 0.3807291666666667,
+              "cy": 0.7851851851851852,
+              "t": 1.6
+            },
+            {
+              "cx": 0.38645833333333335,
+              "cy": 0.7814814814814814,
+              "t": 1.8666666666666667
+            },
+            {
+              "cx": 0.39114583333333336,
+              "cy": 0.7805555555555556,
+              "t": 2.1333333333333333
+            },
+            {
+              "cx": 0.396875,
+              "cy": 0.7796296296296297,
+              "t": 2.4
+            },
+            {
+              "cx": 0.4015625,
+              "cy": 0.7796296296296297,
+              "t": 2.6666666666666665
+            },
+            {
+              "cx": 0.40520833333333334,
+              "cy": 0.7768518518518519,
+              "t": 2.933333333333333
+            },
+            {
+              "cx": 0.4088541666666667,
+              "cy": 0.775,
+              "t": 3.466666666666667
+            },
+            {
+              "cx": 0.40572916666666664,
+              "cy": 0.7777777777777778,
+              "t": 4.533333333333333
+            },
+            {
+              "cx": 0.4010416666666667,
+              "cy": 0.7777777777777778,
+              "t": 5.066666666666666
+            },
+            {
+              "cx": 0.39427083333333335,
+              "cy": 0.7777777777777778,
+              "t": 5.866666666666666
+            },
+            {
+              "cx": 0.3932291666666667,
+              "cy": 0.7722222222222223,
+              "t": 6.133333333333334
+            },
+            {
+              "cx": 0.39166666666666666,
+              "cy": 0.7685185185185185,
+              "t": 6.4
+            },
+            {
+              "cx": 0.39114583333333336,
+              "cy": 0.7648148148148148,
+              "t": 6.933333333333334
+            },
+            {
+              "cx": 0.39010416666666664,
+              "cy": 0.7592592592592593,
+              "t": 7.2
+            },
+            {
+              "cx": 0.38697916666666665,
+              "cy": 0.7564814814814815,
+              "t": 7.466666666666667
+            },
+            {
+              "cx": 0.38385416666666666,
+              "cy": 0.7537037037037037,
+              "t": 8.0
+            }
+          ],
+          "timestamp_seconds": 7.466666666666667,
+          "source_frame_index": 224
+        },
+        {
+          "track_id": 5,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6758506894111633,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1354.0,
+            832.0,
+            1418.0,
+            892.0
+          ],
+          "norm_box": [
+            0.7052083333333333,
+            0.7703703703703704,
+            0.7385416666666667,
+            0.825925925925926
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8895861506462097
+          },
+          "persistent_observations": 31,
+          "trail": [
+            {
+              "cx": 0.7109375,
+              "cy": 0.8537037037037037,
+              "t": 0.0
+            },
+            {
+              "cx": 0.7197916666666667,
+              "cy": 0.8611111111111112,
+              "t": 0.26666666666666666
+            },
+            {
+              "cx": 0.7223958333333333,
+              "cy": 0.8555555555555555,
+              "t": 0.8
+            },
+            {
+              "cx": 0.7239583333333334,
+              "cy": 0.8527777777777777,
+              "t": 1.0666666666666667
+            },
+            {
+              "cx": 0.7276041666666667,
+              "cy": 0.8453703703703703,
+              "t": 1.6
+            },
+            {
+              "cx": 0.7333333333333333,
+              "cy": 0.8444444444444444,
+              "t": 1.8666666666666667
+            },
+            {
+              "cx": 0.7390625,
+              "cy": 0.8435185185185186,
+              "t": 2.1333333333333333
+            },
+            {
+              "cx": 0.74375,
+              "cy": 0.8425925925925926,
+              "t": 2.4
+            },
+            {
+              "cx": 0.75,
+              "cy": 0.8435185185185186,
+              "t": 2.6666666666666665
+            },
+            {
+              "cx": 0.7536458333333333,
+              "cy": 0.8425925925925926,
+              "t": 2.933333333333333
+            },
+            {
+              "cx": 0.75625,
+              "cy": 0.8407407407407408,
+              "t": 3.466666666666667
+            },
+            {
+              "cx": 0.7510416666666667,
+              "cy": 0.8398148148148148,
+              "t": 4.8
+            },
+            {
+              "cx": 0.7447916666666666,
+              "cy": 0.8407407407407408,
+              "t": 5.333333333333333
+            },
+            {
+              "cx": 0.7421875,
+              "cy": 0.8361111111111111,
+              "t": 5.866666666666666
+            },
+            {
+              "cx": 0.740625,
+              "cy": 0.8333333333333334,
+              "t": 6.133333333333334
+            },
+            {
+              "cx": 0.7380208333333333,
+              "cy": 0.8287037037037037,
+              "t": 6.4
+            },
+            {
+              "cx": 0.7229166666666667,
+              "cy": 0.7972222222222223,
+              "t": 7.466666666666667
+            },
+            {
+              "cx": 0.7286458333333333,
+              "cy": 0.8055555555555556,
+              "t": 7.733333333333333
+            },
+            {
+              "cx": 0.7270833333333333,
+              "cy": 0.8027777777777778,
+              "t": 8.0
+            },
+            {
+              "cx": 0.721875,
+              "cy": 0.7981481481481482,
+              "t": 8.533333333333333
+            },
+            {
+              "cx": 0.7182291666666667,
+              "cy": 0.7972222222222223,
+              "t": 8.8
+            }
+          ],
+          "timestamp_seconds": 8.533333333333333,
+          "source_frame_index": 256
+        },
+        {
+          "track_id": 43,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.8084166646003723,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            698.0,
+            688.0,
+            780.0,
+            856.0
+          ],
+          "norm_box": [
+            0.36354166666666665,
+            0.6370370370370371,
+            0.40625,
+            0.7925925925925926
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.914706826210022
+          },
+          "persistent_observations": 6,
+          "trail": [],
+          "timestamp_seconds": 8.533333333333333,
+          "source_frame_index": 256
+        },
+        {
+          "track_id": 46,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.587158739566803,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            1354.0,
+            834.0,
+            1396.0,
+            876.0
+          ],
+          "norm_box": [
+            0.7052083333333333,
+            0.7722222222222223,
+            0.7270833333333333,
+            0.8111111111111111
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9208001494407654
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 8.533333333333333,
+          "source_frame_index": 256
+        },
+        {
+          "track_id": 51,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6221580505371094,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            594.0,
+            768.0,
+            682.0,
+            802.0
+          ],
+          "norm_box": [
+            0.309375,
+            0.7111111111111111,
+            0.35520833333333335,
+            0.7425925925925926
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8570536375045776
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 9.866666666666667,
+          "source_frame_index": 296
+        },
+        {
+          "track_id": 50,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.7441609501838684,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            804.0,
+            770.0,
+            826.0,
+            792.0
+          ],
+          "norm_box": [
+            0.41875,
+            0.7129629629629629,
+            0.43020833333333336,
+            0.7333333333333333
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.42238086462020874
+          },
+          "persistent_observations": 4,
+          "trail": [
+            {
+              "cx": 0.43645833333333334,
+              "cy": 0.7287037037037037,
+              "t": 8.8
+            },
+            {
+              "cx": 0.4276041666666667,
+              "cy": 0.725,
+              "t": 10.133333333333333
+            },
+            {
+              "cx": 0.4244791666666667,
+              "cy": 0.7231481481481481,
+              "t": 10.666666666666666
+            },
+            {
+              "cx": 0.4276041666666667,
+              "cy": 0.7268518518518519,
+              "t": 11.466666666666667
+            }
+          ],
+          "timestamp_seconds": 10.666666666666666,
+          "source_frame_index": 320
+        },
+        {
+          "track_id": 79,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5789899230003357,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            894.0,
+            784.0,
+            914.0,
+            804.0
+          ],
+          "norm_box": [
+            0.465625,
+            0.725925925925926,
+            0.47604166666666664,
+            0.7444444444444445
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9100151658058167
+          },
+          "persistent_observations": 3,
+          "trail": [
+            {
+              "cx": 0.46041666666666664,
+              "cy": 0.7333333333333333,
+              "t": 16.266666666666666
+            },
+            {
+              "cx": 0.46510416666666665,
+              "cy": 0.7342592592592593,
+              "t": 16.533333333333335
+            },
+            {
+              "cx": 0.4708333333333333,
+              "cy": 0.7351851851851852,
+              "t": 16.8
+            },
+            {
+              "cx": 0.47604166666666664,
+              "cy": 0.737037037037037,
+              "t": 17.066666666666666
+            }
+          ],
+          "timestamp_seconds": 16.8,
+          "source_frame_index": 504
+        },
+        {
+          "track_id": 53,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.9570024609565735,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            774.0,
+            770.0,
+            828.0,
+            868.0
+          ],
+          "norm_box": [
+            0.403125,
+            0.7129629629629629,
+            0.43125,
+            0.8037037037037037
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.5741170048713684
+          },
+          "persistent_observations": 16,
+          "trail": [
+            {
+              "cx": 0.375,
+              "cy": 0.6935185185185185,
+              "t": 11.2
+            },
+            {
+              "cx": 0.3765625,
+              "cy": 0.6824074074074075,
+              "t": 11.733333333333333
+            },
+            {
+              "cx": 0.3802083333333333,
+              "cy": 0.6851851851851852,
+              "t": 12.0
+            },
+            {
+              "cx": 0.3859375,
+              "cy": 0.6842592592592592,
+              "t": 12.533333333333333
+            },
+            {
+              "cx": 0.38958333333333334,
+              "cy": 0.6851851851851852,
+              "t": 13.066666666666666
+            },
+            {
+              "cx": 0.39427083333333335,
+              "cy": 0.6851851851851852,
+              "t": 13.6
+            },
+            {
+              "cx": 0.3963541666666667,
+              "cy": 0.7111111111111111,
+              "t": 13.866666666666667
+            },
+            {
+              "cx": 0.39739583333333334,
+              "cy": 0.7175925925925926,
+              "t": 14.133333333333333
+            },
+            {
+              "cx": 0.40572916666666664,
+              "cy": 0.7564814814814815,
+              "t": 16.533333333333335
+            },
+            {
+              "cx": 0.4119791666666667,
+              "cy": 0.7574074074074074,
+              "t": 16.8
+            },
+            {
+              "cx": 0.4171875,
+              "cy": 0.7583333333333333,
+              "t": 17.066666666666666
+            },
+            {
+              "cx": 0.425,
+              "cy": 0.7601851851851852,
+              "t": 17.333333333333332
+            }
+          ],
+          "timestamp_seconds": 17.066666666666666,
+          "source_frame_index": 512
+        },
+        {
+          "track_id": 124,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6801342368125916,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1130.0,
+            754.0,
+            1156.0,
+            784.0
+          ],
+          "norm_box": [
+            0.5885416666666666,
+            0.6981481481481482,
+            0.6020833333333333,
+            0.725925925925926
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8842657208442688
+          },
+          "persistent_observations": 3,
+          "trail": [
+            {
+              "cx": 0.5786458333333333,
+              "cy": 0.7148148148148148,
+              "t": 18.4
+            },
+            {
+              "cx": 0.5895833333333333,
+              "cy": 0.7129629629629629,
+              "t": 18.666666666666668
+            },
+            {
+              "cx": 0.5953125,
+              "cy": 0.712037037037037,
+              "t": 18.933333333333334
+            },
+            {
+              "cx": 0.60625,
+              "cy": 0.7018518518518518,
+              "t": 19.733333333333334
+            }
+          ],
+          "timestamp_seconds": 18.933333333333334,
+          "source_frame_index": 568
+        },
+        {
+          "track_id": 128,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5693928003311157,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1146.0,
+            742.0,
+            1170.0,
+            770.0
+          ],
+          "norm_box": [
+            0.596875,
+            0.687037037037037,
+            0.609375,
+            0.7129629629629629
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8934974670410156
+          },
+          "persistent_observations": 4,
+          "trail": [
+            {
+              "cx": 0.6010416666666667,
+              "cy": 0.712037037037037,
+              "t": 18.933333333333334
+            },
+            {
+              "cx": 0.6026041666666667,
+              "cy": 0.7046296296296296,
+              "t": 19.466666666666665
+            },
+            {
+              "cx": 0.603125,
+              "cy": 0.7,
+              "t": 20.0
+            },
+            {
+              "cx": 0.6010416666666667,
+              "cy": 0.6972222222222222,
+              "t": 20.8
+            }
+          ],
+          "timestamp_seconds": 20.0,
+          "source_frame_index": 600
+        },
+        {
+          "track_id": 117,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.9601373672485352,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1054.0,
+            748.0,
+            1110.0,
+            844.0
+          ],
+          "norm_box": [
+            0.5489583333333333,
+            0.6925925925925925,
+            0.578125,
+            0.7814814814814814
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8370787501335144
+          },
+          "persistent_observations": 12,
+          "trail": [
+            {
+              "cx": 0.5385416666666667,
+              "cy": 0.7564814814814815,
+              "t": 18.4
+            },
+            {
+              "cx": 0.5484375,
+              "cy": 0.7546296296296297,
+              "t": 18.666666666666668
+            },
+            {
+              "cx": 0.5541666666666667,
+              "cy": 0.7527777777777778,
+              "t": 18.933333333333334
+            },
+            {
+              "cx": 0.5578125,
+              "cy": 0.7481481481481481,
+              "t": 19.2
+            },
+            {
+              "cx": 0.5609375,
+              "cy": 0.7462962962962963,
+              "t": 19.466666666666665
+            },
+            {
+              "cx": 0.5619791666666667,
+              "cy": 0.7425925925925926,
+              "t": 19.733333333333334
+            },
+            {
+              "cx": 0.5625,
+              "cy": 0.7388888888888889,
+              "t": 20.0
+            },
+            {
+              "cx": 0.5609375,
+              "cy": 0.7351851851851852,
+              "t": 21.066666666666666
+            },
+            {
+              "cx": 0.5635416666666667,
+              "cy": 0.737037037037037,
+              "t": 21.333333333333332
+            },
+            {
+              "cx": 0.5651041666666666,
+              "cy": 0.7342592592592593,
+              "t": 21.6
+            }
+          ],
+          "timestamp_seconds": 21.333333333333332,
+          "source_frame_index": 640
+        },
+        {
+          "track_id": 118,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.8626635670661926,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            980.0,
+            746.0,
+            1054.0,
+            784.0
+          ],
+          "norm_box": [
+            0.5104166666666666,
+            0.6907407407407408,
+            0.5489583333333333,
+            0.725925925925926
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8370787501335144
+          },
+          "persistent_observations": 12,
+          "trail": [
+            {
+              "cx": 0.5046875,
+              "cy": 0.7314814814814815,
+              "t": 18.4
+            },
+            {
+              "cx": 0.515625,
+              "cy": 0.7305555555555555,
+              "t": 18.666666666666668
+            },
+            {
+              "cx": 0.5197916666666667,
+              "cy": 0.7277777777777777,
+              "t": 18.933333333333334
+            },
+            {
+              "cx": 0.5244791666666667,
+              "cy": 0.7231481481481481,
+              "t": 19.2
+            },
+            {
+              "cx": 0.5270833333333333,
+              "cy": 0.7194444444444444,
+              "t": 19.466666666666665
+            },
+            {
+              "cx": 0.528125,
+              "cy": 0.7148148148148148,
+              "t": 20.0
+            },
+            {
+              "cx": 0.5260416666666666,
+              "cy": 0.7111111111111111,
+              "t": 20.8
+            },
+            {
+              "cx": 0.5296875,
+              "cy": 0.7083333333333334,
+              "t": 21.333333333333332
+            },
+            {
+              "cx": 0.5348958333333333,
+              "cy": 0.7083333333333334,
+              "t": 22.133333333333333
+            }
+          ],
+          "timestamp_seconds": 21.333333333333332,
+          "source_frame_index": 640
+        },
+        {
+          "track_id": 127,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6898320913314819,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1184.0,
+            772.0,
+            1204.0,
+            792.0
+          ],
+          "norm_box": [
+            0.6166666666666667,
+            0.7148148148148148,
+            0.6270833333333333,
+            0.7333333333333333
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8934974670410156
+          },
+          "persistent_observations": 5,
+          "trail": [
+            {
+              "cx": 0.6078125,
+              "cy": 0.7416666666666667,
+              "t": 18.666666666666668
+            },
+            {
+              "cx": 0.6135416666666667,
+              "cy": 0.7407407407407407,
+              "t": 18.933333333333334
+            },
+            {
+              "cx": 0.6208333333333333,
+              "cy": 0.7287037037037037,
+              "t": 20.266666666666666
+            },
+            {
+              "cx": 0.621875,
+              "cy": 0.7240740740740741,
+              "t": 21.333333333333332
+            },
+            {
+              "cx": 0.6255208333333333,
+              "cy": 0.7222222222222222,
+              "t": 21.866666666666667
+            }
+          ],
+          "timestamp_seconds": 21.333333333333332,
+          "source_frame_index": 640
+        },
+        {
+          "track_id": 143,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6160199046134949,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            938.0,
+            742.0,
+            978.0,
+            774.0
+          ],
+          "norm_box": [
+            0.48854166666666665,
+            0.687037037037037,
+            0.509375,
+            0.7166666666666667
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.914145827293396
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 21.333333333333332,
+          "source_frame_index": 640
+        },
+        {
+          "track_id": 145,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5114347338676453,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            976.0,
+            698.0,
+            1058.0,
+            732.0
+          ],
+          "norm_box": [
+            0.5083333333333333,
+            0.6462962962962963,
+            0.5510416666666667,
+            0.6777777777777778
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.914145827293396
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 23.2,
+          "source_frame_index": 696
+        },
+        {
+          "track_id": 151,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5557498335838318,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1090.0,
+            744.0,
+            1122.0,
+            774.0
+          ],
+          "norm_box": [
+            0.5677083333333334,
+            0.6888888888888889,
+            0.584375,
+            0.7166666666666667
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8440373539924622
+          },
+          "persistent_observations": 14,
+          "trail": [
+            {
+              "cx": 0.60625,
+              "cy": 0.6916666666666667,
+              "t": 24.0
+            },
+            {
+              "cx": 0.596875,
+              "cy": 0.6944444444444444,
+              "t": 25.066666666666666
+            },
+            {
+              "cx": 0.59375,
+              "cy": 0.6962962962962963,
+              "t": 25.6
+            },
+            {
+              "cx": 0.5885416666666666,
+              "cy": 0.6990740740740741,
+              "t": 26.933333333333334
+            },
+            {
+              "cx": 0.5854166666666667,
+              "cy": 0.700925925925926,
+              "t": 27.466666666666665
+            },
+            {
+              "cx": 0.5828125,
+              "cy": 0.7027777777777777,
+              "t": 27.733333333333334
+            },
+            {
+              "cx": 0.5770833333333333,
+              "cy": 0.7037037037037037,
+              "t": 28.266666666666666
+            }
+          ],
+          "timestamp_seconds": 28.533333333333335,
+          "source_frame_index": 856
+        },
+        {
+          "track_id": 169,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.7284049987792969,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1354.0,
+            656.0,
+            1378.0,
+            676.0
+          ],
+          "norm_box": [
+            0.7052083333333333,
+            0.6074074074074074,
+            0.7177083333333333,
+            0.6259259259259259
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9023120999336243
+          },
+          "persistent_observations": 4,
+          "trail": [
+            {
+              "cx": 0.7229166666666667,
+              "cy": 0.6101851851851852,
+              "t": 29.6
+            },
+            {
+              "cx": 0.7182291666666667,
+              "cy": 0.6111111111111112,
+              "t": 29.866666666666667
+            },
+            {
+              "cx": 0.7130208333333333,
+              "cy": 0.6138888888888889,
+              "t": 30.133333333333333
+            },
+            {
+              "cx": 0.7114583333333333,
+              "cy": 0.6166666666666667,
+              "t": 30.4
+            },
+            {
+              "cx": 0.7145833333333333,
+              "cy": 0.6222222222222222,
+              "t": 30.666666666666668
+            }
+          ],
+          "timestamp_seconds": 30.4,
+          "source_frame_index": 912
+        },
+        {
+          "track_id": 171,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5989668369293213,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1026.0,
+            758.0,
+            1064.0,
+            784.0
+          ],
+          "norm_box": [
+            0.534375,
+            0.7018518518518518,
+            0.5541666666666667,
+            0.725925925925926
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8994821906089783
+          },
+          "persistent_observations": 3,
+          "trail": [
+            {
+              "cx": 0.5510416666666667,
+              "cy": 0.7037037037037037,
+              "t": 29.866666666666667
+            },
+            {
+              "cx": 0.5453125,
+              "cy": 0.7175925925925926,
+              "t": 30.4
+            },
+            {
+              "cx": 0.5442708333333334,
+              "cy": 0.7138888888888889,
+              "t": 30.666666666666668
+            },
+            {
+              "cx": 0.5463541666666667,
+              "cy": 0.7175925925925926,
+              "t": 30.933333333333334
+            }
+          ],
+          "timestamp_seconds": 30.666666666666668,
+          "source_frame_index": 920
+        },
+        {
+          "track_id": 173,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5691801905632019,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            824.0,
+            764.0,
+            868.0,
+            798.0
+          ],
+          "norm_box": [
+            0.42916666666666664,
+            0.7074074074074074,
+            0.45208333333333334,
+            0.7388888888888889
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.899177610874176
+          },
+          "persistent_observations": 4,
+          "trail": [
+            {
+              "cx": 0.4390625,
+              "cy": 0.7111111111111111,
+              "t": 29.866666666666667
+            },
+            {
+              "cx": 0.43645833333333334,
+              "cy": 0.7129629629629629,
+              "t": 30.133333333333333
+            },
+            {
+              "cx": 0.440625,
+              "cy": 0.7231481481481481,
+              "t": 30.933333333333334
+            },
+            {
+              "cx": 0.44635416666666666,
+              "cy": 0.725925925925926,
+              "t": 31.2
+            }
+          ],
+          "timestamp_seconds": 30.933333333333334,
+          "source_frame_index": 928
+        },
+        {
+          "track_id": 281,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.7770641446113586,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1028.0,
+            828.0,
+            1088.0,
+            874.0
+          ],
+          "norm_box": [
+            0.5354166666666667,
+            0.7666666666666667,
+            0.5666666666666667,
+            0.8092592592592592
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8655387759208679
+          },
+          "persistent_observations": 3,
+          "trail": [
+            {
+              "cx": 0.5229166666666667,
+              "cy": 0.7861111111111111,
+              "t": 38.93333333333333
+            },
+            {
+              "cx": 0.5479166666666667,
+              "cy": 0.7935185185185185,
+              "t": 39.2
+            },
+            {
+              "cx": 0.5510416666666667,
+              "cy": 0.787962962962963,
+              "t": 39.46666666666667
+            },
+            {
+              "cx": 0.55625,
+              "cy": 0.7796296296296297,
+              "t": 39.733333333333334
+            }
+          ],
+          "timestamp_seconds": 39.46666666666667,
+          "source_frame_index": 1184
+        },
+        {
+          "track_id": 272,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.9561822414398193,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            968.0,
+            786.0,
+            1020.0,
+            882.0
+          ],
+          "norm_box": [
+            0.5041666666666667,
+            0.7277777777777777,
+            0.53125,
+            0.8166666666666667
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8656351566314697
+          },
+          "persistent_observations": 8,
+          "trail": [
+            {
+              "cx": 0.4796875,
+              "cy": 0.8537037037037037,
+              "t": 38.4
+            },
+            {
+              "cx": 0.48385416666666664,
+              "cy": 0.8435185185185186,
+              "t": 38.666666666666664
+            },
+            {
+              "cx": 0.4947916666666667,
+              "cy": 0.8388888888888889,
+              "t": 38.93333333333333
+            },
+            {
+              "cx": 0.4942708333333333,
+              "cy": 0.8287037037037037,
+              "t": 39.2
+            },
+            {
+              "cx": 0.4973958333333333,
+              "cy": 0.825925925925926,
+              "t": 39.46666666666667
+            },
+            {
+              "cx": 0.503125,
+              "cy": 0.8185185185185185,
+              "t": 39.733333333333334
+            },
+            {
+              "cx": 0.5109375,
+              "cy": 0.7925925925925926,
+              "t": 40.0
+            },
+            {
+              "cx": 0.5177083333333333,
+              "cy": 0.7722222222222223,
+              "t": 40.266666666666666
+            },
+            {
+              "cx": 0.5234375,
+              "cy": 0.7611111111111111,
+              "t": 40.53333333333333
+            }
+          ],
+          "timestamp_seconds": 40.266666666666666,
+          "source_frame_index": 1208
+        }
+      ]
+    },
+    {
+      "video": "vid0331.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 166,
+      "seconds": 7.18,
+      "events": []
+    },
+    {
+      "video": "vid0339.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 197,
+      "seconds": 8.89,
+      "events": []
+    },
+    {
+      "video": "vid0343.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 152,
+      "seconds": 8.04,
+      "events": []
+    },
+    {
+      "video": "vid0346.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 41,
+      "seconds": 2.79,
+      "events": []
+    },
+    {
+      "video": "vid0362.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 48,
+      "seconds": 2.83,
+      "events": []
+    },
+    {
+      "video": "vid0363.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 54,
+      "seconds": 3.72,
+      "events": []
+    },
+    {
+      "video": "vid0367.mp4",
+      "label": 0,
+      "count": 3,
+      "frames_scanned": 105,
+      "seconds": 5.82,
+      "events": [
+        {
+          "track_id": 2,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.7569209337234497,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            162.0,
+            782.0,
+            488.0,
+            954.0
+          ],
+          "norm_box": [
+            0.084375,
+            0.7240740740740741,
+            0.25416666666666665,
+            0.8833333333333333
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.848721444606781
+          },
+          "persistent_observations": 12,
+          "trail": [
+            {
+              "cx": 0.08385416666666666,
+              "cy": 0.6759259259259259,
+              "t": 0.0
+            },
+            {
+              "cx": 0.10260416666666666,
+              "cy": 0.7583333333333333,
+              "t": 0.26666666666666666
+            },
+            {
+              "cx": 0.10677083333333333,
+              "cy": 0.7564814814814815,
+              "t": 0.5333333333333333
+            },
+            {
+              "cx": 0.11666666666666667,
+              "cy": 0.7657407407407407,
+              "t": 1.0666666666666667
+            },
+            {
+              "cx": 0.121875,
+              "cy": 0.7611111111111111,
+              "t": 1.6
+            },
+            {
+              "cx": 0.14010416666666667,
+              "cy": 0.7509259259259259,
+              "t": 1.8666666666666667
+            },
+            {
+              "cx": 0.14375,
+              "cy": 0.7546296296296297,
+              "t": 2.1333333333333333
+            },
+            {
+              "cx": 0.14895833333333333,
+              "cy": 0.7611111111111111,
+              "t": 2.4
+            },
+            {
+              "cx": 0.15208333333333332,
+              "cy": 0.7685185185185185,
+              "t": 2.6666666666666665
+            },
+            {
+              "cx": 0.14635416666666667,
+              "cy": 0.787962962962963,
+              "t": 2.933333333333333
+            },
+            {
+              "cx": 0.15729166666666666,
+              "cy": 0.8083333333333333,
+              "t": 3.2
+            },
+            {
+              "cx": 0.16927083333333334,
+              "cy": 0.8037037037037037,
+              "t": 3.466666666666667
+            }
+          ],
+          "timestamp_seconds": 3.466666666666667,
+          "source_frame_index": 104
+        },
+        {
+          "track_id": 65,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5048471689224243,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            818.0,
+            744.0,
+            838.0,
+            766.0
+          ],
+          "norm_box": [
+            0.42604166666666665,
+            0.6888888888888889,
+            0.43645833333333334,
+            0.7092592592592593
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.7822605967521667
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 16.8,
+          "source_frame_index": 504
+        },
+        {
+          "track_id": 67,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5390020608901978,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            1156.0,
+            784.0,
+            1206.0,
+            796.0
+          ],
+          "norm_box": [
+            0.6020833333333333,
+            0.725925925925926,
+            0.628125,
+            0.737037037037037
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8618232011795044
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 18.666666666666668,
+          "source_frame_index": 560
+        }
+      ]
+    },
+    {
+      "video": "vid0378.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 220,
+      "seconds": 12.5,
+      "events": []
+    },
+    {
+      "video": "vid0381.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 181,
+      "seconds": 10.17,
+      "events": []
+    },
+    {
+      "video": "vid0382.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 73,
+      "seconds": 3.88,
+      "events": []
+    },
+    {
+      "video": "vid0392.mp4",
+      "label": 1,
+      "count": 2,
+      "frames_scanned": 29,
+      "seconds": 1.71,
+      "events": [
+        {
+          "track_id": 2,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5494479537010193,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            438.6666666666667,
+            438.6666666666667,
+            588.0,
+            537.3333333333334
+          ],
+          "norm_box": [
+            0.34270833333333334,
+            0.6092592592592593,
+            0.459375,
+            0.7462962962962963
+          ],
+          "source_actor": {
+            "class_name": "truck",
+            "confidence": 0.639528751373291
+          },
+          "persistent_observations": 8,
+          "trail": [
+            {
+              "cx": 0.4421875,
+              "cy": 0.6601851851851852,
+              "t": 4.16
+            },
+            {
+              "cx": 0.46927083333333336,
+              "cy": 0.6564814814814814,
+              "t": 5.12
+            },
+            {
+              "cx": 0.47708333333333336,
+              "cy": 0.6564814814814814,
+              "t": 5.44
+            },
+            {
+              "cx": 0.47239583333333335,
+              "cy": 0.6574074074074074,
+              "t": 6.08
+            },
+            {
+              "cx": 0.4010416666666667,
+              "cy": 0.6777777777777778,
+              "t": 6.4
+            },
+            {
+              "cx": 0.5057291666666667,
+              "cy": 0.6564814814814814,
+              "t": 6.72
+            }
+          ],
+          "timestamp_seconds": 6.4,
+          "source_frame_index": 160
+        },
+        {
+          "track_id": 4,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5987203121185303,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            596.0,
+            481.3333333333333,
+            692.0,
+            540.0
+          ],
+          "norm_box": [
+            0.465625,
+            0.6685185185185185,
+            0.540625,
+            0.75
+          ],
+          "source_actor": {
+            "class_name": "truck",
+            "confidence": 0.36406850814819336
+          },
+          "persistent_observations": 3,
+          "trail": [],
+          "timestamp_seconds": 7.36,
+          "source_frame_index": 184
+        }
+      ]
+    },
+    {
+      "video": "vid0403.mp4",
+      "label": 0,
+      "count": 1,
+      "frames_scanned": 133,
+      "seconds": 6.8,
+      "events": [
+        {
+          "track_id": 19,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.5006895065307617,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            656.0,
+            497.3333333333333,
+            740.0,
+            590.6666666666666
+          ],
+          "norm_box": [
+            0.5125,
+            0.6907407407407408,
+            0.578125,
+            0.8203703703703704
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.890224814414978
+          },
+          "persistent_observations": 6,
+          "trail": [],
+          "timestamp_seconds": 24.0,
+          "source_frame_index": 720
+        }
+      ]
+    },
+    {
+      "video": "vid0409.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 53,
+      "seconds": 3.62,
+      "events": []
+    },
+    {
+      "video": "vid0411.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 237,
+      "seconds": 11.06,
+      "events": []
+    },
+    {
+      "video": "vid0419.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 139,
+      "seconds": 7.75,
+      "events": []
+    },
+    {
+      "video": "vid0428.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 75,
+      "seconds": 4.17,
+      "events": []
+    },
+    {
+      "video": "vid0436.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 81,
+      "seconds": 4.09,
+      "events": []
+    },
+    {
+      "video": "vid0441.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 132,
+      "seconds": 6.83,
+      "events": []
+    },
+    {
+      "video": "vid0452.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 106,
+      "seconds": 5.62,
+      "events": []
+    },
+    {
+      "video": "vid0464.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 80,
+      "seconds": 3.63,
+      "events": []
+    },
+    {
+      "video": "vid0467.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 150,
+      "seconds": 9.28,
+      "events": []
+    },
+    {
+      "video": "vid0481.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 57,
+      "seconds": 3.61,
+      "events": []
+    },
+    {
+      "video": "vid0489.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 25,
+      "seconds": 2.19,
+      "events": []
+    },
+    {
+      "video": "vid0490.mp4",
+      "label": 0,
+      "count": 1,
+      "frames_scanned": 182,
+      "seconds": 9.87,
+      "events": [
+        {
+          "track_id": 26,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.8065904974937439,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1356.0,
+            738.0,
+            1588.0,
+            986.0
+          ],
+          "norm_box": [
+            0.70625,
+            0.6833333333333333,
+            0.8270833333333333,
+            0.912962962962963
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.521061360836029
+          },
+          "persistent_observations": 3,
+          "trail": [
+            {
+              "cx": 0.5828125,
+              "cy": 0.875,
+              "t": 43.52
+            },
+            {
+              "cx": 0.6635416666666667,
+              "cy": 0.8472222222222222,
+              "t": 43.84
+            },
+            {
+              "cx": 0.7666666666666667,
+              "cy": 0.7981481481481482,
+              "t": 44.16
+            }
+          ],
+          "timestamp_seconds": 44.16,
+          "source_frame_index": 1104
+        }
+      ]
+    },
+    {
+      "video": "vid0491.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 103,
+      "seconds": 6.73,
+      "events": []
+    }
+  ],
+  "candidate_presence_metrics": {
+    "accuracy": 0.5,
+    "precision": 0.5,
+    "recall": 0.15,
+    "f1": 0.23076923076923075,
+    "confusion_matrix": [
+      [
+        34,
+        6
+      ],
+      [
+        34,
+        6
+      ]
+    ],
+    "true_negative": 34,
+    "false_positive": 6,
+    "false_negative": 34,
+    "true_positive": 6
+  },
+  "completed_videos": 80
+}

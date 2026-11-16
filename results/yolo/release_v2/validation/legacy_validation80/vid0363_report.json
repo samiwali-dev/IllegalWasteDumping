@@ -1,0 +1,105 @@
+{
+  "video": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/MIVIA-IWDD 500/train/videos/vid0363.mp4",
+  "model": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/src/yolo/model.pt",
+  "device": "cpu",
+  "task": "temporal_release_candidates",
+  "algorithm_version": "release_v1",
+  "confidence_threshold": 0.65,
+  "frames_sampled": 12,
+  "frames_scanned": 216,
+  "frames_decoded": 216,
+  "source_fps": 25.0,
+  "scan_fps": 12.5,
+  "events": [],
+  "frames_with_detections": 0,
+  "total_detections": 0,
+  "strongest_detection": null,
+  "output_dir": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363",
+  "frame_results": [
+    {
+      "frame_number": 1,
+      "source_frame_index": 0,
+      "timestamp_seconds": 0.0,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000000.jpg"
+    },
+    {
+      "frame_number": 2,
+      "source_frame_index": 39,
+      "timestamp_seconds": 1.56,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000039.jpg"
+    },
+    {
+      "frame_number": 3,
+      "source_frame_index": 78,
+      "timestamp_seconds": 3.12,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000078.jpg"
+    },
+    {
+      "frame_number": 4,
+      "source_frame_index": 118,
+      "timestamp_seconds": 4.72,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000118.jpg"
+    },
+    {
+      "frame_number": 5,
+      "source_frame_index": 157,
+      "timestamp_seconds": 6.28,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000157.jpg"
+    },
+    {
+      "frame_number": 6,
+      "source_frame_index": 196,
+      "timestamp_seconds": 7.84,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000196.jpg"
+    },
+    {
+      "frame_number": 7,
+      "source_frame_index": 235,
+      "timestamp_seconds": 9.4,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000235.jpg"
+    },
+    {
+      "frame_number": 8,
+      "source_frame_index": 274,
+      "timestamp_seconds": 10.96,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000274.jpg"
+    },
+    {
+      "frame_number": 9,
+      "source_frame_index": 313,
+      "timestamp_seconds": 12.52,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000313.jpg"
+    },
+    {
+      "frame_number": 10,
+      "source_frame_index": 353,
+      "timestamp_seconds": 14.12,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000353.jpg"
+    },
+    {
+      "frame_number": 11,
+      "source_frame_index": 392,
+      "timestamp_seconds": 15.68,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000392.jpg"
+    },
+    {
+      "frame_number": 12,
+      "source_frame_index": 431,
+      "timestamp_seconds": 17.24,
+      "detections": [],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0363/clear_v1_000431.jpg"
+    }
+  ],
+  "note": "Motion + person/vehicle separation + settling. Candidates require review; not a trained action verdict. Only object-confirmed boxes get YOLO scores."
+}

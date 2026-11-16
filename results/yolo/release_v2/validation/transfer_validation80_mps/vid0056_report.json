@@ -1,0 +1,176 @@
+{
+  "video": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/MIVIA-IWDD 500/train/videos/vid0056.mp4",
+  "model": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/retraining_v2/yolo/transfer/weights/best.pt",
+  "device": "mps",
+  "task": "temporal_release_candidates",
+  "algorithm_version": "object_tracks_v2",
+  "confidence_threshold": 0.5,
+  "frames_sampled": 1,
+  "frames_scanned": 48,
+  "frames_decoded": 190,
+  "source_fps": 12.532981530343008,
+  "scan_fps": 12.532981530343008,
+  "events": [
+    {
+      "track_id": 2,
+      "source": "yolov8n",
+      "class_name": "litter_object",
+      "confidence": 0.6170588731765747,
+      "object_confirmed": true,
+      "reason": "released_object",
+      "bbox_xyxy": [
+        277.3333333333333,
+        382.6666666666667,
+        437.3333333333333,
+        510.6666666666667
+      ],
+      "norm_box": [
+        0.21666666666666667,
+        0.5314814814814814,
+        0.3416666666666667,
+        0.7092592592592593
+      ],
+      "source_actor": {
+        "class_name": "truck",
+        "confidence": 0.6376325488090515
+      },
+      "persistent_observations": 4,
+      "trail": [
+        {
+          "cx": 0.15572916666666667,
+          "cy": 0.7157407407407408,
+          "t": 11.808842105263158
+        },
+        {
+          "cx": 0.27708333333333335,
+          "cy": 0.6231481481481481,
+          "t": 13.72378947368421
+        },
+        {
+          "cx": 0.2791666666666667,
+          "cy": 0.6185185185185185,
+          "t": 14.042947368421052
+        },
+        {
+          "cx": 0.278125,
+          "cy": 0.6222222222222222,
+          "t": 15.000421052631578
+        }
+      ],
+      "timestamp_seconds": 14.362105263157895,
+      "source_frame_index": 180
+    }
+  ],
+  "frames_with_detections": 1,
+  "total_detections": 1,
+  "strongest_detection": {
+    "track_id": 2,
+    "source": "yolov8n",
+    "class_name": "litter_object",
+    "confidence": 0.6170588731765747,
+    "object_confirmed": true,
+    "reason": "released_object",
+    "bbox_xyxy": [
+      277.3333333333333,
+      382.6666666666667,
+      437.3333333333333,
+      510.6666666666667
+    ],
+    "norm_box": [
+      0.21666666666666667,
+      0.5314814814814814,
+      0.3416666666666667,
+      0.7092592592592593
+    ],
+    "source_actor": {
+      "class_name": "truck",
+      "confidence": 0.6376325488090515
+    },
+    "persistent_observations": 4,
+    "trail": [
+      {
+        "cx": 0.15572916666666667,
+        "cy": 0.7157407407407408,
+        "t": 11.808842105263158
+      },
+      {
+        "cx": 0.27708333333333335,
+        "cy": 0.6231481481481481,
+        "t": 13.72378947368421
+      },
+      {
+        "cx": 0.2791666666666667,
+        "cy": 0.6185185185185185,
+        "t": 14.042947368421052
+      },
+      {
+        "cx": 0.278125,
+        "cy": 0.6222222222222222,
+        "t": 15.000421052631578
+      }
+    ],
+    "timestamp_seconds": 14.362105263157895,
+    "source_frame_index": 180
+  },
+  "output_dir": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/transfer_validation80_mps/frames/vid0056",
+  "frame_results": [
+    {
+      "frame_number": 1,
+      "source_frame_index": 180,
+      "timestamp_seconds": 14.362,
+      "detections": [
+        {
+          "track_id": 2,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.6170588731765747,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            277.3333333333333,
+            382.6666666666667,
+            437.3333333333333,
+            510.6666666666667
+          ],
+          "norm_box": [
+            0.21666666666666667,
+            0.5314814814814814,
+            0.3416666666666667,
+            0.7092592592592593
+          ],
+          "source_actor": {
+            "class_name": "truck",
+            "confidence": 0.6376325488090515
+          },
+          "persistent_observations": 4,
+          "trail": [
+            {
+              "cx": 0.15572916666666667,
+              "cy": 0.7157407407407408,
+              "t": 11.808842105263158
+            },
+            {
+              "cx": 0.27708333333333335,
+              "cy": 0.6231481481481481,
+              "t": 13.72378947368421
+            },
+            {
+              "cx": 0.2791666666666667,
+              "cy": 0.6185185185185185,
+              "t": 14.042947368421052
+            },
+            {
+              "cx": 0.278125,
+              "cy": 0.6222222222222222,
+              "t": 15.000421052631578
+            }
+          ],
+          "timestamp_seconds": 14.362105263157895,
+          "source_frame_index": 180
+        }
+      ],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/transfer_validation80_mps/frames/vid0056/object_tracks_v2_000180.jpg"
+    }
+  ],
+  "note": "Learned item localization + person/vehicle separation + persistence. Candidates require review; object scores are not throwing probabilities."
+}

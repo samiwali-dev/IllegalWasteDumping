@@ -1,0 +1,240 @@
+{
+  "video": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/MIVIA-IWDD 500/train/videos/vid0301.mp4",
+  "model": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/retraining_v2/yolo/transfer/weights/best.pt",
+  "device": "mps",
+  "task": "temporal_release_candidates",
+  "algorithm_version": "object_tracks_v2",
+  "confidence_threshold": 0.5,
+  "frames_sampled": 2,
+  "frames_scanned": 47,
+  "frames_decoded": 185,
+  "source_fps": 29.97,
+  "scan_fps": 14.985,
+  "events": [
+    {
+      "track_id": 10,
+      "source": "yolov8n",
+      "class_name": "litter_object",
+      "confidence": 0.7591269016265869,
+      "object_confirmed": true,
+      "reason": "left_behind_object",
+      "bbox_xyxy": [
+        1794.0,
+        570.0,
+        1836.0,
+        588.0
+      ],
+      "norm_box": [
+        0.934375,
+        0.5277777777777778,
+        0.95625,
+        0.5444444444444444
+      ],
+      "source_actor": {
+        "class_name": "person",
+        "confidence": 0.8711186647415161
+      },
+      "persistent_observations": 4,
+      "trail": [],
+      "timestamp_seconds": 2.9362696029362696,
+      "source_frame_index": 88
+    },
+    {
+      "track_id": 15,
+      "source": "yolov8n",
+      "class_name": "litter_object",
+      "confidence": 0.8781223297119141,
+      "object_confirmed": true,
+      "reason": "released_object",
+      "bbox_xyxy": [
+        1836.0,
+        634.0,
+        1878.0,
+        662.0
+      ],
+      "norm_box": [
+        0.95625,
+        0.587037037037037,
+        0.978125,
+        0.6129629629629629
+      ],
+      "source_actor": {
+        "class_name": "person",
+        "confidence": 0.9282057881355286
+      },
+      "persistent_observations": 9,
+      "trail": [
+        {
+          "cx": 0.9671875,
+          "cy": 0.5861111111111111,
+          "t": 7.207207207207207
+        },
+        {
+          "cx": 0.96875,
+          "cy": 0.5935185185185186,
+          "t": 8.274941608274942
+        },
+        {
+          "cx": 0.9671875,
+          "cy": 0.5972222222222222,
+          "t": 9.342676009342677
+        },
+        {
+          "cx": 0.9682291666666667,
+          "cy": 0.6018518518518519,
+          "t": 10.41041041041041
+        }
+      ],
+      "timestamp_seconds": 9.876543209876544,
+      "source_frame_index": 296
+    }
+  ],
+  "frames_with_detections": 2,
+  "total_detections": 2,
+  "strongest_detection": {
+    "track_id": 15,
+    "source": "yolov8n",
+    "class_name": "litter_object",
+    "confidence": 0.8781223297119141,
+    "object_confirmed": true,
+    "reason": "released_object",
+    "bbox_xyxy": [
+      1836.0,
+      634.0,
+      1878.0,
+      662.0
+    ],
+    "norm_box": [
+      0.95625,
+      0.587037037037037,
+      0.978125,
+      0.6129629629629629
+    ],
+    "source_actor": {
+      "class_name": "person",
+      "confidence": 0.9282057881355286
+    },
+    "persistent_observations": 9,
+    "trail": [
+      {
+        "cx": 0.9671875,
+        "cy": 0.5861111111111111,
+        "t": 7.207207207207207
+      },
+      {
+        "cx": 0.96875,
+        "cy": 0.5935185185185186,
+        "t": 8.274941608274942
+      },
+      {
+        "cx": 0.9671875,
+        "cy": 0.5972222222222222,
+        "t": 9.342676009342677
+      },
+      {
+        "cx": 0.9682291666666667,
+        "cy": 0.6018518518518519,
+        "t": 10.41041041041041
+      }
+    ],
+    "timestamp_seconds": 9.876543209876544,
+    "source_frame_index": 296
+  },
+  "output_dir": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/transfer_validation80_mps/frames/vid0301",
+  "frame_results": [
+    {
+      "frame_number": 1,
+      "source_frame_index": 88,
+      "timestamp_seconds": 2.936,
+      "detections": [
+        {
+          "track_id": 10,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.7591269016265869,
+          "object_confirmed": true,
+          "reason": "left_behind_object",
+          "bbox_xyxy": [
+            1794.0,
+            570.0,
+            1836.0,
+            588.0
+          ],
+          "norm_box": [
+            0.934375,
+            0.5277777777777778,
+            0.95625,
+            0.5444444444444444
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8711186647415161
+          },
+          "persistent_observations": 4,
+          "trail": [],
+          "timestamp_seconds": 2.9362696029362696,
+          "source_frame_index": 88
+        }
+      ],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/transfer_validation80_mps/frames/vid0301/object_tracks_v2_000088.jpg"
+    },
+    {
+      "frame_number": 2,
+      "source_frame_index": 296,
+      "timestamp_seconds": 9.877,
+      "detections": [
+        {
+          "track_id": 15,
+          "source": "yolov8n",
+          "class_name": "litter_object",
+          "confidence": 0.8781223297119141,
+          "object_confirmed": true,
+          "reason": "released_object",
+          "bbox_xyxy": [
+            1836.0,
+            634.0,
+            1878.0,
+            662.0
+          ],
+          "norm_box": [
+            0.95625,
+            0.587037037037037,
+            0.978125,
+            0.6129629629629629
+          ],
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9282057881355286
+          },
+          "persistent_observations": 9,
+          "trail": [
+            {
+              "cx": 0.9671875,
+              "cy": 0.5861111111111111,
+              "t": 7.207207207207207
+            },
+            {
+              "cx": 0.96875,
+              "cy": 0.5935185185185186,
+              "t": 8.274941608274942
+            },
+            {
+              "cx": 0.9671875,
+              "cy": 0.5972222222222222,
+              "t": 9.342676009342677
+            },
+            {
+              "cx": 0.9682291666666667,
+              "cy": 0.6018518518518519,
+              "t": 10.41041041041041
+            }
+          ],
+          "timestamp_seconds": 9.876543209876544,
+          "source_frame_index": 296
+        }
+      ],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/transfer_validation80_mps/frames/vid0301/object_tracks_v2_000296.jpg"
+    }
+  ],
+  "note": "Learned item localization + person/vehicle separation + persistence. Candidates require review; object scores are not throwing probabilities."
+}

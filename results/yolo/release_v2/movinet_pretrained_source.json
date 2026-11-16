@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/Atze00/MoViNet-pytorch/c2d1edf48fc6c5259707f9d833f22171b4f63493/weights/modelA0_statedict_v3",
+  "sha256": "7fa4d3b5a1c3970d581476782f8892c24d46c10433b7bd8ea4fc4ccdc36224e1",
+  "source_classes": 600,
+  "user_pretrained_authorized": true
+}

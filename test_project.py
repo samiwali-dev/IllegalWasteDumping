@@ -394,7 +394,7 @@ class OverallEvaluationTests(unittest.TestCase):
         self.assertEqual(set(summary["models"]), {"movinet_a0", "neural_network", "optical_flow_svm", "yolov8n"})
         self.assertEqual(set(summary["included_algorithms"]), set(summary["models"]))
         self.assertEqual(summary["models"]["movinet_a0"]["metrics"]["confusion_matrix"],
-                         [[35, 15], [13, 37]])
+                         [[42, 8], [11, 39]])
         self.assertEqual(summary["models"]["neural_network"]["metrics"]["confusion_matrix"],
                          [[37, 13], [13, 37]])
         self.assertEqual(summary["models"]["optical_flow_svm"]["metrics"]["confusion_matrix"],

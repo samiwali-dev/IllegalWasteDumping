@@ -70,3 +70,11 @@ expo-app/dist/
 /results/yolo/object_v1/video_review/
 /results/yolo/release_v1/frames/
 /results/yolo/release_v1/*.log
+/results/retraining_v2/**/*.pt
+/results/retraining_v2/**/*.log
+/results/retraining_v2/yolo/transfer/
+/results/retraining_v2/yolo/scratch/
+/results/retraining_v2/yolo/validation_runs/
+/results/retraining_v2/yolo/*_validation_predictions.json
+/results/yolo/release_v2/**/frames/
+/results/yolo/release_v2/*.log

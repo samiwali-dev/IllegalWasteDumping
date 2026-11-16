@@ -247,6 +247,7 @@ def _read_metadata(path: Path) -> dict[str, Any]:
         "model_paths": [str(value.resolve()) for value in resolved_paths],
         "split_counts": split_counts,
         "hyperparameters": metadata.get("hyperparameters"),
+        "inference_timing_note": metadata.get("timing_note"),
     }
 
 

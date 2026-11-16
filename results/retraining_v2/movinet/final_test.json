@@ -1,0 +1,32 @@
+{
+  "evaluation_split": "official_test",
+  "videos": 100,
+  "frozen_selection_sha256": "63d73fd3b06f29e02df0ab259858baa55fc80270eea20002f6f2412287369d70",
+  "checkpoint_sha256": "c5edc3f48972727db92427afe8a62f6a8ad07fe108a8abe2bdbcf46ed753b8cd",
+  "threshold": 0.5,
+  "device": "cpu",
+  "metrics": {
+    "accuracy": 0.81,
+    "precision": 0.8297872340425532,
+    "recall": 0.78,
+    "f1": 0.8041237113402062,
+    "confusion_matrix": [
+      [
+        42,
+        8
+      ],
+      [
+        11,
+        39
+      ]
+    ],
+    "true_negative": 42,
+    "false_positive": 8,
+    "false_negative": 11,
+    "true_positive": 39
+  },
+  "inference_total_seconds": 5.104696209833492,
+  "test_used_for_training": false,
+  "test_used_for_selection": false,
+  "limitation": "Report-only evaluation after model selection. Official test clips were exposed during historical project development, so this is not a pristine independent benchmark. No indoor live-camera accuracy is established."
+}

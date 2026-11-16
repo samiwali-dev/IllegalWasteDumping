@@ -1,0 +1,89 @@
+{
+  "scope": "Development evaluation only; official test videos excluded.",
+  "split": "validation",
+  "expected_videos": 80,
+  "strategy": "object_tracks_v2",
+  "confidence_threshold": 0.5,
+  "checkpoint": "results/retraining_v2/yolo/transfer/weights/best.pt",
+  "checkpoint_sha256": "c580dea8c7665f0d843ef780a048aea6b48a628d041ea239296beba686e52f96",
+  "code_sha256": {
+    "main.py": "3c5522d939e3682445bc5e312ab266d8bf6f41de2b2ff76b3f3baa6000099654",
+    "release_pipeline.py": "a52f1635a4ece3e3a04b1df4ad5a16c114b3f981c19c55835a5110374b3f959e",
+    "item_tracking.py": "79af09840c1beec738f988eddf6c12884564538202ca73c9d692953a64c77668",
+    "temporal.py": "f344489603c6105c9e30325f31e34d4d2fb8fddf49740f5f6bc86eb569f934e4"
+  },
+  "metric_note": "Candidate presence compared with video labels. This does not measure correct object localization, and is not an independent test or live-camera accuracy estimate.",
+  "test_used_for_selection": false,
+  "videos": [
+    {
+      "video": "vid0004.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 58,
+      "seconds": 19.19,
+      "events": []
+    },
+    {
+      "video": "vid0007.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 30,
+      "seconds": 9.39,
+      "events": []
+    },
+    {
+      "video": "vid0008.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 102,
+      "seconds": 25.29,
+      "events": []
+    },
+    {
+      "video": "vid0009.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 119,
+      "seconds": 28.7,
+      "events": []
+    },
+    {
+      "video": "vid0013.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 194,
+      "seconds": 49.76,
+      "events": []
+    },
+    {
+      "video": "vid0020.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 10,
+      "seconds": 2.71,
+      "events": []
+    }
+  ],
+  "candidate_presence_metrics": {
+    "accuracy": 0.5,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "confusion_matrix": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "true_negative": 3,
+    "false_positive": 0,
+    "false_negative": 3,
+    "true_positive": 0
+  },
+  "completed_videos": 6,
+  "status": "Incomplete CPU run; restarted on MPS in transfer_validation80_mps. Not a full validation result."
+}

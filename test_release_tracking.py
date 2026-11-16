@@ -22,7 +22,7 @@ class ReleaseTrackingTests(unittest.TestCase):
         detector = SimpleNamespace(tracker=SimpleNamespace(camera_moving=False), update=mock.Mock(return_value=[]))
         pool = LiveReleasePool()
         frames = [np.zeros((10, 10, 3), np.uint8)] * 3
-        with mock.patch('src.yolo.release_pipeline.ReleaseDetector', return_value=detector):
+        with mock.patch('src.yolo.release_pipeline.make_detector', return_value=detector):
             pool.process(frames, [1000, 1060, 1120], 'camera-one', 'unused.pt', .65, 'cpu')
             pool.process(frames, [1060, 1120, 1180], 'camera-one', 'unused.pt', .65, 'cpu')
         self.assertEqual(detector.update.call_count, 4)
@@ -34,7 +34,7 @@ class ReleaseTrackingTests(unittest.TestCase):
         frames = [np.zeros((10, 10, 3), np.uint8)]
         def make_detector(*args):
             return SimpleNamespace(tracker=SimpleNamespace(camera_moving=False), update=mock.Mock(return_value=[]))
-        with mock.patch('src.yolo.release_pipeline.ReleaseDetector', side_effect=make_detector):
+        with mock.patch('src.yolo.release_pipeline.make_detector', side_effect=make_detector):
             pool.process(frames, [1000], 'camera-one', 'unused.pt', .65, 'cpu')
             pool.process(frames, [1000], 'camera-two', 'unused.pt', .65, 'cpu')
         self.assertIsNot(pool.sessions['camera-one']['detector'], pool.sessions['camera-two']['detector'])

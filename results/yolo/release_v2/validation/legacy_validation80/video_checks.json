@@ -1,0 +1,1280 @@
+{
+  "scope": "Development evaluation only; official test videos excluded.",
+  "split": "validation",
+  "expected_videos": 80,
+  "strategy": "release_v1",
+  "confidence_threshold": 0.65,
+  "checkpoint": "src/yolo/model.pt",
+  "checkpoint_sha256": "c52231bc969212c332142569d52b08ce93485b0daead33f3bc42f0438b039472",
+  "code_sha256": {
+    "main.py": "3c5522d939e3682445bc5e312ab266d8bf6f41de2b2ff76b3f3baa6000099654",
+    "release_pipeline.py": "a52f1635a4ece3e3a04b1df4ad5a16c114b3f981c19c55835a5110374b3f959e",
+    "item_tracking.py": "79af09840c1beec738f988eddf6c12884564538202ca73c9d692953a64c77668",
+    "temporal.py": "f344489603c6105c9e30325f31e34d4d2fb8fddf49740f5f6bc86eb569f934e4"
+  },
+  "metric_note": "Candidate presence compared with video labels. This does not measure correct object localization, and is not an independent test or live-camera accuracy estimate.",
+  "test_used_for_selection": false,
+  "videos": [
+    {
+      "video": "vid0004.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 229,
+      "seconds": 10.3,
+      "events": []
+    },
+    {
+      "video": "vid0007.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 119,
+      "seconds": 6.85,
+      "events": []
+    },
+    {
+      "video": "vid0008.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 408,
+      "seconds": 5.71,
+      "events": []
+    },
+    {
+      "video": "vid0009.mp4",
+      "label": 0,
+      "count": 1,
+      "frames_scanned": 476,
+      "seconds": 2.21,
+      "events": [
+        {
+          "track_id": 1009,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            115.0,
+            143.0,
+            120.0,
+            151.0
+          ],
+          "norm_box": [
+            0.359375,
+            0.5958333333333333,
+            0.375,
+            0.6291666666666667
+          ],
+          "trail": [
+            {
+              "cx": 0.40205965909090907,
+              "cy": 0.6266098484848485,
+              "t": 20.466666666666665
+            },
+            {
+              "cx": 0.39549512987012986,
+              "cy": 0.6252705627705628,
+              "t": 20.733333333333334
+            },
+            {
+              "cx": 0.3883333333333333,
+              "cy": 0.6234999999999999,
+              "t": 20.866666666666667
+            },
+            {
+              "cx": 0.3835387323943662,
+              "cy": 0.6226525821596244,
+              "t": 21.0
+            },
+            {
+              "cx": 0.3792361111111111,
+              "cy": 0.6197222222222222,
+              "t": 21.2
+            },
+            {
+              "cx": 0.37374999999999997,
+              "cy": 0.6204629629629629,
+              "t": 21.466666666666665
+            },
+            {
+              "cx": 0.3690524193548387,
+              "cy": 0.6154569892473118,
+              "t": 21.6
+            }
+          ],
+          "timestamp_seconds": 21.8,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8738781213760376
+          },
+          "source_frame_index": 654,
+          "object_confirmed": false
+        }
+      ]
+    },
+    {
+      "video": "vid0013.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 773,
+      "seconds": 12.66,
+      "events": []
+    },
+    {
+      "video": "vid0020.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 29,
+      "seconds": 1.31,
+      "events": []
+    },
+    {
+      "video": "vid0032.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 158,
+      "seconds": 2.96,
+      "events": []
+    },
+    {
+      "video": "vid0035.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 275,
+      "seconds": 18.29,
+      "events": []
+    },
+    {
+      "video": "vid0036.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 375,
+      "seconds": 6.03,
+      "events": []
+    },
+    {
+      "video": "vid0041.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 149,
+      "seconds": 29.25,
+      "events": []
+    },
+    {
+      "video": "vid0056.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 190,
+      "seconds": 8.73,
+      "events": []
+    },
+    {
+      "video": "vid0071.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 939,
+      "seconds": 13.53,
+      "events": []
+    },
+    {
+      "video": "vid0077.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 435,
+      "seconds": 1.62,
+      "events": []
+    },
+    {
+      "video": "vid0081.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 134,
+      "seconds": 3.31,
+      "events": []
+    },
+    {
+      "video": "vid0083.mp4",
+      "label": 0,
+      "count": 1,
+      "frames_scanned": 631,
+      "seconds": 13.94,
+      "events": [
+        {
+          "track_id": 3114,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            174.0,
+            602.0,
+            184.0,
+            618.0
+          ],
+          "norm_box": [
+            0.090625,
+            0.5574074074074075,
+            0.09583333333333334,
+            0.5722222222222222
+          ],
+          "trail": [
+            {
+              "cx": 0.09309210526315789,
+              "cy": 0.5167641325536062,
+              "t": 11.12
+            },
+            {
+              "cx": 0.09309895833333333,
+              "cy": 0.522145061728395,
+              "t": 11.2
+            },
+            {
+              "cx": 0.0923132183908046,
+              "cy": 0.524904214559387,
+              "t": 11.28
+            },
+            {
+              "cx": 0.09278846153846154,
+              "cy": 0.5334757834757835,
+              "t": 11.36
+            },
+            {
+              "cx": 0.09260057471264369,
+              "cy": 0.5370370370370371,
+              "t": 11.44
+            },
+            {
+              "cx": 0.09264322916666666,
+              "cy": 0.5442708333333334,
+              "t": 11.52
+            },
+            {
+              "cx": 0.09260057471264369,
+              "cy": 0.5507662835249042,
+              "t": 11.6
+            },
+            {
+              "cx": 0.09280913978494623,
+              "cy": 0.5534050179211469,
+              "t": 11.68
+            },
+            {
+              "cx": 0.09264520202020202,
+              "cy": 0.5581369248035914,
+              "t": 11.76
+            },
+            {
+              "cx": 0.09243055555555556,
+              "cy": 0.5635802469135802,
+              "t": 11.92
+            },
+            {
+              "cx": 0.09229166666666666,
+              "cy": 0.5659259259259259,
+              "t": 12.0
+            },
+            {
+              "cx": 0.09285300925925925,
+              "cy": 0.5638374485596708,
+              "t": 12.16
+            }
+          ],
+          "timestamp_seconds": 12.24,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.584557831287384
+          },
+          "source_frame_index": 306,
+          "object_confirmed": false
+        }
+      ]
+    },
+    {
+      "video": "vid0087.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 60,
+      "seconds": 1.28,
+      "events": []
+    },
+    {
+      "video": "vid0095.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 121,
+      "seconds": 13.87,
+      "events": []
+    },
+    {
+      "video": "vid0096.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 113,
+      "seconds": 1.58,
+      "events": []
+    },
+    {
+      "video": "vid0099.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 140,
+      "seconds": 28.41,
+      "events": []
+    },
+    {
+      "video": "vid0100.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 193,
+      "seconds": 0.77,
+      "events": []
+    },
+    {
+      "video": "vid0107.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 98,
+      "seconds": 1.89,
+      "events": []
+    },
+    {
+      "video": "vid0113.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 95,
+      "seconds": 1.92,
+      "events": []
+    },
+    {
+      "video": "vid0116.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 271,
+      "seconds": 21.17,
+      "events": []
+    },
+    {
+      "video": "vid0119.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 300,
+      "seconds": 5.18,
+      "events": []
+    },
+    {
+      "video": "vid0120.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 150,
+      "seconds": 2.73,
+      "events": []
+    },
+    {
+      "video": "vid0123.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 127,
+      "seconds": 1.15,
+      "events": []
+    },
+    {
+      "video": "vid0128.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 717,
+      "seconds": 11.83,
+      "events": []
+    },
+    {
+      "video": "vid0133.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 214,
+      "seconds": 7.03,
+      "events": []
+    },
+    {
+      "video": "vid0139.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 111,
+      "seconds": 4.29,
+      "events": []
+    },
+    {
+      "video": "vid0146.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 778,
+      "seconds": 9.14,
+      "events": []
+    },
+    {
+      "video": "vid0164.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 377,
+      "seconds": 8.56,
+      "events": []
+    },
+    {
+      "video": "vid0172.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 166,
+      "seconds": 9.08,
+      "events": []
+    },
+    {
+      "video": "vid0178.mp4",
+      "label": 1,
+      "count": 1,
+      "frames_scanned": 184,
+      "seconds": 2.76,
+      "events": [
+        {
+          "track_id": 23,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            812.0,
+            566.0,
+            820.0,
+            572.0
+          ],
+          "norm_box": [
+            0.42291666666666666,
+            0.524074074074074,
+            0.4270833333333333,
+            0.5296296296296297
+          ],
+          "trail": [
+            {
+              "cx": 0.4372685185185185,
+              "cy": 0.5276748971193416,
+              "t": 0.26666666666666666
+            },
+            {
+              "cx": 0.43686755952380957,
+              "cy": 0.5292989417989418,
+              "t": 0.4666666666666667
+            },
+            {
+              "cx": 0.43621031746031746,
+              "cy": 0.526984126984127,
+              "t": 0.6
+            },
+            {
+              "cx": 0.4317708333333333,
+              "cy": 0.527880658436214,
+              "t": 0.8666666666666667
+            },
+            {
+              "cx": 0.4345572916666667,
+              "cy": 0.5273148148148148,
+              "t": 0.9333333333333333
+            },
+            {
+              "cx": 0.4322916666666667,
+              "cy": 0.5268921095008052,
+              "t": 1.0666666666666667
+            },
+            {
+              "cx": 0.4295572916666667,
+              "cy": 0.5266203703703703,
+              "t": 1.4
+            },
+            {
+              "cx": 0.4279647435897436,
+              "cy": 0.5257834757834757,
+              "t": 1.5333333333333334
+            },
+            {
+              "cx": 0.4265224358974359,
+              "cy": 0.5264957264957265,
+              "t": 1.8
+            },
+            {
+              "cx": 0.4244791666666667,
+              "cy": 0.5259259259259259,
+              "t": 2.0
+            }
+          ],
+          "timestamp_seconds": 2.0,
+          "source_actor": {
+            "class_name": "car",
+            "confidence": 0.583422064781189
+          },
+          "source_frame_index": 60,
+          "object_confirmed": false
+        }
+      ]
+    },
+    {
+      "video": "vid0182.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 165,
+      "seconds": 2.98,
+      "events": []
+    },
+    {
+      "video": "vid0183.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 98,
+      "seconds": 2.05,
+      "events": []
+    },
+    {
+      "video": "vid0185.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 149,
+      "seconds": 3.11,
+      "events": []
+    },
+    {
+      "video": "vid0186.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 394,
+      "seconds": 5.82,
+      "events": []
+    },
+    {
+      "video": "vid0191.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 191,
+      "seconds": 28.91,
+      "events": []
+    },
+    {
+      "video": "vid0196.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 917,
+      "seconds": 14.56,
+      "events": []
+    },
+    {
+      "video": "vid0200.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 434,
+      "seconds": 5.68,
+      "events": []
+    },
+    {
+      "video": "vid0210.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 411,
+      "seconds": 6.95,
+      "events": []
+    },
+    {
+      "video": "vid0217.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 139,
+      "seconds": 1.2,
+      "events": []
+    },
+    {
+      "video": "vid0237.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 108,
+      "seconds": 2.37,
+      "events": []
+    },
+    {
+      "video": "vid0239.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 84,
+      "seconds": 11.57,
+      "events": []
+    },
+    {
+      "video": "vid0246.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 447,
+      "seconds": 6.81,
+      "events": []
+    },
+    {
+      "video": "vid0250.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 153,
+      "seconds": 4.11,
+      "events": []
+    },
+    {
+      "video": "vid0281.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 433,
+      "seconds": 4.18,
+      "events": []
+    },
+    {
+      "video": "vid0290.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 129,
+      "seconds": 3.2,
+      "events": []
+    },
+    {
+      "video": "vid0300.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 598,
+      "seconds": 8.0,
+      "events": []
+    },
+    {
+      "video": "vid0301.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 185,
+      "seconds": 20.7,
+      "events": []
+    },
+    {
+      "video": "vid0312.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 1043,
+      "seconds": 16.54,
+      "events": []
+    },
+    {
+      "video": "vid0316.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 97,
+      "seconds": 1.53,
+      "events": []
+    },
+    {
+      "video": "vid0323.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 139,
+      "seconds": 3.75,
+      "events": []
+    },
+    {
+      "video": "vid0325.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 76,
+      "seconds": 1.52,
+      "events": []
+    },
+    {
+      "video": "vid0329.mp4",
+      "label": 0,
+      "count": 2,
+      "frames_scanned": 834,
+      "seconds": 86.78,
+      "events": [
+        {
+          "track_id": 7880,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            1420.0,
+            734.0,
+            1436.0,
+            748.0
+          ],
+          "norm_box": [
+            0.7395833333333334,
+            0.6796296296296296,
+            0.7479166666666667,
+            0.6925925925925925
+          ],
+          "trail": [
+            {
+              "cx": 0.7581473214285714,
+              "cy": 0.6902116402116403,
+              "t": 7.733333333333333
+            },
+            {
+              "cx": 0.7560416666666666,
+              "cy": 0.6882716049382717,
+              "t": 7.933333333333334
+            },
+            {
+              "cx": 0.7534722222222222,
+              "cy": 0.6869598765432099,
+              "t": 8.0
+            },
+            {
+              "cx": 0.7514243197278911,
+              "cy": 0.6841647770219199,
+              "t": 8.066666666666666
+            },
+            {
+              "cx": 0.7500801282051283,
+              "cy": 0.6830959164292497,
+              "t": 8.2
+            },
+            {
+              "cx": 0.7485479797979798,
+              "cy": 0.6818181818181819,
+              "t": 8.333333333333334
+            },
+            {
+              "cx": 0.7472916666666667,
+              "cy": 0.6807407407407408,
+              "t": 8.466666666666667
+            },
+            {
+              "cx": 0.7453598484848485,
+              "cy": 0.6824915824915825,
+              "t": 8.666666666666666
+            },
+            {
+              "cx": 0.7446759259259259,
+              "cy": 0.6869341563786009,
+              "t": 8.8
+            },
+            {
+              "cx": 0.7443080357142857,
+              "cy": 0.6842592592592592,
+              "t": 8.866666666666667
+            },
+            {
+              "cx": 0.7426609848484849,
+              "cy": 0.6852693602693603,
+              "t": 9.0
+            }
+          ],
+          "timestamp_seconds": 9.0,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.8212317228317261
+          },
+          "source_frame_index": 270,
+          "object_confirmed": false
+        },
+        {
+          "track_id": 11488,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            172.0,
+            678.0,
+            184.0,
+            698.0
+          ],
+          "norm_box": [
+            0.08958333333333333,
+            0.6277777777777778,
+            0.09583333333333334,
+            0.6462962962962963
+          ],
+          "trail": [
+            {
+              "cx": 0.07928240740740741,
+              "cy": 0.6320987654320988,
+              "t": 11.666666666666666
+            },
+            {
+              "cx": 0.0814453125,
+              "cy": 0.6331018518518519,
+              "t": 11.8
+            },
+            {
+              "cx": 0.08373842592592592,
+              "cy": 0.6329218106995884,
+              "t": 12.0
+            },
+            {
+              "cx": 0.08513257575757577,
+              "cy": 0.6349326599326599,
+              "t": 12.133333333333333
+            },
+            {
+              "cx": 0.0868844696969697,
+              "cy": 0.6344276094276093,
+              "t": 12.266666666666667
+            },
+            {
+              "cx": 0.08875000000000001,
+              "cy": 0.6358024691358024,
+              "t": 12.333333333333334
+            },
+            {
+              "cx": 0.09100378787878788,
+              "cy": 0.6361111111111111,
+              "t": 12.533333333333333
+            }
+          ],
+          "timestamp_seconds": 12.666666666666666,
+          "source_actor": {
+            "class_name": "car",
+            "confidence": 0.4771634042263031
+          },
+          "source_frame_index": 380,
+          "object_confirmed": false
+        }
+      ]
+    },
+    {
+      "video": "vid0331.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 662,
+      "seconds": 1.97,
+      "events": []
+    },
+    {
+      "video": "vid0339.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 787,
+      "seconds": 2.76,
+      "events": []
+    },
+    {
+      "video": "vid0343.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 608,
+      "seconds": 24.32,
+      "events": []
+    },
+    {
+      "video": "vid0346.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 162,
+      "seconds": 3.55,
+      "events": []
+    },
+    {
+      "video": "vid0362.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 190,
+      "seconds": 1.6,
+      "events": []
+    },
+    {
+      "video": "vid0363.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 216,
+      "seconds": 3.28,
+      "events": []
+    },
+    {
+      "video": "vid0367.mp4",
+      "label": 0,
+      "count": 2,
+      "frames_scanned": 419,
+      "seconds": 126.13,
+      "events": [
+        {
+          "track_id": 21964,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            488.0,
+            506.0,
+            498.0,
+            516.0
+          ],
+          "norm_box": [
+            0.25416666666666665,
+            0.4685185185185185,
+            0.259375,
+            0.4777777777777778
+          ],
+          "trail": [
+            {
+              "cx": 0.2539166666666667,
+              "cy": 0.4957037037037037,
+              "t": 13.0
+            },
+            {
+              "cx": 0.2530715811965812,
+              "cy": 0.49772079772079775,
+              "t": 13.066666666666666
+            },
+            {
+              "cx": 0.2549890350877193,
+              "cy": 0.49122807017543857,
+              "t": 13.133333333333333
+            },
+            {
+              "cx": 0.25517979452054795,
+              "cy": 0.48734145104008114,
+              "t": 13.2
+            },
+            {
+              "cx": 0.258078231292517,
+              "cy": 0.4758125472411187,
+              "t": 13.333333333333334
+            },
+            {
+              "cx": 0.25755208333333335,
+              "cy": 0.47415824915824917,
+              "t": 13.533333333333333
+            },
+            {
+              "cx": 0.2571105072463768,
+              "cy": 0.46996779388083737,
+              "t": 13.666666666666666
+            },
+            {
+              "cx": 0.25625,
+              "cy": 0.4718954248366013,
+              "t": 13.733333333333333
+            }
+          ],
+          "timestamp_seconds": 13.8,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9079213738441467
+          },
+          "source_frame_index": 414,
+          "object_confirmed": false
+        },
+        {
+          "track_id": 40543,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            1688.0,
+            258.0,
+            1702.0,
+            272.0
+          ],
+          "norm_box": [
+            0.8791666666666667,
+            0.2388888888888889,
+            0.8864583333333333,
+            0.2518518518518518
+          ],
+          "trail": [
+            {
+              "cx": 0.8946614583333333,
+              "cy": 0.24699074074074073,
+              "t": 23.333333333333332
+            },
+            {
+              "cx": 0.892795138888889,
+              "cy": 0.2469135802469136,
+              "t": 23.533333333333335
+            },
+            {
+              "cx": 0.8907012195121952,
+              "cy": 0.24733514001806686,
+              "t": 23.8
+            },
+            {
+              "cx": 0.8892447916666666,
+              "cy": 0.2463425925925926,
+              "t": 24.0
+            },
+            {
+              "cx": 0.88734375,
+              "cy": 0.24657407407407408,
+              "t": 24.266666666666666
+            },
+            {
+              "cx": 0.8860471491228069,
+              "cy": 0.24541910331384012,
+              "t": 24.533333333333335
+            },
+            {
+              "cx": 0.8842592592592593,
+              "cy": 0.24578189300411524,
+              "t": 24.733333333333334
+            },
+            {
+              "cx": 0.8823697916666667,
+              "cy": 0.2446296296296296,
+              "t": 25.0
+            }
+          ],
+          "timestamp_seconds": 25.0,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.6414071917533875
+          },
+          "source_frame_index": 750,
+          "object_confirmed": false
+        }
+      ]
+    },
+    {
+      "video": "vid0378.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 660,
+      "seconds": 7.35,
+      "events": []
+    },
+    {
+      "video": "vid0381.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 543,
+      "seconds": 6.6,
+      "events": []
+    },
+    {
+      "video": "vid0382.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 291,
+      "seconds": 3.94,
+      "events": []
+    },
+    {
+      "video": "vid0392.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 113,
+      "seconds": 11.78,
+      "events": []
+    },
+    {
+      "video": "vid0403.mp4",
+      "label": 0,
+      "count": 1,
+      "frames_scanned": 530,
+      "seconds": 64.06,
+      "events": [
+        {
+          "track_id": 6023,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            784.0,
+            61.333333333333336,
+            788.0,
+            72.0
+          ],
+          "norm_box": [
+            0.6125,
+            0.08518518518518518,
+            0.615625,
+            0.1
+          ],
+          "trail": [
+            {
+              "cx": 0.5970094086021506,
+              "cy": 0.0970131421744325,
+              "t": 4.266666666666667
+            },
+            {
+              "cx": 0.5967487373737373,
+              "cy": 0.09887766554433221,
+              "t": 4.533333333333333
+            },
+            {
+              "cx": 0.5983680555555555,
+              "cy": 0.09950617283950618,
+              "t": 4.6
+            },
+            {
+              "cx": 0.5970416666666666,
+              "cy": 0.10111111111111111,
+              "t": 4.733333333333333
+            },
+            {
+              "cx": 0.5993421052631579,
+              "cy": 0.09985380116959064,
+              "t": 4.933333333333334
+            },
+            {
+              "cx": 0.603659188034188,
+              "cy": 0.09658119658119659,
+              "t": 5.066666666666666
+            },
+            {
+              "cx": 0.6052455357142857,
+              "cy": 0.09424603174603176,
+              "t": 5.133333333333334
+            },
+            {
+              "cx": 0.6072699652777778,
+              "cy": 0.09313271604938271,
+              "t": 5.4
+            },
+            {
+              "cx": 0.6093023255813954,
+              "cy": 0.0938415159345392,
+              "t": 5.533333333333333
+            },
+            {
+              "cx": 0.6100520833333333,
+              "cy": 0.09236111111111112,
+              "t": 5.6
+            },
+            {
+              "cx": 0.6123304263565892,
+              "cy": 0.09155900086132644,
+              "t": 5.8
+            }
+          ],
+          "timestamp_seconds": 5.933333333333334,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9013789892196655
+          },
+          "source_frame_index": 178,
+          "object_confirmed": false
+        }
+      ]
+    },
+    {
+      "video": "vid0409.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 210,
+      "seconds": 3.37,
+      "events": []
+    },
+    {
+      "video": "vid0411.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 947,
+      "seconds": 2.58,
+      "events": []
+    },
+    {
+      "video": "vid0419.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 554,
+      "seconds": 6.37,
+      "events": []
+    },
+    {
+      "video": "vid0428.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 298,
+      "seconds": 3.53,
+      "events": []
+    },
+    {
+      "video": "vid0436.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 321,
+      "seconds": 1.9,
+      "events": []
+    },
+    {
+      "video": "vid0441.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 525,
+      "seconds": 5.73,
+      "events": []
+    },
+    {
+      "video": "vid0452.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 318,
+      "seconds": 4.05,
+      "events": []
+    },
+    {
+      "video": "vid0464.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 317,
+      "seconds": 1.88,
+      "events": []
+    },
+    {
+      "video": "vid0467.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 600,
+      "seconds": 7.12,
+      "events": []
+    },
+    {
+      "video": "vid0481.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 169,
+      "seconds": 3.77,
+      "events": []
+    },
+    {
+      "video": "vid0489.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 98,
+      "seconds": 1.59,
+      "events": []
+    },
+    {
+      "video": "vid0490.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 726,
+      "seconds": 21.12,
+      "events": []
+    },
+    {
+      "video": "vid0491.mp4",
+      "label": 0,
+      "count": 0,
+      "frames_scanned": 410,
+      "seconds": 10.5,
+      "events": []
+    }
+  ],
+  "candidate_presence_metrics": {
+    "accuracy": 0.45,
+    "precision": 0.16666666666666666,
+    "recall": 0.025,
+    "f1": 0.04347826086956522,
+    "confusion_matrix": [
+      [
+        35,
+        5
+      ],
+      [
+        39,
+        1
+      ]
+    ],
+    "true_negative": 35,
+    "false_positive": 5,
+    "false_negative": 39,
+    "true_positive": 1
+  },
+  "completed_videos": 80
+}

@@ -234,6 +234,7 @@ def detect_video(
     conf: float = DEFAULT_CONFIDENCE,
     device: str = "auto",
     output_dir: str | Path = DEFAULT_VIDEO_OUTPUT,
+    tracking_strategy: str | None = None,
 ) -> dict:
     video, model_path = Path(video).expanduser().resolve(), Path(model_path).expanduser().resolve()
     output_dir = Path(output_dir).expanduser().resolve() / video.stem
@@ -244,14 +245,14 @@ def detect_video(
     if not 0.0 <= conf <= 1.0:
         raise ValueError("conf must be between 0 and 1")
 
-    from src.yolo.release_pipeline import ReleaseDetector
+    from src.yolo.release_pipeline import make_detector
     from src.yolo.temporal import draw_candidates
 
     if frames < 1:
         raise ValueError("frames must be at least 1")
     output_dir.mkdir(parents=True, exist_ok=True)
     dev = resolve_device(device)
-    detector = ReleaseDetector(model_path, conf, dev)
+    detector = make_detector(model_path, conf, dev, tracking_strategy)
     capture = cv2.VideoCapture(str(video))
     fps = float(capture.get(cv2.CAP_PROP_FPS))
     total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -273,7 +274,7 @@ def detect_video(
             found = detector.update(frame, index/fps, index)
             events.extend(found)
             if found and len(frame_reports) < frames:
-                annotated = output_dir / f"release_v1_{index:06d}.jpg"
+                annotated = output_dir / f"{detector.algorithm_version}_{index:06d}.jpg"
                 if not cv2.imwrite(str(annotated), draw_candidates(frame, found)):
                     raise OSError(f"Could not save {annotated}")
                 frame_reports.append(dict(frame_number=len(frame_reports)+1,
@@ -292,14 +293,17 @@ def detect_video(
                                       timestamp_seconds=round(seconds, 3), detections=[],
                                       annotated_frame=str(annotated)))
     return dict(video=str(video), model=str(model_path), device=dev,
-                task="temporal_release_candidates", algorithm_version="release_v1",
-                confidence_threshold=conf, frames_sampled=len(frame_reports), frames_scanned=scanned,
+                task="temporal_release_candidates", algorithm_version=detector.algorithm_version,
+                confidence_threshold=conf, frames_sampled=len(frame_reports), frames_scanned=getattr(detector, 'frames_processed', scanned),
+                frames_decoded=scanned,
                 source_fps=fps, scan_fps=fps/stride, events=events,
                 frames_with_detections=sum(bool(r["detections"]) for r in frame_reports),
                 total_detections=len(events),
                 strongest_detection=max(events, key=lambda e: e.get("confidence") or 0, default=None),
                 output_dir=str(output_dir), frame_results=frame_reports,
-                note="Motion + person/vehicle separation + settling. Candidates require review; not a trained action verdict. Only object-confirmed boxes get YOLO scores.")
+                note=("Learned item localization + person/vehicle separation + persistence. Candidates require review; object scores are not throwing probabilities."
+                      if detector.algorithm_version == 'object_tracks_v2' else
+                      "Motion + person/vehicle separation + settling. Candidates require review; not a trained action verdict. Only object-confirmed boxes get YOLO scores."))
 
 
 def detect_image(

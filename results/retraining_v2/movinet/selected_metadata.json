@@ -1,0 +1,83 @@
+{
+  "model": "MoViNet A0",
+  "task": "video_classification",
+  "dataset": "MIVIA-IWDD 500",
+  "protocol_version": "fresh_transfer_v2_frozen_before_report_only_test",
+  "split_counts": {
+    "fit": 320,
+    "validation": 80,
+    "test": 100
+  },
+  "seed": 42,
+  "model_path": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/src/movinet/model.pt",
+  "model_size_bytes": 7713725,
+  "model_sha256": "c5edc3f48972727db92427afe8a62f6a8ad07fe108a8abe2bdbcf46ed753b8cd",
+  "architecture": {
+    "name": "MoViNet A0",
+    "tf_like": true,
+    "causal": false,
+    "num_classes": 1,
+    "initialization": "Kinetics600 pretrained backbone, fresh binary head",
+    "source_sha256": "7fa4d3b5a1c3970d581476782f8892c24d46c10433b7bd8ea4fc4ccdc36224e1"
+  },
+  "hyperparameters": {
+    "epochs": 12,
+    "patience": 4,
+    "batch": 4,
+    "lr": 0.0002,
+    "weight_decay": 0.001,
+    "input_size": 112,
+    "frames": 24,
+    "seed": 42,
+    "augmentations": [
+      "whole-frame horizontal flip",
+      "brightness gain 0.9..1.1"
+    ],
+    "transfer_batchnorm": "frozen pretrained statistics",
+    "transfer_head_warmup_epochs": 2,
+    "best_epoch": 6,
+    "threshold": 0.5,
+    "selection": "Highest validation macro F1, then precision; no test-based model selection this round"
+  },
+  "validation_metrics": {
+    "accuracy": 0.8625,
+    "macro_f1": 0.8624785122675418,
+    "precision": 0.8536585365853658,
+    "recall": 0.875,
+    "confusion_matrix": [
+      [
+        34,
+        6
+      ],
+      [
+        5,
+        35
+      ]
+    ]
+  },
+  "test_metrics": {
+    "accuracy": 0.81,
+    "precision": 0.8297872340425532,
+    "recall": 0.78,
+    "f1": 0.8041237113402062,
+    "confusion_matrix": [
+      [
+        42,
+        8
+      ],
+      [
+        11,
+        39
+      ]
+    ],
+    "true_negative": 42,
+    "false_positive": 8,
+    "false_negative": 11,
+    "true_positive": 39
+  },
+  "training_seconds": 1148.6991537919967,
+  "test_used_for_training": false,
+  "test_used_for_selection": false,
+  "experiment_report": "results/retraining_v2/movinet/comparison.json",
+  "note": "Report-only evaluation after model selection. Official test clips were exposed during historical project development, so this is not a pristine independent benchmark. No indoor live-camera accuracy is established."
+}

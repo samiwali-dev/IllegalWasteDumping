@@ -58,22 +58,22 @@ const FALLBACK_EVALUATION = {
       dataset: 'MIVIA-IWDD 500',
       evaluation_split: 'official_test',
       metrics: {
-        accuracy: 0.72,
-        precision: 0.711538,
-        recall: 0.74,
-        f1: 0.72549,
+        accuracy: 0.81,
+        precision: 0.829787,
+        recall: 0.78,
+        f1: 0.804124,
         confusion_matrix: [
-          [35, 15],
-          [13, 37],
+          [42, 8],
+          [11, 39],
         ],
-        true_negative: 35,
-        false_positive: 15,
-        false_negative: 13,
-        true_positive: 37,
+        true_negative: 42,
+        false_positive: 8,
+        false_negative: 11,
+        true_positive: 39,
       },
-      training_seconds: 1899.78,
-      inference_mean_ms_per_video: 337.22,
-      model_size_mib: 7.38,
+      training_seconds: 1148.70,
+      inference_mean_ms_per_video: null,
+      model_size_mib: 7.36,
     },
     optical_flow_svm: {
       task: 'video_classification',
@@ -99,13 +99,13 @@ const FALLBACK_EVALUATION = {
     },
     yolov8n: {
       task: 'object_detection',
-      dataset: 'TACO + reviewed backgrounds',
-      evaluation_split: 'Development test · 306 images (reused)',
+      dataset: 'TACO + reviewed MIVIA crops',
+      evaluation_split: 'Validation · 230 images (development)',
       metrics: {
-        precision: 0.8129175947,
-        recall: 0.3227232538,
-        map50: 0.4499516055,
-        map50_95: 0.3070825798,
+        precision: 0.8338870432,
+        recall: 0.4312714777,
+        map50: 0.5404895240,
+        map50_95: 0.3845741515,
       },
       confidence_threshold: 0.65,
       training_seconds: 2255.81,
@@ -127,7 +127,7 @@ const MODEL_META = {
     title: 'MoViNet A0',
     shortTitle: 'MoViNet A0',
     subtitle: '3D Video CNN (24 RGB Frames)',
-    badge: '72.0% Acc',
+    badge: '81.0% Acc',
     color: '#3B82F6',
     icon: '🎬',
   },
@@ -142,8 +142,8 @@ const MODEL_META = {
   yolov8n: {
     title: 'YOLOv8n + tracking',
     shortTitle: 'YOLOv8n Box',
-    subtitle: 'Littering Region Bounding Boxes',
-    badge: '54.3% mAP',
+    subtitle: 'Tracked item candidates',
+    badge: '54.0% mAP',
     color: '#8B5CF6',
     icon: '🎯',
   },
@@ -903,7 +903,7 @@ export default function App() {
       </View>
       <View style={[styles.mainColumns, !isDesktop && styles.stacked, { marginTop: 24 }]}>
         <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>Confusion matrix</Text><Text style={styles.mutedSmall}>{MODEL_META[selectedEvalModel].title} · select a model above</Text></View></View><View style={styles.matrixGrid}>{[{ label: 'True negative', value: matrix[0][0], tone: '#0B8163' }, { label: 'False positive', value: matrix[0][1], tone: '#B46D21' }, { label: 'False negative', value: matrix[1][0], tone: '#BF4D4D' }, { label: 'True positive', value: matrix[1][1], tone: '#367AA9' }].map(item => <View style={styles.matrixCell} key={item.label}><Text style={[styles.matrixNumber, { color: item.tone }]}>{item.value}</Text><Text style={styles.mutedSmall}>{item.label}</Text></View>)}</View></View>
-        <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>YOLOv8n detection</Text><Text style={styles.mutedSmall}>{(modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).dataset} · {(modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).evaluation_split}</Text></View></View><View style={styles.detectionMetrics}>{[['Precision', 'precision'], ['Recall', 'recall'], ['mAP@50', 'map50'], ['mAP@50:95', 'map50_95']].map(([label, key]) => <View style={styles.detectionMetric} key={key}><Text style={styles.statValue}>{percent((modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).metrics[key])}</Text><Text style={styles.statLabel}>{label}</Text></View>)}</View><Text style={[styles.footnote, { padding: 20 }]}>Object detection is not proof of throwing. Precision and recall use the selected score threshold; mAP summarizes all score thresholds. This development benchmark has been reused.</Text></View>
+        <View style={[styles.card, { flex: 1 }]}><View style={styles.cardHeading}><View><Text style={styles.cardTitle}>YOLOv8n detection</Text><Text style={styles.mutedSmall}>{(modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).dataset} · {(modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).evaluation_split}</Text></View></View><View style={styles.detectionMetrics}>{[['Precision', 'precision'], ['Recall', 'recall'], ['mAP@50', 'map50'], ['mAP@50:95', 'map50_95']].map(([label, key]) => <View style={styles.detectionMetric} key={key}><Text style={styles.statValue}>{percent((modelsEval.yolov8n || FALLBACK_EVALUATION.models.yolov8n).metrics[key])}</Text><Text style={styles.statLabel}>{label}</Text></View>)}</View><Text style={[styles.footnote, { padding: 20 }]}>Object detection is not proof of throwing. Precision and recall use the selected score threshold; mAP summarizes all score thresholds. These validation images were used during model selection.</Text></View>
       </View>
       <Text style={styles.footnote}>MIVIA results are exploratory because the official test set was reused during protocol development. These benchmarks are not live confidence scores.</Text>
     </>;

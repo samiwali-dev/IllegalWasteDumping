@@ -1,0 +1,377 @@
+{
+  "video": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/datasets/MIVIA-IWDD 500/train/videos/vid0367.mp4",
+  "model": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/src/yolo/model.pt",
+  "device": "cpu",
+  "task": "temporal_release_candidates",
+  "algorithm_version": "release_v1",
+  "confidence_threshold": 0.65,
+  "frames_sampled": 2,
+  "frames_scanned": 419,
+  "frames_decoded": 419,
+  "source_fps": 30.0,
+  "scan_fps": 15.0,
+  "events": [
+    {
+      "track_id": 21964,
+      "reason": "released_object",
+      "source": "motion_tracker",
+      "class_name": "release_candidate",
+      "confidence": null,
+      "bbox_xyxy": [
+        488.0,
+        506.0,
+        498.0,
+        516.0
+      ],
+      "norm_box": [
+        0.25416666666666665,
+        0.4685185185185185,
+        0.259375,
+        0.4777777777777778
+      ],
+      "trail": [
+        {
+          "cx": 0.2539166666666667,
+          "cy": 0.4957037037037037,
+          "t": 13.0
+        },
+        {
+          "cx": 0.2530715811965812,
+          "cy": 0.49772079772079775,
+          "t": 13.066666666666666
+        },
+        {
+          "cx": 0.2549890350877193,
+          "cy": 0.49122807017543857,
+          "t": 13.133333333333333
+        },
+        {
+          "cx": 0.25517979452054795,
+          "cy": 0.48734145104008114,
+          "t": 13.2
+        },
+        {
+          "cx": 0.258078231292517,
+          "cy": 0.4758125472411187,
+          "t": 13.333333333333334
+        },
+        {
+          "cx": 0.25755208333333335,
+          "cy": 0.47415824915824917,
+          "t": 13.533333333333333
+        },
+        {
+          "cx": 0.2571105072463768,
+          "cy": 0.46996779388083737,
+          "t": 13.666666666666666
+        },
+        {
+          "cx": 0.25625,
+          "cy": 0.4718954248366013,
+          "t": 13.733333333333333
+        }
+      ],
+      "timestamp_seconds": 13.8,
+      "source_actor": {
+        "class_name": "person",
+        "confidence": 0.9079213738441467
+      },
+      "source_frame_index": 414,
+      "object_confirmed": false
+    },
+    {
+      "track_id": 40543,
+      "reason": "released_object",
+      "source": "motion_tracker",
+      "class_name": "release_candidate",
+      "confidence": null,
+      "bbox_xyxy": [
+        1688.0,
+        258.0,
+        1702.0,
+        272.0
+      ],
+      "norm_box": [
+        0.8791666666666667,
+        0.2388888888888889,
+        0.8864583333333333,
+        0.2518518518518518
+      ],
+      "trail": [
+        {
+          "cx": 0.8946614583333333,
+          "cy": 0.24699074074074073,
+          "t": 23.333333333333332
+        },
+        {
+          "cx": 0.892795138888889,
+          "cy": 0.2469135802469136,
+          "t": 23.533333333333335
+        },
+        {
+          "cx": 0.8907012195121952,
+          "cy": 0.24733514001806686,
+          "t": 23.8
+        },
+        {
+          "cx": 0.8892447916666666,
+          "cy": 0.2463425925925926,
+          "t": 24.0
+        },
+        {
+          "cx": 0.88734375,
+          "cy": 0.24657407407407408,
+          "t": 24.266666666666666
+        },
+        {
+          "cx": 0.8860471491228069,
+          "cy": 0.24541910331384012,
+          "t": 24.533333333333335
+        },
+        {
+          "cx": 0.8842592592592593,
+          "cy": 0.24578189300411524,
+          "t": 24.733333333333334
+        },
+        {
+          "cx": 0.8823697916666667,
+          "cy": 0.2446296296296296,
+          "t": 25.0
+        }
+      ],
+      "timestamp_seconds": 25.0,
+      "source_actor": {
+        "class_name": "person",
+        "confidence": 0.6414071917533875
+      },
+      "source_frame_index": 750,
+      "object_confirmed": false
+    }
+  ],
+  "frames_with_detections": 2,
+  "total_detections": 2,
+  "strongest_detection": {
+    "track_id": 21964,
+    "reason": "released_object",
+    "source": "motion_tracker",
+    "class_name": "release_candidate",
+    "confidence": null,
+    "bbox_xyxy": [
+      488.0,
+      506.0,
+      498.0,
+      516.0
+    ],
+    "norm_box": [
+      0.25416666666666665,
+      0.4685185185185185,
+      0.259375,
+      0.4777777777777778
+    ],
+    "trail": [
+      {
+        "cx": 0.2539166666666667,
+        "cy": 0.4957037037037037,
+        "t": 13.0
+      },
+      {
+        "cx": 0.2530715811965812,
+        "cy": 0.49772079772079775,
+        "t": 13.066666666666666
+      },
+      {
+        "cx": 0.2549890350877193,
+        "cy": 0.49122807017543857,
+        "t": 13.133333333333333
+      },
+      {
+        "cx": 0.25517979452054795,
+        "cy": 0.48734145104008114,
+        "t": 13.2
+      },
+      {
+        "cx": 0.258078231292517,
+        "cy": 0.4758125472411187,
+        "t": 13.333333333333334
+      },
+      {
+        "cx": 0.25755208333333335,
+        "cy": 0.47415824915824917,
+        "t": 13.533333333333333
+      },
+      {
+        "cx": 0.2571105072463768,
+        "cy": 0.46996779388083737,
+        "t": 13.666666666666666
+      },
+      {
+        "cx": 0.25625,
+        "cy": 0.4718954248366013,
+        "t": 13.733333333333333
+      }
+    ],
+    "timestamp_seconds": 13.8,
+    "source_actor": {
+      "class_name": "person",
+      "confidence": 0.9079213738441467
+    },
+    "source_frame_index": 414,
+    "object_confirmed": false
+  },
+  "output_dir": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0367",
+  "frame_results": [
+    {
+      "frame_number": 1,
+      "source_frame_index": 414,
+      "timestamp_seconds": 13.8,
+      "detections": [
+        {
+          "track_id": 21964,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            488.0,
+            506.0,
+            498.0,
+            516.0
+          ],
+          "norm_box": [
+            0.25416666666666665,
+            0.4685185185185185,
+            0.259375,
+            0.4777777777777778
+          ],
+          "trail": [
+            {
+              "cx": 0.2539166666666667,
+              "cy": 0.4957037037037037,
+              "t": 13.0
+            },
+            {
+              "cx": 0.2530715811965812,
+              "cy": 0.49772079772079775,
+              "t": 13.066666666666666
+            },
+            {
+              "cx": 0.2549890350877193,
+              "cy": 0.49122807017543857,
+              "t": 13.133333333333333
+            },
+            {
+              "cx": 0.25517979452054795,
+              "cy": 0.48734145104008114,
+              "t": 13.2
+            },
+            {
+              "cx": 0.258078231292517,
+              "cy": 0.4758125472411187,
+              "t": 13.333333333333334
+            },
+            {
+              "cx": 0.25755208333333335,
+              "cy": 0.47415824915824917,
+              "t": 13.533333333333333
+            },
+            {
+              "cx": 0.2571105072463768,
+              "cy": 0.46996779388083737,
+              "t": 13.666666666666666
+            },
+            {
+              "cx": 0.25625,
+              "cy": 0.4718954248366013,
+              "t": 13.733333333333333
+            }
+          ],
+          "timestamp_seconds": 13.8,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.9079213738441467
+          },
+          "source_frame_index": 414,
+          "object_confirmed": false
+        }
+      ],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0367/release_v1_000414.jpg"
+    },
+    {
+      "frame_number": 2,
+      "source_frame_index": 750,
+      "timestamp_seconds": 25.0,
+      "detections": [
+        {
+          "track_id": 40543,
+          "reason": "released_object",
+          "source": "motion_tracker",
+          "class_name": "release_candidate",
+          "confidence": null,
+          "bbox_xyxy": [
+            1688.0,
+            258.0,
+            1702.0,
+            272.0
+          ],
+          "norm_box": [
+            0.8791666666666667,
+            0.2388888888888889,
+            0.8864583333333333,
+            0.2518518518518518
+          ],
+          "trail": [
+            {
+              "cx": 0.8946614583333333,
+              "cy": 0.24699074074074073,
+              "t": 23.333333333333332
+            },
+            {
+              "cx": 0.892795138888889,
+              "cy": 0.2469135802469136,
+              "t": 23.533333333333335
+            },
+            {
+              "cx": 0.8907012195121952,
+              "cy": 0.24733514001806686,
+              "t": 23.8
+            },
+            {
+              "cx": 0.8892447916666666,
+              "cy": 0.2463425925925926,
+              "t": 24.0
+            },
+            {
+              "cx": 0.88734375,
+              "cy": 0.24657407407407408,
+              "t": 24.266666666666666
+            },
+            {
+              "cx": 0.8860471491228069,
+              "cy": 0.24541910331384012,
+              "t": 24.533333333333335
+            },
+            {
+              "cx": 0.8842592592592593,
+              "cy": 0.24578189300411524,
+              "t": 24.733333333333334
+            },
+            {
+              "cx": 0.8823697916666667,
+              "cy": 0.2446296296296296,
+              "t": 25.0
+            }
+          ],
+          "timestamp_seconds": 25.0,
+          "source_actor": {
+            "class_name": "person",
+            "confidence": 0.6414071917533875
+          },
+          "source_frame_index": 750,
+          "object_confirmed": false
+        }
+      ],
+      "annotated_frame": "/Users/pc/Documents/\u0645\u0642\u062f\u0645\u0629 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a/IllegalWasteDumping/results/yolo/release_v2/validation/legacy_validation80/frames/vid0367/release_v1_000750.jpg"
+    }
+  ],
+  "note": "Motion + person/vehicle separation + settling. Candidates require review; not a trained action verdict. Only object-confirmed boxes get YOLO scores."
+}

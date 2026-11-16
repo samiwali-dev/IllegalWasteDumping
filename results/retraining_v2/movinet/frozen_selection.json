@@ -1,0 +1,9 @@
+{
+  "frozen_at_utc": "2026-11-16T05:42:52.814551+00:00",
+  "checkpoint": "results/retraining_v2/movinet/transfer/best.pt",
+  "sha256": "c5edc3f48972727db92427afe8a62f6a8ad07fe108a8abe2bdbcf46ed753b8cd",
+  "threshold": 0.5,
+  "initialization": "fresh Kinetics600 transfer",
+  "selection": "80 validation clips from official train only; transfer macro F1 0.86248 versus scratch 0.64286",
+  "final_test_policy": "One report-only official test evaluation; results will not alter these weights or threshold. Historical exposure remains a limitation."
+}

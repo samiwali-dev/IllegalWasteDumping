@@ -433,8 +433,17 @@ def predict_torch(clip, checkpoint: Path, model_name: str, requested_device: str
         "mps" if requested_device == "auto" and torch.backends.mps.is_available()
         else "cpu" if requested_device == "auto" else requested_device
     )
-    model = build_model().to(device)
-    model.load_state_dict(torch.load(checkpoint, map_location=device, weights_only=True))
+    saved = torch.load(checkpoint, map_location=device, weights_only=True)
+    if 'state_dict' in saved:
+        architecture = saved.get('architecture', {})
+        if architecture.get('name') != 'MoViNet A0' or architecture.get('num_classes') != 1:
+            raise ValueError('Expected a binary MoViNet A0 checkpoint')
+        model = build_model(tf_like=bool(architecture.get('tf_like', False))).to(device)
+        state = saved['state_dict']
+    else:
+        model = build_model().to(device)
+        state = saved
+    model.load_state_dict(state)
     model.eval()
     tensor = _tensor_from_clip(torch, clip).unsqueeze(0).to(device)
     with torch.inference_mode():

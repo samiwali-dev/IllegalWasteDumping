@@ -1,0 +1,578 @@
+[
+  {
+    "video_id": "vid0025.mp4",
+    "frame_index": 33,
+    "seconds": 3.9599999999999995,
+    "file": "datasets/release_v2/review/fit_vid0025_000033.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0025.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      28,
+      34,
+      82,
+      77
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        37,
+        43,
+        71,
+        68
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "9d89351a1ee6074b011c86b780eda4fc8bef6bc149826be659a70bb68c3d61fd"
+  },
+  {
+    "video_id": "vid0054.mp4",
+    "frame_index": 193,
+    "seconds": 8.01612730318258,
+    "file": "datasets/release_v2/review/fit_vid0054_000193.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0054.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      87,
+      152,
+      141,
+      198
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        94,
+        169,
+        112,
+        189
+      ],
+      [
+        106,
+        162,
+        136,
+        194
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "5a4807d0ce63be8d1fcf270ea31172677ebe65661ab3ac84aa9ba995797ee8e9"
+  },
+  {
+    "video_id": "vid0142.mp4",
+    "frame_index": 42,
+    "seconds": 5.04,
+    "file": "datasets/release_v2/review/fit_vid0142_000042.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0142.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      148,
+      36,
+      197,
+      96
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        159,
+        48,
+        188,
+        90
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "e4778ac6e0757e6df8b882fb1a0484ee3c17f40b9c404d182e02e3bbe86a14c4"
+  },
+  {
+    "video_id": "vid0142.mp4",
+    "frame_index": 50,
+    "seconds": 6.0,
+    "file": "datasets/release_v2/review/fit_vid0142_000050.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0142.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      129,
+      70,
+      160,
+      116
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        136,
+        77,
+        158,
+        110
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "3d55e68fcc399a1775eba68bc36f53957fdc98217114250deda862c332f2612f"
+  },
+  {
+    "video_id": "vid0374.mp4",
+    "frame_index": 108,
+    "seconds": 3.6036,
+    "file": "datasets/release_v2/review/fit_vid0374_000108.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0374.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      187,
+      135,
+      225,
+      176
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        190,
+        138,
+        223,
+        174
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "170cef26a6554bdb02942781e75795194ce6149d30b6fdc69d9da8c9bb1a7034"
+  },
+  {
+    "video_id": "vid0374.mp4",
+    "frame_index": 120,
+    "seconds": 4.0040000000000004,
+    "file": "datasets/release_v2/review/fit_vid0374_000120.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0374.mp4",
+    "decision": "exclude_ambiguous",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      217,
+      146,
+      244,
+      171
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        219,
+        149,
+        242,
+        169
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "reason": "Initial review box was on an unclear hand/pavement region or a heavily occluded item. Excluded before training.",
+    "source_image_sha256": "39bfd317cf8ffc5810cad17f03442a75ad0988edb3623add614a9c33aad8b741"
+  },
+  {
+    "video_id": "vid0071.mp4",
+    "frame_index": 48,
+    "seconds": 1.6016016016016017,
+    "file": "datasets/release_v2/review/validation_vid0071_000048.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0071.mp4",
+    "decision": "exclude_ambiguous",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      150,
+      165,
+      196,
+      208
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        162,
+        177,
+        187,
+        195
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "reason": "Initial review box was on an unclear hand/pavement region or a heavily occluded item. Excluded before training.",
+    "source_image_sha256": "00a2ab0547fd902c067e8f49bc7a78dfe238cc530cbc77fe908e1f03d5439ce8"
+  },
+  {
+    "video_id": "vid0071.mp4",
+    "frame_index": 60,
+    "seconds": 2.002002002002002,
+    "file": "datasets/release_v2/review/validation_vid0071_000060.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0071.mp4",
+    "decision": "exclude_ambiguous",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      131,
+      215,
+      174,
+      259
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        145,
+        229,
+        158,
+        246
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "reason": "Initial review box was on an unclear hand/pavement region or a heavily occluded item. Excluded before training.",
+    "source_image_sha256": "692c549aff3c4ea1ea62444621ea1d5374af2433896bf5d015faa72a5bbdd136"
+  },
+  {
+    "video_id": "vid0113.mp4",
+    "frame_index": 153,
+    "seconds": 6.381374999999999,
+    "file": "datasets/release_v2/review/validation_vid0113_000153.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0113.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      52,
+      62,
+      100,
+      112
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        66,
+        73,
+        88,
+        97
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "3a34049d801a2a3b4fa1bdb3b323fc2f8ee13e3a9d9b8c443856c3096bf8f716"
+  },
+  {
+    "video_id": "vid0363.mp4",
+    "frame_index": 325,
+    "seconds": 13.0,
+    "file": "datasets/release_v2/review/validation_vid0363_000325.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0363.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      186,
+      109,
+      260,
+      153
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        201,
+        126,
+        222,
+        144
+      ],
+      [
+        233,
+        119,
+        254,
+        146
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "df87a6c64a4e2b8d08889e71834de8d9a4741502995bee5289cafafa3e338f99"
+  },
+  {
+    "video_id": "vid0107.mp4",
+    "frame_index": 100,
+    "seconds": 4.0,
+    "file": "datasets/release_v2/review/validation_vid0107_000100.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0107.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      8,
+      183,
+      47,
+      218
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        17,
+        191,
+        40,
+        210
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "e2281c1155d4592919b43cace7ecfdc4e4bdb5a822c65fb2bae93be319c2f25e"
+  },
+  {
+    "video_id": "vid0239.mp4",
+    "frame_index": 36,
+    "seconds": 1.2,
+    "file": "datasets/release_v2/review/validation_vid0239_000036.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0239.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      246,
+      107,
+      288,
+      153
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        256,
+        117,
+        281,
+        145
+      ]
+    ],
+    "reviewer": "assistant visual review; not independently human verified",
+    "source_image_sha256": "b5178a84992356302d1546d53f3c69fa7cf26f664ddc7462eb829a3269e5b07a"
+  },
+  {
+    "video_id": "vid0195.mp4",
+    "frame_index": 300,
+    "seconds": 10.01,
+    "file": "datasets/release_v2/review/fit_vid0195_000300.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0195.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      280,
+      94,
+      328,
+      125
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        285,
+        108,
+        306,
+        122
+      ],
+      [
+        288,
+        97,
+        316,
+        114
+      ],
+      [
+        311,
+        98,
+        325,
+        112
+      ]
+    ],
+    "reviewer": "Assistant visual review of native-resolution grid crop; pilot annotations, not independent human ground truth.",
+    "source_image_sha256": "c32762ca1d5de60618ca4ad8ef736076364858fe72f7782774f246c0a5b3fa94"
+  },
+  {
+    "video_id": "vid0259.mp4",
+    "frame_index": 75,
+    "seconds": 3.0,
+    "file": "datasets/release_v2/review/fit_vid0259_000075.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0259.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      354,
+      153,
+      442,
+      193
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        383,
+        158,
+        409,
+        175
+      ],
+      [
+        416,
+        165,
+        437,
+        181
+      ],
+      [
+        365,
+        175,
+        382,
+        188
+      ],
+      [
+        381,
+        173,
+        404,
+        183
+      ],
+      [
+        403,
+        169,
+        419,
+        183
+      ],
+      [
+        369,
+        168,
+        391,
+        179
+      ]
+    ],
+    "reviewer": "Assistant visual review of native-resolution grid crop; pilot annotations, not independent human ground truth.",
+    "source_image_sha256": "7d4c0c998db8562bd0ab860e3ad1da63c436ca7cc15051def08859dc64bcc644"
+  },
+  {
+    "video_id": "vid0374.mp4",
+    "frame_index": 150,
+    "seconds": 5.005,
+    "file": "datasets/release_v2/review/fit_vid0374_000150.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0374.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      175,
+      146,
+      355,
+      236
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        178,
+        186,
+        226,
+        225
+      ],
+      [
+        209,
+        148,
+        252,
+        205
+      ],
+      [
+        242,
+        150,
+        282,
+        204
+      ],
+      [
+        278,
+        165,
+        315,
+        200
+      ],
+      [
+        221,
+        191,
+        291,
+        231
+      ],
+      [
+        284,
+        197,
+        320,
+        233
+      ],
+      [
+        306,
+        160,
+        344,
+        206
+      ],
+      [
+        318,
+        211,
+        350,
+        234
+      ]
+    ],
+    "reviewer": "Assistant visual review of native-resolution grid crop; pilot annotations, not independent human ground truth.",
+    "source_image_sha256": "a7264f010f36fa10b35b20fdb043d7151298d3313b130a17b856f280c57ea25f"
+  },
+  {
+    "video_id": "vid0358.mp4",
+    "frame_index": 216,
+    "seconds": 9.00900900900901,
+    "file": "datasets/release_v2/review/fit_vid0358_000216.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0358.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      209,
+      224,
+      273,
+      258
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        211,
+        229,
+        268,
+        252
+      ]
+    ],
+    "reviewer": "Assistant visual review of native-resolution grid crop; pilot annotations, not independent human ground truth.",
+    "quality_note": "Ambiguous brown region overlapping the person excluded; only the clearly visible white bulky item is labeled.",
+    "source_image_sha256": "2fd6afddb1f866ce0d3ba1df72653b231c52351c58d73b8d73e3d08b964314ad"
+  },
+  {
+    "video_id": "vid0109.mp4",
+    "frame_index": 275,
+    "seconds": 11.0,
+    "file": "datasets/release_v2/review/fit_vid0109_000275.jpg",
+    "source_video": "datasets/MIVIA-IWDD 500/train/videos/vid0109.mp4",
+    "decision": "accept_object_boxes",
+    "display_reference_size": [
+      480,
+      270
+    ],
+    "crop_display_xyxy": [
+      448,
+      198,
+      480,
+      242
+    ],
+    "object_boxes_display_xyxy": [
+      [
+        450,
+        202,
+        478,
+        240
+      ]
+    ],
+    "reviewer": "Assistant visual review of native-resolution grid crop; pilot annotations, not independent human ground truth.",
+    "source_image_sha256": "a3728a6ca3f419cd20c5ba6e48e9613480b5e392c653d69a987ff02ba185e4ec"
+  }
+]

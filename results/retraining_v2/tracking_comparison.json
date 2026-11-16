@@ -1,0 +1,72 @@
+{
+  "protocol": "official_train_development_only_v2",
+  "scope": "80 validation videos from official train; no official test tuning",
+  "metric_note": "Candidate presence compared with video labels, not verified object localization or true event detection accuracy.",
+  "variants": {
+    "legacy_release_v1": {
+      "report": "results/yolo/release_v2/validation/legacy_validation80/video_checks.json",
+      "checkpoint_sha256": "c52231bc969212c332142569d52b08ce93485b0daead33f3bc42f0438b039472",
+      "threshold": 0.65,
+      "candidate_presence_metrics": {
+        "accuracy": 0.45,
+        "precision": 0.16666666666666666,
+        "recall": 0.025,
+        "f1": 0.04347826086956522,
+        "confusion_matrix": [
+          [
+            35,
+            5
+          ],
+          [
+            39,
+            1
+          ]
+        ],
+        "true_negative": 35,
+        "false_positive": 5,
+        "false_negative": 39,
+        "true_positive": 1
+      },
+      "candidate_events": 8,
+      "seconds": 842.51
+    },
+    "experimental_object_tracks_v2": {
+      "report": "results/yolo/release_v2/validation/transfer_validation80_mps/video_checks.json",
+      "checkpoint_sha256": "c580dea8c7665f0d843ef780a048aea6b48a628d041ea239296beba686e52f96",
+      "threshold": 0.5,
+      "candidate_presence_metrics": {
+        "accuracy": 0.5,
+        "precision": 0.5,
+        "recall": 0.15,
+        "f1": 0.23076923076923075,
+        "confusion_matrix": [
+          [
+            34,
+            6
+          ],
+          [
+            34,
+            6
+          ]
+        ],
+        "true_negative": 34,
+        "false_positive": 6,
+        "false_negative": 34,
+        "true_positive": 6
+      },
+      "candidate_events": 40,
+      "seconds": 436.08
+    }
+  },
+  "decision": "Experimental tracker not enabled. Both variants have poor candidate recall; visual review found background association errors. The thrown-item problem remains unresolved.",
+  "visual_review": [
+    {
+      "video": "vid0056.mp4",
+      "decision": "Incorrect association with a pre-existing blue bag/pile; the same bag is visible before the candidate. Video-level positive label does not make this localization correct."
+    },
+    {
+      "video": "vid0099.mp4",
+      "decision": "False candidates in a litter-picking scene, including pre-existing ground items."
+    }
+  ]
+}

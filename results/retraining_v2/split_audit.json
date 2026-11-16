@@ -1,0 +1,19 @@
+{
+  "protocol": "fit320_validation80_only_v2",
+  "fit_video_count": 320,
+  "validation_video_count": 80,
+  "test_videos_in_fit_or_validation": 0,
+  "object_image_counts": {
+    "fit:official_taco": 1002,
+    "validation:official_taco": 212,
+    "fit:reviewed_object_crop": 10,
+    "validation:reviewed_object_crop": 4,
+    "fit:reviewed_background": 37,
+    "validation:reviewed_background": 14
+  },
+  "object_manifest_sha256": "8d8a5200654bc26a96161544637657eb5560fd886c2460b50d1e3121c65ce5ac",
+  "legacy_test_tuning": "Historical release_v1 was tuned on official test clips and is not a valid generalization benchmark.",
+  "unknown_legacy_sources_excluded": "Roboflow person/clothing crops are not reused in the new dataset.",
+  "new_initializations": "Fresh Kinetics600 / random for MoViNet; fresh COCO / random for YOLO. No legacy fine-tuned checkpoint is used as initialization.",
+  "actual_image_and_label_hashes_verified": true
+}

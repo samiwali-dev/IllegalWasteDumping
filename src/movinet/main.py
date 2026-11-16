@@ -31,7 +31,7 @@ ARCHITECTURE = {
 }
 
 
-def build_model():
+def build_model(tf_like: bool = False):
     try:
         from movinets import MoViNet
         from movinets.config import _C
@@ -53,7 +53,7 @@ def build_model():
                 pretrained=False,
                 num_classes=1,
                 conv_type="3d",
-                tf_like=False,
+                tf_like=tf_like,
             )
 
         def forward(self, clips):

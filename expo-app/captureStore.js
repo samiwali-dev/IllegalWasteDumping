@@ -23,8 +23,9 @@ function retainCaptures(previous, capture) {
 
 function captureDetectionsForFall(result, motion, now = Date.now()) {
   if (result?.yolo_live?.task === 'temporal_release_candidates') {
-    return (result.yolo_live.detections || []).filter(d => d.reason === 'released_object' &&
-      d.trail?.length >= 3 && Number.isFinite(d.source_actor?.confidence));
+    return (result.yolo_live.detections || []).filter(d => Number.isFinite(d.source_actor?.confidence) &&
+      (d.reason === 'released_object' && d.trail?.length >= 3 ||
+       d.reason === 'left_behind_object' && d.object_confirmed && d.persistent_observations >= 3));
   }
   if (!motion?.at || now < motion.at || now - motion.at > 1500) return [];
   return (result?.yolo_live?.detections || []).flatMap(detection => {

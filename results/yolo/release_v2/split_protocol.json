@@ -1,0 +1,47 @@
+{
+  "seed": 42,
+  "fit_count": 320,
+  "validation_count": 80,
+  "test_count": 100,
+  "training_and_tuning_allowed_splits": [
+    "fit",
+    "validation"
+  ],
+  "test_used_for_training": false,
+  "test_used_for_tuning": false,
+  "historical_test_exposure": "Earlier versions tuned rules on test clips. Historical results are not a blind benchmark. New development will not inspect official test videos.",
+  "selected_annotation_videos": {
+    "fit": [
+      "vid0001.mp4",
+      "vid0025.mp4",
+      "vid0054.mp4",
+      "vid0079.mp4",
+      "vid0109.mp4",
+      "vid0142.mp4",
+      "vid0157.mp4",
+      "vid0195.mp4",
+      "vid0233.mp4",
+      "vid0259.mp4",
+      "vid0277.mp4",
+      "vid0302.mp4",
+      "vid0318.mp4",
+      "vid0344.mp4",
+      "vid0358.mp4",
+      "vid0374.mp4",
+      "vid0410.mp4",
+      "vid0440.mp4",
+      "vid0477.mp4",
+      "vid0495.mp4"
+    ],
+    "validation": [
+      "vid0004.mp4",
+      "vid0071.mp4",
+      "vid0113.mp4",
+      "vid0164.mp4",
+      "vid0217.mp4",
+      "vid0290.mp4",
+      "vid0363.mp4",
+      "vid0452.mp4"
+    ]
+  }
+}

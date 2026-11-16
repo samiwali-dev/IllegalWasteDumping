@@ -1,0 +1,66 @@
+{
+  "scope": "Development evaluation only; official test videos excluded.",
+  "split": "fit",
+  "expected_videos": 4,
+  "strategy": "object_tracks_v2",
+  "confidence_threshold": 0.35,
+  "checkpoint": "results/retraining_v2/yolo/transfer/weights/best.pt",
+  "checkpoint_sha256": "c580dea8c7665f0d843ef780a048aea6b48a628d041ea239296beba686e52f96",
+  "metric_note": "Candidate presence compared with video labels. This does not measure correct object localization, and is not an independent test or live-camera accuracy estimate.",
+  "test_used_for_selection": false,
+  "videos": [
+    {
+      "video": "vid0025.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 16,
+      "seconds": 4.8,
+      "events": []
+    },
+    {
+      "video": "vid0054.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 25,
+      "seconds": 6.2,
+      "events": []
+    },
+    {
+      "video": "vid0142.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 26,
+      "seconds": 6.2,
+      "events": []
+    },
+    {
+      "video": "vid0374.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 34,
+      "seconds": 12.15,
+      "events": []
+    }
+  ],
+  "candidate_presence_metrics": {
+    "accuracy": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "confusion_matrix": [
+      [
+        0,
+        0
+      ],
+      [
+        4,
+        0
+      ]
+    ],
+    "true_negative": 0,
+    "false_positive": 0,
+    "false_negative": 4,
+    "true_positive": 0
+  },
+  "completed_videos": 4
+}

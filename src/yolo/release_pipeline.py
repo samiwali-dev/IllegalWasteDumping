@@ -3,6 +3,7 @@ from pathlib import Path
 from collections import OrderedDict
 import threading
 import time
+import json
 
 from ultralytics import YOLO
 
@@ -18,6 +19,7 @@ def overlap(a, b):
 
 
 class ReleaseDetector:
+    algorithm_version = 'release_v1'
     def __init__(self, model_path, confidence=.65, device='cpu'):
         self.tracker = ReleaseTracker()
         self.model_path = model_path
@@ -25,6 +27,9 @@ class ReleaseDetector:
         self.device = device
         self.actor_model = None
         self.object_model = None
+
+    def reset_tracking(self):
+        self.tracker = ReleaseTracker()
 
     def update(self, frame, seconds, frame_index):
         accepted = []
@@ -58,6 +63,18 @@ class ReleaseDetector:
         return accepted
 
 
+def make_detector(model_path, confidence, device, strategy=None):
+    if strategy is None:
+        report = Path(__file__).resolve().parents[2]/'results/yolo/yolov8n_run.json'
+        strategy = json.loads(report.read_text()).get('tracking_algorithm', 'release_v1')
+    if strategy == 'object_tracks_v2':
+        from src.yolo.item_tracking import ItemReleaseDetector
+        return ItemReleaseDetector(model_path, confidence, device, ACTOR_MODEL)
+    if strategy != 'release_v1':
+        raise ValueError(f'Unknown item tracking strategy: {strategy}')
+    return ReleaseDetector(model_path, confidence, device)
+
+
 class LiveReleasePool:
     """Keep one bounded tracker per camera session across overlapping windows."""
     def __init__(self):
@@ -75,7 +92,7 @@ class LiveReleasePool:
             if session_id not in self.sessions:
                 while len(self.sessions) >= 4:
                     self.sessions.popitem(last=False)
-                self.sessions[session_id] = dict(detector=ReleaseDetector(model_path, confidence, device),
+                self.sessions[session_id] = dict(detector=make_detector(model_path, confidence, device),
                                                  first=timestamps[0], last=float('-inf'), index=0,
                                                  lock=threading.Lock(), seen=now)
             session = self.sessions[session_id]
@@ -87,7 +104,7 @@ class LiveReleasePool:
                 if timestamp <= session['last']:
                     continue
                 if timestamp-session['last'] > 500 and session['last'] != float('-inf'):
-                    session['detector'].tracker = ReleaseTracker()
+                    session['detector'].reset_tracking()
                 for event in session['detector'].update(frame, (timestamp-session['first'])/1000, session['index']):
                     event['source_frame_offset'] = offset
                     events.append(event)

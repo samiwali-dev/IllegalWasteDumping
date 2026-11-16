@@ -1,0 +1,25 @@
+{
+  "protocol": "official_train_development_only_v2",
+  "status": "All four training runs and validation comparisons completed",
+  "action_model": {
+    "selected": "Kinetics600 transfer",
+    "validation_accuracy": 0.8625,
+    "scratch_validation_accuracy": 0.675,
+    "report_only_test_accuracy": 0.81
+  },
+  "deployment_policy": "Adopt validated improvements. Experimental object_tracks_v2 is disabled in the active YOLO metadata; static background and localization errors are not fixed by action-classification improvement.",
+  "remaining_limitations": [
+    "No indoor live-camera validation set.",
+    "Current YOLO MIVIA object labels are a small pilot, not exhaustive annotations of every fit video.",
+    "Historical official-test exposure means final test metrics are exploratory."
+  ],
+  "object_model_640": {
+    "legacy_map50": 0.5404895239678773,
+    "transfer_map50": 0.5427551202152665,
+    "legacy_selection_score": 0.7026875699888019,
+    "transfer_selection_score": 0.5911330049261084,
+    "selected": "legacy",
+    "scratch_map50": 0.3504427688171934
+  },
+  "tracking_summary": "Legacy candidates in 1/40 positive and 5/40 negative videos; experimental candidates in 6/40 positive and 6/40 negative videos. Neither resolves thrown-item localization."
+}

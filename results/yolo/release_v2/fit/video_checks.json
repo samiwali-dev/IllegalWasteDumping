@@ -1,0 +1,38 @@
+{
+  "scope": "Development evaluation only; official test videos excluded.",
+  "split": "fit",
+  "videos": [
+    {
+      "video": "vid0025.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 16,
+      "seconds": 5.15,
+      "events": []
+    },
+    {
+      "video": "vid0054.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 25,
+      "seconds": 5.06,
+      "events": []
+    },
+    {
+      "video": "vid0142.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 26,
+      "seconds": 4.79,
+      "events": []
+    },
+    {
+      "video": "vid0374.mp4",
+      "label": 1,
+      "count": 0,
+      "frames_scanned": 34,
+      "seconds": 6.82,
+      "events": []
+    }
+  ]
+}

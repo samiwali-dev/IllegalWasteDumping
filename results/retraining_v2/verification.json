@@ -1,0 +1,27 @@
+{
+  "python_relevant_tests_passed": 27,
+  "web_tests_passed": 18,
+  "web_export": "passed",
+  "http_live_api": {
+    "input": "First 24 consecutive frames of validation vid0007.mp4; integration check only, not an accuracy estimate",
+    "actions": [
+      {
+        "model": "neural_network",
+        "prediction": 0,
+        "score": 0.49690869450569153
+      },
+      {
+        "model": "movinet_a0",
+        "prediction": 0,
+        "score": 5.51549117489003e-09
+      },
+      {
+        "model": "optical_flow_svm",
+        "prediction": 1,
+        "score": 0.6455089856584224
+      }
+    ],
+    "tracking_algorithm": "release_v1",
+    "errors": []
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "protocol": "fit320_validation80_only_v2",
+  "selection_metric": "validation macro F1, then precision; threshold 0.5",
+  "selected_initialization": "transfer",
+  "test_used_for_training": false,
+  "test_used_for_selection": false,
+  "strategies": {
+    "transfer": {
+      "initialization": "transfer",
+      "architecture": {
+        "name": "MoViNet A0",
+        "tf_like": true,
+        "causal": false,
+        "num_classes": 1
+      },
+      "hyperparameters": {
+        "epochs": 12,
+        "patience": 4,
+        "batch": 4,
+        "lr": 0.0002,
+        "weight_decay": 0.001,
+        "input_size": 112,
+        "frames": 24,
+        "seed": 42,
+        "augmentations": [
+          "whole-frame horizontal flip",
+          "brightness gain 0.9..1.1"
+        ],
+        "transfer_batchnorm": "frozen pretrained statistics",
+        "transfer_head_warmup_epochs": 2
+      },
+      "best_epoch": 6,
+      "validation": {
+        "accuracy": 0.8625,
+        "macro_f1": 0.8624785122675418,
+        "precision": 0.8536585365853658,
+        "recall": 0.875,
+        "confusion_matrix": [
+          [
+            34,
+            6
+          ],
+          [
+            5,
+            35
+          ]
+        ]
+      },
+      "training_seconds": 1148.6991537919967
+    },
+    "scratch": {
+      "initialization": "scratch",
+      "architecture": {
+        "name": "MoViNet A0",
+        "tf_like": true,
+        "causal": false,
+        "num_classes": 1
+      },
+      "hyperparameters": {
+        "epochs": 12,
+        "patience": 4,
+        "batch": 4,
+        "lr": 0.0008,
+        "weight_decay": 0.001,
+        "input_size": 112,
+        "frames": 24,
+        "seed": 42,
+        "augmentations": [
+          "whole-frame horizontal flip",
+          "brightness gain 0.9..1.1"
+        ],
+        "transfer_batchnorm": "frozen pretrained statistics",
+        "transfer_head_warmup_epochs": 2
+      },
+      "best_epoch": 2,
+      "validation": {
+        "accuracy": 0.675,
+        "macro_f1": 0.6428571428571428,
+        "precision": 0.9375,
+        "recall": 0.375,
+        "confusion_matrix": [
+          [
+            39,
+            1
+          ],
+          [
+            25,
+            15
+          ]
+        ]
+      },
+      "training_seconds": 831.5271441669902
+    }
+  },
+  "limitation": "Validation was used for model selection. This is not held-out test accuracy or measured indoor live-camera performance."
+}

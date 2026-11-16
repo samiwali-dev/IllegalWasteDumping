@@ -73,3 +73,12 @@ test('a backend release uses its own physical trajectory without inventing objec
   result.yolo_live.detections = [{ ...candidate, source_actor: null }];
   assert.deepEqual(captureDetectionsForFall(result, null), []);
 });
+
+test('a confirmed placed item can be captured without fabricating an arrow', () => {
+  const candidate = { reason: 'left_behind_object', source: 'yolov8n', object_confirmed: true,
+    persistent_observations: 4, confidence: .74, source_actor: { confidence: .9 }, trail: [] };
+  const result = { yolo_live: { task: 'temporal_release_candidates', detections: [candidate] } };
+  assert.deepEqual(captureDetectionsForFall(result, null), [candidate]);
+  result.yolo_live.detections = [{ ...candidate, object_confirmed: false }];
+  assert.deepEqual(captureDetectionsForFall(result, null), []);
+});
