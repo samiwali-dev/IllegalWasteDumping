@@ -82,6 +82,7 @@ test('only an actual YOLO confidence value produces a percentage label', () => {
   assert.equal(yoloDetectionLabel({ class_name: 'littering', confidence: 0.864 }), 'YOLO · littering 86%');
   assert.equal(yoloDetectionLabel({ class_name: 'littering' }), 'YOLO · littering');
   assert.equal(yoloDetectionLabel({ class_name: 'litter_object', confidence: .864 }), 'YOLO · item 86%');
+  assert.equal(yoloDetectionLabel({ source: 'motion_tracker', class_name: 'release_candidate', confidence: null }), 'Release candidate');
 });
 
 test('overlay mirroring follows the actual video, including a mirrored desktop camera', () => {

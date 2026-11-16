@@ -39,6 +39,9 @@ from common import (
     predict_torch,
 )
 from data import load_manifest, split_records
+from src.yolo.release_pipeline import LiveReleasePool
+
+LIVE_RELEASES = LiveReleasePool()
 
 EVALUATION_PATH = PROJECT_ROOT / "results" / "comparison" / "model_comparison.json"
 YOLO_EVALUATION_PATH = PROJECT_ROOT / "results" / "yolo" / "yolov8n_run.json"
@@ -154,7 +157,7 @@ def _letterbox_rgb(bgr_img: np.ndarray, size: int = IMAGE_SIZE) -> np.ndarray:
     return canvas
 
 
-def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str]) -> dict:
+def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str], frame_timestamps=None, session_id=None) -> dict:
     """Analyze base64 camera frames with the 3 video classifiers and/or YOLOv8n."""
     decoded_bgr: list[np.ndarray] = []
     for item in raw_frames:
@@ -212,56 +215,42 @@ def run_live_frames_analysis(raw_frames: list[str], selected_models: list[str]) 
 
     if include_yolo and YOLO_MODEL.is_file():
         try:
-            from src.yolo.main import _extract_detections, _get_yolo, resolve_device
+            from src.yolo.main import resolve_device
+            from src.yolo.release_pipeline import ReleaseDetector
+            from src.yolo.temporal import draw_candidates
 
-            YOLO = _get_yolo()
-            dev = resolve_device("auto")
-            latest_bgr = decoded_bgr[-1]
-            ih, iw = latest_bgr.shape[:2]
-            res = YOLO(str(YOLO_MODEL)).predict(
-                source=latest_bgr, imgsz=640, rect=False, conf=YOLO_CONFIDENCE, device=dev, verbose=False, save=False
-            )[0]
-            detections = [
-                {
-                    **d,
-                    "norm_box": [
-                        d["bbox_xyxy"][0] / max(1, iw),
-                        d["bbox_xyxy"][1] / max(1, ih),
-                        d["bbox_xyxy"][2] / max(1, iw),
-                        d["bbox_xyxy"][3] / max(1, ih),
-                    ],
-                }
-                for d in _extract_detections(res)
-            ]
-            plotted = latest_bgr.copy()
-            color = (250, 165, 96)  # Same blue used by the live YOLO overlay (BGR).
-            for detection in detections:
-                x1, y1, x2, y2 = [int(v) for v in detection["bbox_xyxy"]]
-                label = "item" if detection["class_name"] == "litter_object" else detection["class_name"]
-                text = f"YOLO {label} {detection['confidence']:.0%}"
-                scale = max(0.45, iw / 1200)
-                (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, scale, 1)
-                label_x = max(0, min(x1, iw - tw - 8))
-                label_y = max(th + 8, y1)
-                cv2.rectangle(plotted, (x1, y1), (x2, y2), color, 2)
-                cv2.rectangle(plotted, (label_x, label_y - th - 8), (label_x + tw + 8, label_y), color, -1)
-                cv2.putText(plotted, text, (label_x + 4, label_y - 4), cv2.FONT_HERSHEY_SIMPLEX, scale, (63, 36, 16), 1, cv2.LINE_AA)
-            ok, buf = cv2.imencode(".jpg", plotted, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
-            annotated_b64 = (
-                "data:image/jpeg;base64," + base64.b64encode(buf.tobytes()).decode("ascii")
-                if ok
-                else None
-            )
-            strongest = max(detections, key=lambda d: d["confidence"], default=None)
-            yolo_live = {
-                "total_detections": len(detections),
-                "detections": detections,
-                "strongest_detection": strongest,
-                "annotated_data_uri": annotated_b64,
-                "frames_buffered": len(decoded_bgr),
-                "confidence_threshold": YOLO_CONFIDENCE,
-                "task": "object_detection",
-            }
+            if frame_timestamps is not None:
+                if len(frame_timestamps) != len(decoded_bgr) or not all(
+                        isinstance(t, (int, float)) and np.isfinite(t) for t in frame_timestamps):
+                    raise ValueError("One finite timestamp is required for each decoded frame")
+                if any(b <= a for a, b in zip(frame_timestamps, frame_timestamps[1:])):
+                    raise ValueError("Camera timestamps must increase")
+                times = [(t-frame_timestamps[0])/1000 for t in frame_timestamps]
+            else:
+                times = [i/17 for i in range(len(decoded_bgr))]
+            if session_id and frame_timestamps is not None:
+                detections, peak_index, moving = LIVE_RELEASES.process(decoded_bgr, frame_timestamps, session_id,
+                                                                      YOLO_MODEL, YOLO_CONFIDENCE, resolve_device("auto"))
+                shown = [d for d in detections if d['source_frame_offset'] == peak_index]
+            else:
+                detector = ReleaseDetector(YOLO_MODEL, YOLO_CONFIDENCE, resolve_device("auto"))
+                detections = []
+                for index, (frame, seconds) in enumerate(zip(decoded_bgr, times)):
+                    detections.extend(detector.update(frame, seconds, index))
+                peak_index = detections[-1]["source_frame_index"] if detections else len(decoded_bgr)-1
+                shown = [d for d in detections if d["source_frame_index"] == peak_index]
+                moving = detector.tracker.camera_moving
+            plotted = draw_candidates(decoded_bgr[peak_index], shown)
+            ok, buf = cv2.imencode(".jpg", plotted, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
+            annotated_b64 = "data:image/jpeg;base64," + base64.b64encode(buf.tobytes()).decode("ascii") if ok else None
+            yolo_live = dict(total_detections=len(shown), detections=shown,
+                             strongest_detection=max(shown, key=lambda d: d.get("confidence") or 0, default=None),
+                             annotated_data_uri=annotated_b64, frames_buffered=len(decoded_bgr),
+                             source_frame_offset=peak_index, confidence_threshold=YOLO_CONFIDENCE,
+                             camera_moving=moving,
+                             task="temporal_release_candidates", algorithm_version="release_v1",
+                             note="Release candidates require motion, source separation and settling; static object presence is not an event.")
+
         except Exception as exc:
             errors.append(f"YOLOv8n Live: {exc}")
 
@@ -376,7 +365,7 @@ class ApiHandler(BaseHTTPRequestHandler):
                 frames = body.get("frames") or []
                 requested = body.get("models") or list(ALL_MODELS)
                 selected_models = [m for m in requested if m in ALL_MODELS] or list(ALL_MODELS)
-                result = run_live_frames_analysis(frames, selected_models)
+                result = run_live_frames_analysis(frames, selected_models, body.get("frame_timestamps"), body.get("session_id"))
                 self._send_json(result)
             except Exception as exc:
                 traceback.print_exc()

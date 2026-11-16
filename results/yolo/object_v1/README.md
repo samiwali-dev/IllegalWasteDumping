@@ -145,3 +145,9 @@ Five dataset/box tests and 16 web motion/capture tests pass; Expo web export
 passes. Three existing `TwoModelGuiTests` in `test_project.py` fail because they
 expect only two classifiers while the existing desktop app exposes three.
 `app.py` and those GUI tests were not changed for this experiment.
+
+## Later temporal integration
+
+The release-tracking correction is documented in `../release_v1/README.md`.
+It changes event processing and live session continuity; this object-model
+experiment and its weights/metrics remain historical provenance for that head.

@@ -408,8 +408,8 @@ class App(tk.Tk):
                         strongest = report.get("strongest_detection")
                         self.yolo_table.insert(
                             "", "end", values=(
-                                "YOLOv8n", "LITTERING REGIONS DETECTED" if detected else "NO REGIONS DETECTED",
-                                "—" if strongest is None else f"{float(strongest['confidence']):.2%}",
+                                "YOLOv8n + tracking", "RELEASE CANDIDATES" if detected else "NO RELEASE CANDIDATES",
+                                "—" if strongest is None or strongest.get('confidence') is None else f"{float(strongest['confidence']):.2%}",
                                 detected, report["frames_sampled"],
                             ),
                         )

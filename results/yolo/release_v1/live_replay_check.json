@@ -1,0 +1,102 @@
+{
+  "scope": "Stateful live API replay of the inspected clip, 960px JPEG80, overlapping 24-frame windows with original timestamps.",
+  "requests": [
+    {
+      "through_source_frame": 56,
+      "candidates": 0
+    },
+    {
+      "through_source_frame": 116,
+      "candidates": 0
+    },
+    {
+      "through_source_frame": 176,
+      "candidates": 0
+    },
+    {
+      "through_source_frame": 236,
+      "candidates": 1
+    },
+    {
+      "through_source_frame": 240,
+      "candidates": 0
+    }
+  ],
+  "events": [
+    {
+      "track_id": 120,
+      "reason": "released_object",
+      "source": "motion_tracker",
+      "class_name": "release_candidate",
+      "confidence": null,
+      "bbox_xyxy": [
+        449.0,
+        203.0,
+        468.0,
+        216.0
+      ],
+      "norm_box": [
+        0.46770833333333334,
+        0.37592592592592594,
+        0.4875,
+        0.4
+      ],
+      "trail": [
+        {
+          "cx": 0.43103101325757576,
+          "cy": 0.37140151515151515,
+          "t": 2.535869202535876
+        },
+        {
+          "cx": 0.4453726968174204,
+          "cy": 0.38989391401451706,
+          "t": 2.6026026026026083
+        },
+        {
+          "cx": 0.4563037634408602,
+          "cy": 0.3920430107526882,
+          "t": 2.6693360026693407
+        },
+        {
+          "cx": 0.46112453959484345,
+          "cy": 0.3907918968692449,
+          "t": 2.7360694027360735
+        },
+        {
+          "cx": 0.4666730967078189,
+          "cy": 0.38951760402377683,
+          "t": 2.802802802802806
+        },
+        {
+          "cx": 0.47046178343949047,
+          "cy": 0.3886293937249351,
+          "t": 2.869536202869538
+        },
+        {
+          "cx": 0.4732593201754386,
+          "cy": 0.3894980506822612,
+          "t": 2.9362696029362705
+        },
+        {
+          "cx": 0.47527964205816553,
+          "cy": 0.38969674372358937,
+          "t": 3.003003003003003
+        },
+        {
+          "cx": 0.47718186936936935,
+          "cy": 0.389476976976977,
+          "t": 3.0697364030697356
+        }
+      ],
+      "timestamp_seconds": 3.2699366032699326,
+      "source_actor": {
+        "class_name": "car",
+        "confidence": 0.9140264987945557
+      },
+      "source_frame_index": 49,
+      "object_confirmed": false,
+      "source_frame_offset": 13
+    }
+  ],
+  "seconds": 5.120876375003718
+}

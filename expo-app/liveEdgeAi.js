@@ -79,7 +79,7 @@ export function grabWebVideoFrameFast(includeSnapshotUri = true) {
     }
 
     let uri = null;
-    const targetW = Math.min(640, activeVideo.videoWidth);
+    const targetW = Math.min(960, activeVideo.videoWidth);
     const targetH = Math.max(1, Math.round((activeVideo.videoHeight / activeVideo.videoWidth) * targetW));
     if (includeSnapshotUri) {
       if (!_snapCanvas) {

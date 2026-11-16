@@ -18,6 +18,7 @@ function motionTrailGeometry(trail, width, height, mirrored = false) {
 }
 
 function yoloDetectionLabel(detection) {
+  if (detection?.source === 'motion_tracker') return 'Release candidate';
   const score = detection?.confidence;
   const name = detection?.class_name === 'litter_object' ? 'item' : detection?.class_name || 'Object';
   return `YOLO · ${name}${Number.isFinite(score) ? ` ${Math.round(score * 100)}%` : ''}`;

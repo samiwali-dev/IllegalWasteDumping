@@ -22,6 +22,10 @@ function retainCaptures(previous, capture) {
 }
 
 function captureDetectionsForFall(result, motion, now = Date.now()) {
+  if (result?.yolo_live?.task === 'temporal_release_candidates') {
+    return (result.yolo_live.detections || []).filter(d => d.reason === 'released_object' &&
+      d.trail?.length >= 3 && Number.isFinite(d.source_actor?.confidence));
+  }
   if (!motion?.at || now < motion.at || now - motion.at > 1500) return [];
   return (result?.yolo_live?.detections || []).flatMap(detection => {
     const track = motion.detections?.find(candidate => {

@@ -62,3 +62,14 @@ test('a model capture requires a fresh falling track at the same object location
   assert.deepEqual(captureDetectionsForFall(result, { at: 9500, detections: [{ ...track, norm_box: [0, 0, .1, .1] }] }, 10000), []);
   assert.deepEqual(captureDetectionsForFall(result, { at: 9500, detections: [{ ...track, trail: [] }] }, 10000), []);
 });
+
+test('a backend release uses its own physical trajectory without inventing object confidence', () => {
+  const candidate = { reason: 'released_object', source: 'motion_tracker', confidence: null,
+    source_actor: { class_name: 'car', confidence: .91 },
+    trail: [{ cx: .4, cy: .3 }, { cx: .45, cy: .4 }, { cx: .5, cy: .4 }] };
+  const result = { yolo_live: { task: 'temporal_release_candidates', detections: [candidate] } };
+  assert.deepEqual(captureDetectionsForFall(result, null), [candidate]);
+  assert.equal(captureDetectionsForFall(result, null)[0].confidence, null);
+  result.yolo_live.detections = [{ ...candidate, source_actor: null }];
+  assert.deepEqual(captureDetectionsForFall(result, null), []);
+});

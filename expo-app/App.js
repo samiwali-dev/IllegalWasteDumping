@@ -140,7 +140,7 @@ const MODEL_META = {
     icon: '🌊',
   },
   yolov8n: {
-    title: 'YOLOv8n Detector',
+    title: 'YOLOv8n + tracking',
     shortTitle: 'YOLOv8n Box',
     subtitle: 'Littering Region Bounding Boxes',
     badge: '54.3% mAP',
@@ -207,6 +207,7 @@ export default function App() {
   const lastAutoCaptureRef = useRef(0);
   const lastModelCaptureRef = useRef(0);
   const lastTrackedFallRef = useRef(null);
+  const cameraSessionRef = useRef('');
 
   const [apiBase, setApiBase] = useState('http://localhost:8000');
   const [selectedChoice, setSelectedChoice] = useState('all');
@@ -323,8 +324,8 @@ export default function App() {
         skipProcessing: true,
       });
       if (!photo) return null;
-      if (photo.base64) return `data:image/jpeg;base64,${photo.base64}`;
-      if (photo.uri && photo.uri.startsWith('data:')) return photo.uri;
+      if (photo.base64) return { uri: `data:image/jpeg;base64,${photo.base64}`, ts: Date.now() };
+      if (photo.uri && photo.uri.startsWith('data:')) return { uri: photo.uri, ts: Date.now() };
       return null;
     } catch (_e) {
       return null;
@@ -358,12 +359,13 @@ export default function App() {
       pending = true;
       setApiLiveBusy(true);
       const frames = frameBufferRef.current.slice(-24).map(frameUri).filter(Boolean);
+      const frameTimes = frameBufferRef.current.slice(-24).filter(frame => frameUri(frame)).map(frame => frame.ts);
       const motionAtCapture = lastTrackedFallRef.current;
       const capturedAt = Date.now();
       try {
         const response = await fetch(`${cleanBaseUrl}/api/analyze-live`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ frames, models: Object.keys(MODEL_META) }),
+          body: JSON.stringify({ frames, ...(frameTimes.every(Number.isFinite) ? { frame_timestamps: frameTimes, session_id: cameraSessionRef.current } : {}), models: Object.keys(MODEL_META) }),
           signal: controller.signal,
         });
         const result = await response.json();
@@ -374,11 +376,13 @@ export default function App() {
         const now = Date.now();
         const associated = captureDetectionsForFall(result, motionAtCapture, capturedAt);
         if (associated.length && now - lastModelCaptureRef.current > 3000) {
-          const annotated = await drawDetectionsOnFrame(frames[frames.length - 1], associated);
+          const annotated = result.yolo_live?.task === 'temporal_release_candidates'
+            ? result.yolo_live.annotated_data_uri
+            : await drawDetectionsOnFrame(frames[frames.length - 1], associated);
           if (!active) return;
           lastModelCaptureRef.current = now;
           const capture = captureFromResult({ ...result, mode: 'python_api', yolo_live: { ...result.yolo_live, detections: associated, total_detections: associated.length, annotated_data_uri: annotated } }, frames, capturedAt);
-          if (capture) addCapture({ ...capture, kind: 'Fall candidate' });
+          if (capture) addCapture({ ...capture, kind: 'Release candidate' });
         }
       } catch (error) {
         if (active) setApiLiveError(`Live models: ${error.message}`);
@@ -475,6 +479,7 @@ export default function App() {
     }
     if (liveTimerRef.current) clearInterval(liveTimerRef.current);
     frameBufferRef.current = [];
+    cameraSessionRef.current = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     lastTrackedFallRef.current = null;
     setApiLiveResult(null);
     setApiLiveError('');
@@ -679,12 +684,12 @@ export default function App() {
             const yolo = id === 'yolov8n' ? apiLiveResult?.yolo_live : null;
             const hasResult = Boolean(action || yolo);
             const positive = action?.prediction === 1;
-            const status = yolo ? `${yolo.total_detections} ITEMS` : hasResult ? positive ? 'ALERT' : 'NO ALERT' : apiConnected || id === 'neural_network' ? liveMonitoring ? 'WAITING' : 'IDLE' : 'API REQUIRED';
+            const status = yolo ? `${yolo.total_detections} CANDIDATES` : hasResult ? positive ? 'ALERT' : 'NO ALERT' : apiConnected || id === 'neural_network' ? liveMonitoring ? 'WAITING' : 'IDLE' : 'API REQUIRED';
             return <View key={id} style={styles.liveModelCard}>
               <Text style={[styles.liveModelBadge, positive && styles.liveModelAlert]}>{status}</Text>
               <Text style={styles.liveModelTitle}>{id === 'neural_network' ? 'Neural Network (MLP)' : model.title}</Text>
               <Text style={styles.liveModelSource}>{apiAction || yolo ? 'Python model' : id === 'neural_network' && !apiConnected ? 'Local MLP + motion' : 'Python API'}</Text>
-              <Text style={styles.liveModelScore}>{action ? `Score ${Number(action.score).toFixed(3)} · ${Math.round(action.seconds * 1000)} ms` : yolo ? `${yolo.total_detections} detected regions` : 'Awaiting frames'}</Text>
+              <Text style={styles.liveModelScore}>{action ? `Score ${Number(action.score).toFixed(3)} · ${Math.round(action.seconds * 1000)} ms` : yolo ? `${yolo.total_detections} tracked release candidates` : 'Awaiting frames'}</Text>
             </View>;
           })}
         </View>
@@ -769,7 +774,7 @@ export default function App() {
                   <CameraView ref={cameraRef} facing={cameraFacing} style={styles.imageFill}
                     onCameraReady={() => setCameraReady(true)}
                     onMountError={error => { setCameraReady(false); setLiveStatus(`Camera error: ${error.message}`); }} />
-                  {liveResult?.yolo_live?.detections?.map((detection, i) => {
+                  {(!yoloDetections.length ? liveResult?.yolo_live?.detections : [])?.map((detection, i) => {
                     const [x1, y1, x2, y2] = detection.norm_box || [0, 0, 0, 0];
                     const left = Platform.OS === 'web' && cameraMirrored ? 1 - x2 : x1;
                     return <React.Fragment key={i}>
@@ -782,9 +787,13 @@ export default function App() {
                   {yoloDetections.map((detection, i) => {
                     const [x1, y1, x2, y2] = detection.norm_box || [0, 0, 0, 0];
                     const left = Platform.OS === 'web' && cameraMirrored ? 1 - x2 : x1;
-                    return <View key={`yolo-${i}`} testID="yolo-detection-box" pointerEvents="none" style={[styles.detectionBox, styles.yoloBox, { left: `${left * 100}%`, top: `${y1 * 100}%`, width: `${(x2 - x1) * 100}%`, height: `${(y2 - y1) * 100}%` }]}>
-                      <Text style={[styles.detectionLabel, styles.yoloLabel]}>{yoloDetectionLabel(detection)}</Text>
-                    </View>;
+                    const confirmed = detection.source === 'yolov8n';
+                    return <React.Fragment key={`yolo-${i}`}>
+                      <MotionTrail trail={detection.trail} mirrored={Platform.OS === 'web' && cameraMirrored} />
+                      <View testID="yolo-detection-box" pointerEvents="none" style={[styles.detectionBox, confirmed && styles.yoloBox, { left: `${left * 100}%`, top: `${y1 * 100}%`, width: `${(x2 - x1) * 100}%`, height: `${(y2 - y1) * 100}%` }]}>
+                        <Text style={[styles.detectionLabel, confirmed && styles.yoloLabel]}>{yoloDetectionLabel(detection)}</Text>
+                      </View>
+                    </React.Fragment>;
                   })}
                   <View pointerEvents="none" style={styles.cameraCorner}><Text style={styles.cameraCornerText}>CAM 01</Text></View>
                 </View>
@@ -827,7 +836,7 @@ export default function App() {
               <Button small disabled={!cameraReady || liveAnalyzing} onPress={handleCaptureBurstAndAnalyze}>{liveAnalyzing ? 'Analyzing sequence…' : 'Analyze 24-frame burst'}</Button>
             </View>
           </View>
-          <Text style={styles.footnote}>Amber: motion path and fall direction. Blue: YOLO object detection and its confidence score. YOLO confidence is not the probability of throwing.</Text>
+          <Text style={styles.footnote}>Amber: tracked release candidate and motion path. Blue: a tracked candidate also recognized by YOLO. Percentages are object scores, not the probability of throwing.</Text>
         </View>
         {capturePanel()}
       </View>
@@ -868,7 +877,7 @@ export default function App() {
           <View style={styles.card}><View style={styles.cardHeading}><Text style={styles.cardTitle}>Analysis results</Text></View>
             {analysisResult ? <View style={styles.inner}>
               {analysisResult.actions?.map(action => <View style={styles.resultRow} key={action.model}><Text style={styles.captureKind}>{MODEL_META[action.model]?.title || action.label_title}</Text><Text style={[styles.resultVerdict, action.prediction === 1 && { color: '#B4651A' }]}>{action.prediction === 1 ? 'Predicted dumping' : 'Predicted no dumping'}</Text><Text style={styles.mutedSmall}>Score {Number(action.score).toFixed(3)} · {Math.round(action.seconds * 1000)} ms</Text></View>)}
-              {analysisResult.yolo && <Text style={styles.mutedSmall}>YOLOv8n: {analysisResult.yolo.total_detections} boxes across {analysisResult.yolo.frames_sampled} sampled frames.</Text>}
+              {analysisResult.yolo && <Text style={styles.mutedSmall}>Release tracking: {analysisResult.yolo.total_detections} candidates · {analysisResult.yolo.frames_scanned || analysisResult.yolo.frames_sampled} frames checked. Percentages appear only when YOLO confirms the object.</Text>}
               {analysisResult.errors?.map((error, i) => <Text key={i} style={styles.errorText}>{error}</Text>)}
             </View> : <View style={styles.inner}><Text style={styles.mutedSmall}>Run an analysis to see the saved models’ predictions here.</Text></View>}
           </View>

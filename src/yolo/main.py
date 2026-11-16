@@ -24,6 +24,8 @@ DEFAULT_VIDEO_OUTPUT = DEFAULT_RESULTS / "video_predictions"
 DEFAULT_IMAGE_OUTPUT = DEFAULT_RESULTS / "image_predictions"
 DEFAULT_DATA = PROJECT_ROOT / "datasets" / "Littering-YOLO-clean" / "data.yaml"
 DEFAULT_MODELS = DEFAULT_MODEL.parent
+_saved_report = DEFAULT_RESULTS / 'yolov8n_run.json'
+DEFAULT_CONFIDENCE = float(json.loads(_saved_report.read_text()).get('confidence_threshold', .25)) if _saved_report.is_file() else .25
 SEED = 42
 
 
@@ -229,7 +231,7 @@ def detect_video(
     *,
     model_path: str | Path = DEFAULT_MODEL,
     frames: int = 12,
-    conf: float = 0.25,
+    conf: float = DEFAULT_CONFIDENCE,
     device: str = "auto",
     output_dir: str | Path = DEFAULT_VIDEO_OUTPUT,
 ) -> dict:
@@ -242,50 +244,69 @@ def detect_video(
     if not 0.0 <= conf <= 1.0:
         raise ValueError("conf must be between 0 and 1")
 
-    YOLO = _get_yolo()
-    samples, fps = sample_video_frames(video, frames)
+    from src.yolo.release_pipeline import ReleaseDetector
+    from src.yolo.temporal import draw_candidates
+
+    if frames < 1:
+        raise ValueError("frames must be at least 1")
     output_dir.mkdir(parents=True, exist_ok=True)
     dev = resolve_device(device)
-    results = YOLO(str(model_path)).predict(
-        source=[frame for _, _, frame in samples], imgsz=640, rect=False,
-        conf=conf, device=dev, verbose=False, save=False,
-    )
-
-    frame_reports, strongest = [], None
-    for ord_idx, ((f_idx, secs, _), res) in enumerate(zip(samples, results), start=1):
-        annotated = output_dir / f"frame_{ord_idx:02d}_{secs:.2f}s.jpg"
-        if not cv2.imwrite(str(annotated), res.plot()):
-            raise OSError(f"Could not save annotated frame: {annotated}")
-        detections = _extract_detections(res)
-        for item in detections:
-            if strongest is None or item["confidence"] > strongest["confidence"]:
-                strongest = {**item, "frame_number": ord_idx, "timestamp_seconds": round(secs, 3)}
-        frame_reports.append({
-            "frame_number": ord_idx, "source_frame_index": f_idx,
-            "timestamp_seconds": round(secs, 3), "detections": detections,
-            "annotated_frame": str(annotated),
-        })
-
-    return {
-        "video": str(video),
-        "model": str(model_path),
-        "device": dev,
-        "confidence_threshold": conf,
-        "frames_sampled": len(frame_reports),
-        "source_fps": fps,
-        "frames_with_detections": sum(bool(r["detections"]) for r in frame_reports),
-        "total_detections": sum(len(r["detections"]) for r in frame_reports),
-        "strongest_detection": strongest,
-        "output_dir": str(output_dir),
-        "frame_results": frame_reports,
-    }
+    detector = ReleaseDetector(model_path, conf, dev)
+    capture = cv2.VideoCapture(str(video))
+    fps = float(capture.get(cv2.CAP_PROP_FPS))
+    total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+    if fps <= 0 or total < 1:
+        capture.release()
+        raise ValueError(f"Could not read video: {video}")
+    stride = max(1, round(fps / 15))
+    events, frame_reports, scanned = [], [], 0
+    index = -1
+    try:
+        while capture.grab():
+            index += 1
+            if index % stride:
+                continue
+            ok, frame = capture.retrieve()
+            if not ok:
+                raise ValueError(f"Could not decode frame {index}")
+            scanned += 1
+            found = detector.update(frame, index/fps, index)
+            events.extend(found)
+            if found and len(frame_reports) < frames:
+                annotated = output_dir / f"release_v1_{index:06d}.jpg"
+                if not cv2.imwrite(str(annotated), draw_candidates(frame, found)):
+                    raise OSError(f"Could not save {annotated}")
+                frame_reports.append(dict(frame_number=len(frame_reports)+1,
+                                          source_frame_index=index, timestamp_seconds=round(index/fps, 3),
+                                          detections=found, annotated_frame=str(annotated)))
+    finally:
+        capture.release()
+    if not frame_reports:
+        # Keep clear previews useful without drawing unrelated static objects.
+        samples, _ = sample_video_frames(video, min(frames, total))
+        for number, (index, seconds, frame) in enumerate(samples, 1):
+            annotated = output_dir / f"clear_v1_{index:06d}.jpg"
+            if not cv2.imwrite(str(annotated), frame):
+                raise OSError(f"Could not save {annotated}")
+            frame_reports.append(dict(frame_number=number, source_frame_index=index,
+                                      timestamp_seconds=round(seconds, 3), detections=[],
+                                      annotated_frame=str(annotated)))
+    return dict(video=str(video), model=str(model_path), device=dev,
+                task="temporal_release_candidates", algorithm_version="release_v1",
+                confidence_threshold=conf, frames_sampled=len(frame_reports), frames_scanned=scanned,
+                source_fps=fps, scan_fps=fps/stride, events=events,
+                frames_with_detections=sum(bool(r["detections"]) for r in frame_reports),
+                total_detections=len(events),
+                strongest_detection=max(events, key=lambda e: e.get("confidence") or 0, default=None),
+                output_dir=str(output_dir), frame_results=frame_reports,
+                note="Motion + person/vehicle separation + settling. Candidates require review; not a trained action verdict. Only object-confirmed boxes get YOLO scores.")
 
 
 def detect_image(
     image: str | Path,
     *,
     model_path: str | Path = DEFAULT_MODEL,
-    conf: float = 0.25,
+    conf: float = DEFAULT_CONFIDENCE,
     device: str = "auto",
     output_dir: str | Path = DEFAULT_IMAGE_OUTPUT,
 ) -> dict:
@@ -329,10 +350,10 @@ def main(argv=None) -> int:
 
     pred_base = argparse.ArgumentParser(add_help=False)
     pred_base.add_argument("--model", type=Path, default=DEFAULT_MODEL)
-    pred_base.add_argument("--conf", type=float, default=0.25)
+    pred_base.add_argument("--conf", type=float, default=DEFAULT_CONFIDENCE)
     pred_base.add_argument("--device", choices=("auto", "cpu", "mps", "cuda"), default="auto")
 
-    vid_p = sub.add_parser("predict", parents=[pred_base], help="Scan sampled frames from an MP4 video")
+    vid_p = sub.add_parser("predict", parents=[pred_base], help="Track release candidates throughout an MP4 video")
     vid_p.add_argument("video", type=Path)
     vid_p.add_argument("--frames", type=int, default=12)
     vid_p.add_argument("--output-dir", type=Path, default=DEFAULT_VIDEO_OUTPUT)

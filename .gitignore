@@ -68,3 +68,5 @@ expo-app/dist/
 /results/yolo/object_v1/reported_scene_*.json
 /results/yolo/object_v1/reported_strap_*.json
 /results/yolo/object_v1/video_review/
+/results/yolo/release_v1/frames/
+/results/yolo/release_v1/*.log
